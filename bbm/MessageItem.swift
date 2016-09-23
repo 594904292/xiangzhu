@@ -34,10 +34,10 @@ class MessageItem
         return UIEdgeInsets(top:11, left:13, bottom:16, right:22)
     }
     
-    
+    //初始化
     convenience init(body:NSString, user:UserInfo, date:NSDate, mtype:ChatType)
     {
-        var font =  UIFont.boldSystemFontOfSize(12)
+        var font =  UIFont.boldSystemFontOfSize(14)
         
         var width =  225, height = 10000.0
         
@@ -83,7 +83,7 @@ class MessageItem
         }
         let imageView = UIImageView(frame:CGRectMake(0, 0, size.width, size.height))
         imageView.image = image
-        imageView.layer.cornerRadius = 5.0
+        imageView.layer.cornerRadius = size.width/2
         imageView.layer.masksToBounds = true
         
         let insets:UIEdgeInsets =  (mtype == ChatType.Mine ? MessageItem.getImageInsetsMine() : MessageItem.getImageInsetsSomeone())
