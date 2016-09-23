@@ -37,7 +37,7 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
     
     
     override func viewDidLayoutSubviews() {
-        var w:CGFloat = UIScreen.mainScreen().bounds.width
+        let w:CGFloat = UIScreen.mainScreen().bounds.width
         var h1:CGFloat = self.view.frame.height/10
         var namestr:String=myusername.text!
         let options:NSStringDrawingOptions = .UsesLineFragmentOrigin
@@ -232,7 +232,7 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
                             
                         }
                         self._tableview.reloadData()
-                        self._tableview.doneRefresh()
+                        //self._tableview.doneRefresh()
                         self.activityIndicatorView.stopAnimating()
                         
                     }

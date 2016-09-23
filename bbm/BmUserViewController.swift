@@ -35,7 +35,7 @@ class BmUserViewController: UIViewController,UINavigationControllerDelegate,UITa
         self.navigationItem.title=titlestr
         var returnimg=UIImage(named: "xz_nav_return_icon")
         
-        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "backClick")
+        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: #selector(BmUserViewController.backClick))
         
         item3.tintColor=UIColor.whiteColor()
         
@@ -109,7 +109,6 @@ class BmUserViewController: UIViewController,UINavigationControllerDelegate,UITa
                         
                         }
                         self._tableview.reloadData()
-                        self._tableview.doneRefresh()
                     
                     }
                 }else
@@ -153,17 +152,9 @@ class BmUserViewController: UIViewController,UINavigationControllerDelegate,UITa
         var avatar:String = (items[indexPath.row] as ItemBm).headface;
         
         var head = "http://api.bbxiaoqu.com/uploads/".stringByAppendingString(avatar)
-        
-        Alamofire.request(.GET, head).response { (_, _, data, _) -> Void in
-            if let d = data as? NSData!
-            {
-                cell?.headface.image=UIImage(data: d)
-                cell?.headface.layer.cornerRadius = (cell?.headface.frame.width)! / 2
-                
-                cell?.headface.layer.masksToBounds = true
-                
-            }
-        }
+        Util.loadheadface((cell?.headface)!,url: head);
+        cell?.headface.layer.cornerRadius = (cell?.headface.frame.width)! / 2
+        cell?.headface.layer.masksToBounds = true
         cell?.username.text=(items[indexPath.row] as ItemBm).username
         
         let string:NSString = (items[indexPath.row] as ItemBm).username

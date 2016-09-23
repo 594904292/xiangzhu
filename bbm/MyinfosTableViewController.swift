@@ -24,15 +24,54 @@ class MyinfosTableViewController: UITableViewController {
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         self.navigationItem.title="我的求助"
         self.navigationItem.leftBarButtonItem=UIBarButtonItem(title: "返回", style: UIBarButtonItemStyle.Done, target: self, action: #selector(MyinfosTableViewController.backClick))
-        self.tableView.headerView = XWRefreshNormalHeader(target: self, action: #selector(MyinfosTableViewController.upPullLoadData))
+//        self.tableView.headerView = XWRefreshNormalHeader(target: self, action: #selector(MyinfosTableViewController.upPullLoadData))
+//        
+//        self.tableView.headerView?.beginRefreshing()
+//        self.tableView.headerView?.endRefreshing()
+//        
+//        self.tableView.footerView = XWRefreshAutoNormalFooter(target: self, action: "downPlullLoadData")
+        self.tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: "headerRefresh")
         
-        self.tableView.headerView?.beginRefreshing()
-        self.tableView.headerView?.endRefreshing()
+        //普通带文字上拉加载的定义
         
-        self.tableView.footerView = XWRefreshAutoNormalFooter(target: self, action: "downPlullLoadData")
+        self.tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: "footerRefresh")
         
+        
+        
+  
         querydata()
         
+        
+    }
+    
+    
+    //下拉刷新操作
+    
+    func headerRefresh(){
+        
+        //模拟数据请求，设置10s是为了便于观察动画
+        
+        self.start=0;
+        self.querydata()
+        self.tableView.reloadData()
+        self.tableView.mj_header?.endRefreshing()
+    }
+    
+    
+    
+    //上拉加载操作
+    
+    func footerRefresh(){
+        
+        //模拟数据请求，设置10s是为了便于观察动画
+        
+        self.start=self.limit;
+        
+        
+        self.querydata()
+        self.tableView.reloadData()
+        self.tableView.mj_footer?.endRefreshing()
+
         
     }
    
@@ -44,32 +83,32 @@ class MyinfosTableViewController: UITableViewController {
     }
     
     
-    //MARK: 加载数据
-    func upPullLoadData(){
-        
-        //延迟执行 模拟网络延迟，实际开发中去掉
-        xwDelay(1) { () -> Void in
-            self.start=0;
-            self.querydata()
-            self.tableView.reloadData()
-            self.tableView.headerView?.endRefreshing()
-            
-        }
-        
-    }
-    
-    func downPlullLoadData(){
-        
-        xwDelay(1) { () -> Void in
-            self.start=self.limit;
-            
-            
-            self.querydata()
-            self.tableView.reloadData()
-            self.tableView.footerView?.endRefreshing()
-        }
-        
-    }
+//    //MARK: 加载数据
+//    func upPullLoadData(){
+//        
+//        //延迟执行 模拟网络延迟，实际开发中去掉
+//        xwDelay(1) { () -> Void in
+//            self.start=0;
+//            self.querydata()
+//            self.tableView.reloadData()
+//            self.tableView.headerView?.endRefreshing()
+//            
+//        }
+//        
+//    }
+//    
+//    func downPlullLoadData(){
+//        
+//        xwDelay(1) { () -> Void in
+//            self.start=self.limit;
+//            
+//            
+//            self.querydata()
+//            self.tableView.reloadData()
+//            self.tableView.footerView?.endRefreshing()
+//        }
+//        
+//    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -271,7 +310,7 @@ class MyinfosTableViewController: UITableViewController {
                         
                     }
                     self.tableView.reloadData()
-                    self.tableView.doneRefresh()
+                    //self.tableView.doneRefresh()
                     
                 }
                 }else

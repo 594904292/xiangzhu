@@ -65,7 +65,7 @@ class SouViewController: UIViewController,UITableViewDataSource, UITableViewDele
         
         var returnimg=UIImage(named: "xz_nav_return_icon")
         
-        let item1=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "backClick")
+        let item1=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: #selector(SouViewController.backClick))
         
         item1.tintColor=UIColor.whiteColor()
         
@@ -165,16 +165,21 @@ class SouViewController: UIViewController,UITableViewDataSource, UITableViewDele
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var str:String = "cell"
+        var str:String = "cell\(indexPath.row)"
+        var cell:OneTableViewCell = OneTableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: str)
         
-        var cell:OneTableViewCell = tableView.dequeueReusableCellWithIdentifier(str, forIndexPath: indexPath) as! OneTableViewCell
-        
-        if cell.isEqual(nil) {
-            cell = OneTableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: str)
+        var namestr:String=(items[indexPath.row] as itemMess).username
+        cell.username.text = namestr//array[indexPath.row]//(items[indexPath.row] as itemMess).username
+        let options:NSStringDrawingOptions = .UsesLineFragmentOrigin
+        let boundingRect = namestr.boundingRectWithSize(CGSizeMake(200, 0), options: options, attributes:[NSFontAttributeName:cell.username.font], context: nil)
+        if((items[indexPath.row] as itemMess).sex == "0")
+        {
+            cell.seximg.image=UIImage(named: "xz_nan_icon")
+        }else
+        {
+            cell.seximg.image=UIImage(named: "xz_nv_icon")
         }
-        var senduser=(items[indexPath.row] as itemMess).username
-        
-        cell.username.text = senduser//array[indexPath.row]//(items[indexPath.row] as itemMess).username
+        cell.seximg.frame=CGRectMake(boundingRect.width+70, 25, 10, 15)
         if (items[indexPath.row] as itemMess).street.characters.count > 0
         {
             cell.street.text=(items[indexPath.row] as itemMess).street
@@ -182,46 +187,70 @@ class SouViewController: UIViewController,UITableViewDataSource, UITableViewDele
         {
             cell.street.text="未知"
         }
-        cell.timesgo.text=(items[indexPath.row] as itemMess).time
+        let streettr:String = cell.street.text!
+        let distanceboundingRect = streettr.boundingRectWithSize(CGSizeMake(200, 0), options: options, attributes:[NSFontAttributeName:cell.street.font], context: nil)
+        cell.distance.frame=CGRectMake(distanceboundingRect.width+70, 43, distanceboundingRect.width*2, 30)
         cell.distance.text=(items[indexPath.row] as itemMess).address
+        cell.timesgo.text=(items[indexPath.row] as itemMess).time
         cell.content.text=(items[indexPath.row] as itemMess).content
-        
+        if((items[indexPath.row] as itemMess).headface.characters.count>0)
+        {
+            var myhead:String="http://api.bbxiaoqu.com/uploads/".stringByAppendingString((items[indexPath.row] as itemMess).headface)
+            
+            
+            
+            Util.loadpic(cell.headface, url: myhead)
+            cell.headface.layer.cornerRadius = cell.headface.frame.width / 2
+            // image还需要加上这一句, 不然无效
+            cell.headface.layer.masksToBounds = true
+        }else
+        {
+            cell.headface.image=UIImage(named: "xz_wo_icon")
+            cell.headface.layer.cornerRadius = cell.headface.frame.width / 2
+            // image还需要加上这一句, 不然无效
+            cell.headface.layer.masksToBounds = true
+            
+            
+        }
         let bw:CGFloat = UIScreen.mainScreen().bounds.width-20
+        let sw=bw/4;
         var index=0
-        
         var photoArr:[String] = (items[indexPath.row] as itemMess).photo.characters.split{$0 == ","}.map{String($0)}
-        
-        
         var picnum=photoArr.count
         if(picnum>4)
         {
             picnum=4
         }
-        
         let count = 4;
+        //cell.imgview.subviews.removeAll()
+        
         for(var j:Int=0;j<picnum;j++)
         {
             let imageView:UIImageView = UIImageView();
-            let sw=bw/4;
             var x:CGFloat = sw * CGFloat(j);
             imageView.frame=CGRectMake(x+5, 5, sw-10, sw-10);
             imageView.tag=indexPath.row*100+j
             let picname:String = photoArr[j]
             var imgurl = "http://api.bbxiaoqu.com/uploads/".stringByAppendingString(picname)
-            let nsd = NSData(contentsOfURL:NSURL(string: imgurl)!)
-            //var img = UIImage(data: nsd!,scale:1.5);  //在这里对图片显示进行比例缩放
-            imageView.image=UIImage(data: nsd!);
-            //添加边框
             var layer:CALayer = imageView.layer
             layer.borderColor=UIColor.lightGrayColor().CGColor
             layer.opacity=1
             layer.borderWidth = 1.0;
-            
+            imageView.image=UIImage(named: "xz_pic_text_loading")
+            Util.loadpic(imageView,url: imgurl);
+            //cell.imageView!.image = UIImage(named :"logo")
+            cell.imgview.contentMode = UIViewContentMode.ScaleAspectFit
             cell.imgview.addSubview(imageView);
         }
         
-        cell.clickBtn.tag = indexPath.row
-        cell.clickBtn.hidden = true
+        let defaults = NSUserDefaults.standardUserDefaults();
+        
+        var userid = defaults.objectForKey("userid") as! String;
+                    cell.delimg.hidden=true
+            cell.clickBtn.hidden = true
+        
+        
+        
         cell.tag1.text="浏览:".stringByAppendingString((items[indexPath.row] as itemMess).visnum).stringByAppendingString("次")
         cell.tag2.text="评论:".stringByAppendingString((items[indexPath.row] as itemMess).plnum).stringByAppendingString("次")
         
@@ -416,7 +445,7 @@ class SouViewController: UIViewController,UITableViewDataSource, UITableViewDele
                             
                         }
                         self._tableView.reloadData()
-                        self._tableView.doneRefresh()
+                        //self._tableView.doneRefresh()
                         
                     }
                 }else

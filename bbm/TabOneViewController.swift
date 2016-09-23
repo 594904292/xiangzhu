@@ -209,25 +209,11 @@ class TabOneViewController: UIViewController {
     {
         
         var url_str:String = "http://api.bbxiaoqu.com/getuserinfo.php?userid=".stringByAppendingString(userid)
-        
         Alamofire.request(.POST,url_str, parameters:nil)
-            
             .responseJSON { response in
-                
-                //                print(response.request)  // original URL request
-                
-                //                print(response.response) // URL response
-                
-                //                print(response.data)     // server data
-                
-                //                print(response.result)   // result of response serialization
-                
                 print(response.result.value)
-                
                 if let JSON = response.result.value {
-                    
                     print("JSON1: \(JSON.count)")
-                    
                     if(JSON.count>0)
                     {
                         var emergency:String;
@@ -256,22 +242,11 @@ class TabOneViewController: UIViewController {
                         
                         self.tel3_phonenum=emergencytelphone;
                     }
-                    
-                    
-                    
-                    
-                    
                 }
-                
         }
-        
     }
     
     
-    
-    
-    
-
     
 //     func openxmpp() {
 //        zdl().xxmaindl = self
@@ -423,32 +398,22 @@ class TabOneViewController: UIViewController {
             option.reverseGeoPoint=pt;
             //_search.reverseGeoCode(option)
             
-//            let _userid = defaults.objectForKey("userid") as! NSString;
-//            let _token = defaults.objectForKey("token") as! NSString;
-//            
-//            Alamofire.request(.POST, "http://api.bbxiaoqu.com/updatechannelid.php", parameters:["_userId" : _userid,"_channelId":_token])
-//                                .responseJSON { response in
-//                                    print(response.request)  // original URL request
-//                                    print(response.response) // URL response
-//                                    print(response.data)     // server data
-//                                    print(response.result)   // result of response serialization
-//                                    print(response.result.value)
-//            
-//            
-//            }
-//            
-//            
-//            
-//            
-//            Alamofire.request(.POST, "http://api.bbxiaoqu.com/updatelocation.php", parameters:["_userId" : _userid,"_lat":String(userLocation.location.coordinate.latitude),"_lng":String(userLocation.location.coordinate.longitude),"_os":"ios"])
-//                                .responseJSON { response in
-//                                    print(response.request)  // original URL request
-//                                    print(response.response) // URL response
-//                                    print(response.data)     // server data
-//                                    print(response.result)   // result of response serialization
-//                                    print(response.result.value)
-//                                    
-//            }
+            let _userid = defaults.objectForKey("userid") as! NSString;
+            let _token = defaults.objectForKey("token") as! NSString;
+            
+            Alamofire.request(.POST, "http://api.bbxiaoqu.com/updatechannelid.php", parameters:["_userId" : _userid,"_channelId":_token])
+                                .responseJSON { response in
+                                     print(response.result.value)
+            }
+            
+
+            
+            
+            Alamofire.request(.POST, "http://api.bbxiaoqu.com/updatelocation.php", parameters:["_userId" : _userid,"_lat":String(userLocation.location.coordinate.latitude),"_lng":String(userLocation.location.coordinate.longitude),"_os":"ios"])
+                                .responseJSON { response in
+                                    print(response.result.value)
+                                    
+            }
          }else{
             NSLog("userLocation.location is nil")
         }

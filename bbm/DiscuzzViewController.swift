@@ -238,15 +238,12 @@ class DiscuzzViewController: UIViewController,UINavigationControllerDelegate,UIT
                                 if(self.headface.characters.count>0)
                                 {
                                     let myhead:String="http://api.bbxiaoqu.com/uploads/".stringByAppendingString(self.headface)
-                                    Alamofire.request(.GET, myhead).response { (_, _, data, _) -> Void in
-                                        if let d = data as? NSData!
-                                        {
-                                            self.headface_img?.image=UIImage(data: d)
-                                            self.headface_img.layer.cornerRadius = 5.0
-                                            self.headface_img.layer.masksToBounds = true
-                                        }
-                                    }
-                                }else
+                                    Util.loadheadface(self.headface_img, url: myhead)
+                                    self.headface_img.layer.cornerRadius = (self.headface_img.frame.width) / 2
+                                    self.headface_img.layer.masksToBounds = true
+
+                                    
+                                                                   }else
                                 {
                                     self.headface_img?.image=UIImage(named: "logo")
                                     self.headface_img.layer.cornerRadius = 5.0

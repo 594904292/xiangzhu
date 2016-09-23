@@ -129,6 +129,8 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate,U
                             {
                                 self.fromname = data.objectForKey("username") as! String;
                                 self.fromheadface = data.objectForKey("headface") as! String;
+                                self.navigationItem.title=self.fromname;//更新标题
+
                             }
                             var name:String = data.objectForKey("username") as! String;
                             var headface:String = data.objectForKey("headface") as! String;

@@ -9,7 +9,7 @@
 import UIKit
 import Alamofire
 
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController,NSXMLParserDelegate {
     @IBOutlet weak var loginbtn: UIButton!
     @IBOutlet weak var searchpassbtn: UIButton!
     @IBOutlet weak var savepassbtn: UIButton!
@@ -87,9 +87,48 @@ class LoginViewController: UIViewController {
             }
 
         }
+        
+        
+        
+        let url = NSURL(string:"http://api.bbxiaoqu.com/sys.xml")!
+        guard let parserXML = NSXMLParser(contentsOfURL: url) else {
+            return
+        }
+        
+        //1
+        parserXML.delegate = self
+        parserXML.parse()
                
     }
     
+    
+    var currentNodeName:String!
+    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+        currentNodeName = elementName
+        if elementName == "sys"{
+            //print("id:\(attributeDict.count)")
+        }
+    }
+    
+    func parser(parser: NSXMLParser, foundCharacters string: String) {
+        //2
+        let str = string.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        if str != "" {
+            print("\(currentNodeName):\(str)")
+            if currentNodeName=="xmpphost"{
+                zdl().xmpphost = str;
+            }else if currentNodeName=="xmppport"{
+                 zdl().xmppport = UInt16(str)!;
+            }else if currentNodeName=="xmppdomain"{
+                 zdl().xmppdomain = str;
+            }
+        }
+    }
+    
+    //获取总代理
+    func zdl() -> AppDelegate {
+        return UIApplication.sharedApplication().delegate as! AppDelegate
+    }
     
     func getuser()->String{
         let sql="select * from [user] order by lastlogintime desc limit 0,1";
@@ -122,70 +161,61 @@ class LoginViewController: UIViewController {
     
     
     @IBAction func loginAction(sender: AnyObject) {
-        var a = self.login_username.text as String!
+        let a = self.login_username.text as String!
         let b = self.login_password.text as String!
         var date:NSDate = NSDate()
         var formatter:NSDateFormatter = NSDateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         var lastlogintime = formatter.stringFromDate(date)
-        updateuserlogintime(a,lastlogintime: lastlogintime);
-        if(login(a,pass:b))
-        {
-            
-            let sb = UIStoryboard(name:"Main", bundle: nil)
-            let vc = sb.instantiateViewControllerWithIdentifier("mainController") as! TabOneViewController
-            
-            
-            let defaults = NSUserDefaults.standardUserDefaults();
-            if defaults.boolForKey("openmessflag")
-            {
-            
-            }else
-            {
-                defaults.setObject("1", forKey: "openmessflag");
-
-            }
-            
-            if defaults.boolForKey("openvoiceflag")
-            {
-                
-            }else
-            {
-                 defaults.setObject("1", forKey: "openvoiceflag");
-            }
-            
-            
-            defaults.synchronize();
-
-            
-             //创建导航控制器
-            //let nvc=UINavigationController(rootViewController:vc);
-            //设置根视图
-            //self.view.window!.rootViewController=nvc;
-            
-            let root  = RootTabBarController()
-            //self.view.window!.rootViewController=root
-            
-            
-            let nvc=UINavigationController(rootViewController:root);
-            //设置根视图
-            self.view.window!.rootViewController=nvc;
-            
-           
-           // let toporder = TopOrderViewController ()
-
-            //////////////////////////////////////////
-            //self.view.window! = UIWindow(frame: UIScreen.mainScreen().bounds)
-            // Override point for customization after application launch.
-            //self.view.window!.backgroundColor = UIColor.whiteColor()
-            
-            
-            /////////////////////////////////////////
-
-        }else
-        {
-            login_r(a,password:b)
-        }
+        //updateuserlogintime(a,lastlogintime: lastlogintime);
+        login_r(a,password:b)
+//        if(login(a,pass:b))
+//        {
+//            
+//            let sb = UIStoryboard(name:"Main", bundle: nil)
+//            let vc = sb.instantiateViewControllerWithIdentifier("mainController") as! TabOneViewController
+//            
+//            
+//            let defaults = NSUserDefaults.standardUserDefaults();
+//            if defaults.boolForKey("openmessflag")
+//            {
+//            
+//            }else
+//            {
+//                defaults.setObject("1", forKey: "openmessflag");
+//
+//            }
+//            
+//            if defaults.boolForKey("openvoiceflag")
+//            {
+//                
+//            }else
+//            {
+//                 defaults.setObject("1", forKey: "openvoiceflag");
+//            }
+//            
+//            
+//            defaults.synchronize();
+//            let root  = RootTabBarController()
+//            let nvc=UINavigationController(rootViewController:root);
+//            //设置根视图
+//            self.view.window!.rootViewController=nvc;
+//            
+//           
+//           // let toporder = TopOrderViewController ()
+//
+//            //////////////////////////////////////////
+//            //self.view.window! = UIWindow(frame: UIScreen.mainScreen().bounds)
+//            // Override point for customization after application launch.
+//            //self.view.window!.backgroundColor = UIColor.whiteColor()
+//            
+//            
+//            /////////////////////////////////////////
+//
+//        }else
+//        {
+//            login_r(a,password:b)
+//        }
     }
     
     @IBAction func register(sender: UIButton) {
@@ -235,6 +265,7 @@ class LoginViewController: UIViewController {
         self.view.window!.rootViewController=nvc;
         
     }
+    
 
     
     func login_r(username:String,password:String)
@@ -257,8 +288,6 @@ class LoginViewController: UIViewController {
                     print("JSON1: \(JSON.count)")
                    if(JSON.count==0)
                     {
-                        
-                        
                         self.alertView = UIAlertView()
                         self.alertView!.title = "登陆提示"
                         self.alertView!.message = "用户名不存在"
@@ -299,12 +328,8 @@ class LoginViewController: UIViewController {
                             let flag:Bool = self.login(userid, pass:pass)
                             if(flag)
                             {
-                                
-                                let sb = UIStoryboard(name:"Main", bundle: nil)
-                                let vc = sb.instantiateViewControllerWithIdentifier("mainController") as! TabOneViewController
-                                //创建导航控制器
-                                let nvc=UINavigationController(rootViewController:vc);
-                                nvc.tabBarItem.title="襄助"
+                                let root  = RootTabBarController()
+                                let nvc=UINavigationController(rootViewController:root);
                                 //设置根视图
                                 self.view.window!.rootViewController=nvc;
 
@@ -361,9 +386,6 @@ class LoginViewController: UIViewController {
                 defaults.setObject(issavepass, forKey: "savepass");
                 
                 defaults.synchronize();
-            
-                
-            
                 let name = defaults.objectForKey("nickname") as! NSString;
                 print("\(name)");
             

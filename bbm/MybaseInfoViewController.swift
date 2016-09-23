@@ -11,7 +11,7 @@ import Alamofire
 
 
     
-class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,UIScrollViewDelegate,UIImagePickerControllerDelegate,UIActionSheetDelegate,UITextFieldDelegate,UITextViewDelegate{
+class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,UIScrollViewDelegate,UIImagePickerControllerDelegate,UIActionSheetDelegate,UITextFieldDelegate,UITextViewDelegate,ChangeXiaoquDelegate{
 
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var row1: UIView!
@@ -55,6 +55,10 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     
     @IBOutlet weak var weixin_tv: UILabel!
     
+    @IBOutlet weak var update_xiaoqu: UIView!
+    
+    @IBOutlet weak var xiaoqu_tv: UILabel!
+    
     @IBOutlet weak var update_othertel: UIView!
     
     @IBOutlet weak var emergencycontact_tv: UILabel!
@@ -63,13 +67,17 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     
     @IBOutlet weak var switch_remess: UISwitch!
     
-//    @IBOutlet weak var sugguest_view: UIView!
+    @IBOutlet weak var SystenSetting: UIView!
+    @IBOutlet weak var update_share: UIView!
     
     @IBOutlet weak var exit: UIView!
     
     var fullPath:String = "";
     var img = UIImage()
-    
+    var community:String = "";
+
+    var community_id:String = "";
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -80,15 +88,15 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
         //为了让内容横向滚动，设置横向内容宽度为3个页面的宽度总和
         
         //var pageWidth=self.view.frame.size.width
-        var pageHeight=self.view.frame.size.height
+        let pageHeight=self.view.frame.size.height
         
         
         var screenpageHeight=UIScreen.mainScreen().applicationFrame.size.height
-        var aaa = self.view.frame.size.height - 150
+        var aaa = self.view.frame.size.height - 210
         scrollView.frame=CGRectMake(0,0,self.view.frame.size.width,CGFloat(aaa));
         self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width,pageHeight*3);
         
-        self.scrollView.contentInset=UIEdgeInsetsMake(0, 0, 150, 0)
+        self.scrollView.contentInset=UIEdgeInsetsMake(0, 0, 210, 0)
 
         self.scrollView.showsHorizontalScrollIndicator = false;
         scrollView.scrollsToTop = false
@@ -126,10 +134,13 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
         modifysex()//修改头像
         modiftel()//修改头像
         modifweixin()//修改头像
+        modifxiaoqu()//修改头像
+        modifshare()//修改头像
         modifothertel()//修改头像
         
         ///////////
          AddsugguestClick()//修改头像
+      
         AddexitClick()//修改头像
         
 
@@ -183,6 +194,22 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
         update_weixin .addGestureRecognizer(singleTap)
     }
     
+    func modifxiaoqu()
+    {
+        update_xiaoqu.userInteractionEnabled = true
+        
+        var singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "gomodifyxiaoqu")
+        update_xiaoqu .addGestureRecognizer(singleTap)
+    }
+  //    func changeXiaoqu(controller:SouXiaoQuViewController,name:String,code:String)
+//    {
+//        
+//        NSLog("select \(name)")
+//
+//        xiaoqu_tv.text=name;
+//    
+//    }
+    
     func modifothertel()
     {
         update_othertel.userInteractionEnabled = true
@@ -195,10 +222,25 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     
     func AddsugguestClick()
     {
-//        sugguest_view.userInteractionEnabled = true
-//        var sb = UIStoryboard(name:"Main", bundle: nil)
-//        let vc = sb.instantiateViewControllerWithIdentifier("aboutsugguestviewcontroller") as! AboutSugguestViewController
-//        self.navigationController?.pushViewController(vc, animated: true)
+        
+        SystenSetting.userInteractionEnabled = true
+        
+        var singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "gosugguestaboutViewController")
+        SystenSetting .addGestureRecognizer(singleTap)
+        
+    }
+    func modifshare()
+    {
+        update_share.userInteractionEnabled = true
+        
+        var singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "gomodifyshare")
+        update_share .addGestureRecognizer(singleTap)
+    }
+    func gosugguestaboutViewController()
+    {
+        var sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewControllerWithIdentifier("sugguestabout") as! SugguestAboutViewController
+        self.navigationController?.pushViewController(vc, animated: true)
 
     }
     func AddexitClick()
@@ -417,6 +459,83 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
         self.presentViewController(alertController, animated: true, completion: nil)
     }
 
+    func gomodifyxiaoqu()
+    {
+        var sb = UIStoryboard(name:"Main", bundle: nil)
+        var vc = sb.instantiateViewControllerWithIdentifier("souxiaoquviewcontroller") as! SouXiaoQuViewController
+        vc.delegate=self
+        self.navigationController?.pushViewController(vc, animated: true)
+
+
+    }
+    //var returncommunity:String="";
+    //var returncommunity_id:String="";
+    
+    func ChangeXiaoqu(controller:SouXiaoQuViewController,name:String,code:String){
+        
+            self.xiaoqu_tv.text = name
+            NSLog("qzLabel.text == \(name)")
+            self.community=name
+            self.community_id=code
+            //保存到临时数据库
+            let defaults = NSUserDefaults.standardUserDefaults();
+            defaults.setObject(self.community, forKey: "community");//省直辖市
+            defaults.setObject(self.community_id, forKey: "community_id");//省直辖市
+            defaults.synchronize();
+             //保存到服务器
+            self.updb("community,community_id",fieldvalue: self.community.stringByAppendingString(",").stringByAppendingString(String(self.community_id)))
+    }
+
+    
+    func gomodifyshare()
+    {
+        let sheet = UIAlertController(title: "襄助 ", message: "分享到微信", preferredStyle: .ActionSheet)
+        let cancelAction = UIAlertAction(title: "取消", style: .Cancel, handler: {(action) -> Void in
+            print("cancel share")
+        })
+        let shareToFriend = UIAlertAction(title: "好友", style: .Destructive, handler: {(action) -> Void in
+            self.shareToWChat(WXSceneSession)
+        })
+        let shareToGroupsFriends = UIAlertAction(title: "朋友圈", style: .Destructive, handler: {(action) -> Void in
+            self.shareToWChat(WXSceneTimeline)
+        })
+        
+        sheet.addAction(cancelAction)
+        sheet.addAction(shareToFriend)
+        sheet.addAction(shareToGroupsFriends)
+        self.presentViewController(sheet, animated: true, completion: {() -> Void in
+            print("present over")
+        })
+
+
+    }
+    
+    
+    func shareToWChat(scene: WXScene) {
+        let page = WXWebpageObject()
+        page.webpageUrl =  "http://www.bbxiaoqu.com/wap/about.html";
+        let msg = WXMediaMessage()
+        msg.mediaObject = page
+        msg.title = "襄助何必曾相识"
+        msg.description = "襄助是基于位置的是传播正能量的联网互助平台。让附近的人互相帮忙，我们希望把大众的力量组织起来，有一技之长的人可以通过“襄助”为附近的人提供帮助；普通大众可以通过“襄助” 快速寻求帮助。 “涓滴之水成海洋，颗颗爱心变希望”。"
+        
+    
+//        let url = NSURL(string: "http://www.bbxiaoqu.com/pc/img/qrcode.png")
+//        //从网络获取数据流
+//        let data = NSData(contentsOfURL: url!)
+        //let newImage = UIImage(data: data!)
+        //downqrcode
+//        
+ //let newImage = UIImage(named: "downqrcode")
+//msg.setThumbImage(newImage)
+        
+         msg.setThumbImage(UIImage(named: "icon.png"));
+        
+        let req = SendMessageToWXReq()
+        req.message = msg
+        req.scene = Int32(scene.rawValue)
+        WXApi.sendReq(req)
+    }
 
     func gomodifyothertel()
     {
@@ -723,6 +842,25 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
                         {
                             weixin = JSON[0].objectForKey("weixin") as! String;
                         }
+                        
+                       
+                        if(JSON[0].objectForKey("community")!.isKindOfClass(NSNull))
+                        {
+                            self.community="";
+                        }else
+                        {
+                            self.community = JSON[0].objectForKey("community") as! String;
+                        }
+                        
+                        if(JSON[0].objectForKey("community_id")!.isKindOfClass(NSNull))
+                        {
+                            self.community_id="";
+                        }else
+                        {
+                            self.community_id = JSON[0].objectForKey("community_id") as! String;
+                        }
+
+                        
                         var emergency:String;
                         if(JSON[0].objectForKey("emergencycontact")!.isKindOfClass(NSNull))
                         {
@@ -740,10 +878,11 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
                             emergencytelphone = JSON[0].objectForKey("emergencycontacttelphone") as! String;
                         }
                         self.my_nickname.text=username;
-                        self.my_userid.text=telphone;
+                        self.my_userid.text=Util.hiddentelphonechartacter(telphone);
                         self.weixin_tv.text=weixin
                         self.username.text=username;
                         self.telphone_tv.text=telphone;
+                        self.xiaoqu_tv.text=self.community;
                         if(usersex=="1")
                         {//男
                             self.sex_tv.text="女";
@@ -778,16 +917,8 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
                         if(headfaceurl.characters.count>0)
                         {
                             let url="http://api.bbxiaoqu.com/uploads/"+headfaceurl;
-                            Alamofire.request(.GET, url).response { (_, _, data, _) -> Void in
-                                if let d = data as? NSData!
-                                {
-                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                        
-                                        self.headface?.image = UIImage(data: d)
-                                        self.iv_photo?.image = UIImage(data: d)
-                                    })
-                                }
-                            }
+                            Util.loadheadface(self.headface, url: url)
+                            Util.loadheadface(self.iv_photo, url: url)
                         }else
                         {
                             self.headface?.image = UIImage(named: "logo")

@@ -19,7 +19,7 @@ var items:[ItemNotice]=[]
         self.navigationItem.title="最新消息"
         var returnimg=UIImage(named: "xz_nav_return_icon")
         
-        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "backClick")
+        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: #selector(NoticeTableViewController.backClick))
         
         item3.tintColor=UIColor.whiteColor()
         
@@ -61,7 +61,9 @@ func searchClick()
 
     func querydata()
     {
-        var url:String="http://api.bbxiaoqu.com/getnotices.php?userid=369";
+        let defaults = NSUserDefaults.standardUserDefaults();
+        let userid = defaults.objectForKey("userid") as! NSString;
+        var url:String="http://api.bbxiaoqu.com/getnotices.php?userid=".stringByAppendingString(userid as String);
         print("url: \(url)")
         Alamofire.request(.GET, url, parameters: nil)
             .responseJSON { response in
@@ -85,7 +87,7 @@ func searchClick()
                             
                         }
                         self.tableView.reloadData()
-                        self.tableView.doneRefresh()
+                        //self.tableView.doneRefresh()
                         
                     }
                 }else

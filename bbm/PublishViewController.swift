@@ -20,6 +20,7 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
     var alertView:UIAlertView?
     var img = UIImage()
     var arr = [UIImageView]()
+     var closearr = [UIImageView]()
     var mCurrent:Int = 0;
     var imgarr = [String]()
     
@@ -92,30 +93,39 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
                 let sw=bw/4;
                 var x:CGFloat = sw * CGFloat(j);
                 imageView.frame=CGRectMake(x+5, ypos2+50, sw-10, sw-10);
-                //let strVal:String = String(j)
-                //imageView.image=UIImage(named: "ic_add_picture")
                 imageView.tag = index
                 
                 /////设置允许交互属性
+                imageView.userInteractionEnabled = true;
                 /////添加tapGuestureRecognizer手势
-                let tapGR = UITapGestureRecognizer(target: self, action: "goImagesel")
+                let tapGR = UITapGestureRecognizer(target: self, action: "goImagesel:")
                 imageView.addGestureRecognizer(tapGR)
 
                 //添加边框
                 var layer:CALayer = imageView.layer
                 layer.borderColor=UIColor.lightGrayColor().CGColor
-                layer.opacity=0.7
+                layer.opacity=1
                 layer.borderWidth = 1.0;
-                 imageView.hidden=true
-                
-                
-                //设置按钮文字
-                //button.setTitle("按钮", forState:UIControlState.Normal)
-                //button.addTarget(self, action: "goImagesel", forControlEvents: UIControlEvents.TouchUpInside)
-                //button.enabled=false;
+                imageView.hidden=true
                 arr.append(imageView)
-                
                 self.view.addSubview(imageView);
+                
+                
+                let closeimageView:UIImageView = UIImageView();
+                var x1:CGFloat = sw * CGFloat(j+1);
+                closeimageView.frame=CGRectMake(x1-20, ypos2+50, 20, 20);
+                closeimageView.tag=index
+                closeimageView.image=UIImage(named: "xz_quxiao_icon")
+                closeimageView.hidden=true
+                /////设置允许交互属性
+                closeimageView.userInteractionEnabled = true
+                /////添加tapGuestureRecognizer手势
+                let closetapGR = UITapGestureRecognizer(target: self, action: "goImageCancel:")
+                closeimageView.addGestureRecognizer(closetapGR)
+
+                closearr.append(closeimageView)
+                self.view.addSubview(closeimageView);
+                
                 index++
         }
         
@@ -123,10 +133,7 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
         btn.image=UIImage(named: "xz_jiji_icon")
         btn.userInteractionEnabled = true
         btn.hidden=false
-        //btn.setImage(UIImage(named:"ic_add_picture"), forState:UIControlState.Normal)
-       // btn.setTitle("添加", forState:UIControlState.Normal)
-        //btn.enabled=true
-        
+
         
         // 设置定位精确度，默认：kCLLocationAccuracyBest
         BMKLocationService.setLocationDesiredAccuracy(kCLLocationAccuracyBest)
@@ -152,8 +159,8 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
         
         
     }
-
     
+
     //处理位置坐标更新
     func didUpdateBMKUserLocation(userLocation: BMKUserLocation!) {
         if(userLocation.location != nil)
@@ -492,8 +499,63 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
                 self.navigationController?.popViewControllerAnimated(true)
         }
     }
-    func goImagesel()
+    
+    func goImageCancel(recognizer:UITapGestureRecognizer){
+        let labelView:UIView = recognizer.view!;
+        let rpos:NSInteger = labelView.tag;
+        //var arr = [UIImageView]()
+        //var closearr = [UIImageView]()
+        print(rpos)
+        for(var i:Int=0;i<4;i++)
+        {
+            if(i>=rpos)
+            {
+                if(i==rpos)
+                {
+                    var imgview:UIImageView=arr[i]
+                    imgview.image=UIImage(named: "xz_jiji_icon")
+                    imgview.userInteractionEnabled = true
+                    imgview.hidden=false
+                }else
+                {
+                    var imgview:UIImageView=arr[i]
+                    imgview.image=UIImage(named: "xz_jiji_icon")
+                    imgview.hidden=true
+
+                }
+            }
+        }
+        
+        for(var i:Int=0;i<4;i++)
+        {
+            var perspos=rpos-1
+            if(perspos==i)
+            {
+                var imgview:UIImageView=closearr[i]
+                imgview.hidden=false
+
+            }else
+            {
+                var imgview:UIImageView=closearr[i]
+                imgview.hidden=true
+            }
+        }
+        mCurrent=mCurrent-1
+        imgarr.removeAtIndex(mCurrent)
+        print("------");
+        print("------");
+        
+    }
+
+    
+    func goImagesel(recognizer:UITapGestureRecognizer)
     {
+        let labelView:UIView = recognizer.view!;
+        let tapTag:NSInteger = labelView.tag;
+        print(tapTag)
+        
+        print("------");
+        print("------");
         let actionSheet = UIActionSheet(title: "图片来源", delegate: self, cancelButtonTitle: "照片", destructiveButtonTitle: "相机")
         actionSheet.showInView(self.view)
     }
@@ -579,8 +641,8 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
         
         if(mCurrent<3)
         {
-            mCurrent=mCurrent+1;
-            let addbtn:UIImageView = arr[mCurrent] as UIImageView;
+            var nextmCurrent=mCurrent+1;
+            let addbtn:UIImageView = arr[nextmCurrent] as UIImageView;
            // addbtn.setTitle("添加", forState:UIControlState.Normal)
             //addbtn.enabled=true
             //addbtn.setImage(UIImage(named:"ic_add_picture"), forState:UIControlState.Normal)
@@ -590,7 +652,20 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
             addbtn.hidden=false
             
         }
+        for index in 0...3 {
+            print("\(index) times 5 is \(index * 5)")
+            if(index==mCurrent)
+            {
+                let close:UIImageView = closearr[index] as UIImageView;
+                close.hidden=false
 
+            }else
+            {
+                let close:UIImageView = closearr[index] as UIImageView;
+                close.hidden=true
+            }
+        }
+        mCurrent=mCurrent+1;
         picker.dismissViewControllerAnimated(true, completion: nil)
 
     }

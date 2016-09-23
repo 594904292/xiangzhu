@@ -335,14 +335,9 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
         if(headname.characters.count>0)
         {
             var myhead:String="http://api.bbxiaoqu.com/uploads/".stringByAppendingString(headface)
-            Alamofire.request(.GET, myhead).response { (_, _, data, _) -> Void in
-                if let d = data as? NSData!
-                {
-                    self.headfaceimg?.image=UIImage(data: d)
-                    self.headfaceimg.layer.cornerRadius = (self.headfaceimg.frame.width) / 2
-                    self.headfaceimg.layer.masksToBounds = true
-                }
-            }
+            Util.loadheadface(self.headfaceimg, url: myhead)
+            self.headfaceimg.layer.cornerRadius = (self.headfaceimg.frame.width) / 2
+            self.headfaceimg.layer.masksToBounds = true
         }else
         {
             self.headfaceimg?.image=UIImage(named: "logo")

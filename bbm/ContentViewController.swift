@@ -61,7 +61,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         
         if(self.inforeport_btn.titleLabel?.text! == "举报")
         {
-            var actionSheet=UIActionSheet()
+            let actionSheet=UIActionSheet()
             actionSheet.title = "请选择举报类型"
             actionSheet.addButtonWithTitle("取消")
             actionSheet.addButtonWithTitle("广告")
@@ -77,7 +77,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         }else if(self.inforeport_btn.titleLabel?.text! == "取消")
         {
             let defaults = NSUserDefaults.standardUserDefaults();
-            var senduseridstr = defaults.objectForKey("userid") as! String;
+            let senduseridstr = defaults.objectForKey("userid") as! String;
             let  dics:Dictionary<String,String> = ["_tsuid" : self.puserid,"_uid" : senduseridstr,"_infoid" : self.infoid,"_guid" : self.guid,"_tsreason" : "","_action" : "remove"]
             var url_str:String = "http://api.bbxiaoqu.com/addusertsinfo.php";
             Alamofire.request(.POST,url_str, parameters:dics)
@@ -563,15 +563,26 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     var content_view_hight:CGFloat=0.0;
     func addcontent(contentstr:String)
     {
-        var content = UILabel.init()
-        content.text = contentstr
-         content.font = UIFont.systemFontOfSize(14)
-        let options:NSStringDrawingOptions = .UsesLineFragmentOrigin
-        let boundingRect = contentstr.boundingRectWithSize(CGSizeMake(200, 0), options: options, attributes:[NSFontAttributeName:UIFont(name: "Heiti SC", size: 14.0)!], context: nil)
-        contenthight=boundingRect.height
-        content.frame = CGRectMake(10, 0, UIScreen.mainScreen().applicationFrame.width-20, boundingRect.height)
-        content.numberOfLines = 0;
-        content.lineBreakMode = NSLineBreakMode.ByWordWrapping
+//        var content = UILabel.init()
+//        content.text = contentstr
+//         content.font = UIFont.systemFontOfSize(14)
+//        let options:NSStringDrawingOptions = .UsesLineFragmentOrigin
+//        let boundingRect = contentstr.boundingRectWithSize(CGSizeMake(200, 0), options: options, attributes:[NSFontAttributeName:UIFont(name: "Heiti SC", size: 14.0)!], context: nil)
+//        contenthight=boundingRect.height
+//        content.frame = CGRectMake(10, 0, UIScreen.mainScreen().applicationFrame.width-20, boundingRect.height)
+//        content.numberOfLines = 0;
+//        content.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        
+                var content = UICopyLabel.init()
+                content.text = contentstr
+                 content.font = UIFont.systemFontOfSize(14)
+                let options:NSStringDrawingOptions = .UsesLineFragmentOrigin
+                let boundingRect = contentstr.boundingRectWithSize(CGSizeMake(200, 0), options: options, attributes:[NSFontAttributeName:UIFont(name: "Heiti SC", size: 14.0)!], context: nil)
+                contenthight=boundingRect.height
+                content.frame = CGRectMake(10, 0, UIScreen.mainScreen().applicationFrame.width-20, boundingRect.height)
+                content.numberOfLines = 0;
+                content.lineBreakMode = NSLineBreakMode.ByWordWrapping
+
         self.content_view.addSubview(content)
     
     }
@@ -606,11 +617,11 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
                 
                 
                 self.pics.append(imgurl)
+                //imageView.contentMode=UIViewContentMode.ScaleAspectFit
+                imageView.image=UIImage(named: "xz_pic_text_loading")
+                Util.loadpic(imageView, url: imgurl)
 
                 
-                let nsd = NSData(contentsOfURL:NSURL(string: imgurl)!)
-                //var img = UIImage(data: nsd!,scale:1.5);  //在这里对图片显示进行比例缩放
-                imageView.image=UIImage(data: nsd!);
                 imageView.userInteractionEnabled=true
                 
                 imageView.tag = j
@@ -642,7 +653,8 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         let url:String=self.pics[tapTag]
         
         let sb = UIStoryboard(name:"Main", bundle: nil)
-        let vc = sb.instantiateViewControllerWithIdentifier("picviewController") as! PicViewController
+        //let vc = sb.instantiateViewControllerWithIdentifier("picviewController") as! PicViewController
+        let vc = sb.instantiateViewControllerWithIdentifier("picsviewController") as! PicsViewController
         //创建导航控制器
         vc.url = url
         vc.pics = self.pics;
@@ -782,18 +794,15 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         if(headname.characters.count>0)
         {
         var myhead:String="http://api.bbxiaoqu.com/uploads/".stringByAppendingString(headface)
-        Alamofire.request(.GET, myhead).response { (_, _, data, _) -> Void in
-            if let d = data as? NSData!
-            {
-                self.headimgview?.image=UIImage(data: d)
-                self.headimgview.layer.cornerRadius = 5.0
-                self.headimgview.layer.masksToBounds = true
-            }
-        }
+        Util.loadheadface(self.headimgview, url: myhead)
+            self.headimgview.layer.cornerRadius = self.headimgview.frame.width/2
+            self.headimgview.layer.masksToBounds = true
+            
         }else
         {
-            self.headimgview?.image=UIImage(named: "logo")
-            self.headimgview.layer.cornerRadius = 5.0
+            
+            self.headimgview?.image=UIImage(named: "xz_wo_icon")
+            self.headimgview.layer.cornerRadius = self.headimgview.frame.width/2
             self.headimgview.layer.masksToBounds = true
         }
         
@@ -830,7 +839,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
                                 {
                                     self._tableview.hidden=false
                                 self._tableview.reloadData();
-                                self._tableview.doneRefresh();
+                                //self._tableview.doneRefresh();
                                 }
                             })
     
@@ -1011,7 +1020,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
             }
         }else
         {
-            cell?.plheadface?.image=UIImage(named: "logo")
+            cell?.plheadface?.image=UIImage(named: "xz_wo_icon")
         }
         cell?.plheadface.layer.cornerRadius =  (cell?.plheadface.frame.width)! / 2
         cell?.plheadface.layer.masksToBounds = true
