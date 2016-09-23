@@ -33,3 +33,11 @@
 
 #import <Bugly/Bugly.h>
 
+
+#import "./bbm/wxsdk/WXApiObject.h"
+#import "./bbm/wxsdk/WXApi.h"
+#import "MJRefresh.h"  
+
+
+
+
