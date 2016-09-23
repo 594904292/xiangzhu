@@ -480,15 +480,7 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
                         if(headfaceurl.characters.count>0)
                         {
                             let url="http://api.bbxiaoqu.com/uploads/"+headfaceurl;
-                            Alamofire.request(.GET, url).response { (_, _, data, _) -> Void in
-                                if let d = data as? NSData!
-                                {
-                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                        
-                                        self.headface?.image = UIImage(data: d)
-                                    })
-                                }
-                            }
+                            Util.loadheadface(self.headface, url: url)
                         }else
                         {
                             self.headface?.image = UIImage(named: "logo")

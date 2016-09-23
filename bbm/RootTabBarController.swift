@@ -79,8 +79,8 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
         self.automaticallyAdjustsScrollViewInsets = false
         openxmpp() //开启xmpp
         
-       baritem = self.tabBar.items![1] as UITabBarItem;
-       // baritem.badgeValue="1"
+        baritem = self.tabBar.items![1] as UITabBarItem;
+        //baritem.badgeValue="1"
 
     }
     
@@ -181,7 +181,7 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
     
     // UITabBarDelegate协议的方法，在用户选择不同的标签页时调用
     
-    override func tabBar(tabBar: UITabBar!, didSelectItem item: UITabBarItem!) {
+    override func tabBar(tabBar: UITabBar, didSelectItem item: UITabBarItem) {
         //通过tag查询到上方容器的label，并设置为当前选择的标签页的名称
         NSLog("Selected is %d",item.tag);
         self.navigationItem.title=titles[item.tag]
@@ -270,7 +270,7 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
             
             print("纬度: \(userLocation.location.coordinate.longitude)")
             
-            
+            userLocation.location
             
             var defaults = NSUserDefaults.standardUserDefaults();
             
@@ -303,9 +303,6 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
             {
                 
                 let _token = defaults.objectForKey("token") as! NSString;
-                
-                
-                
                 Alamofire.request(.POST, "http://api.bbxiaoqu.com/updatechannelid.php", parameters:["_userId" : _userid,"_channelId":_token])
                     
                     .responseJSON { response in
@@ -354,7 +351,10 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
     
     
     
-    
+    var province:String="";
+     var city:String="";
+     var district:String="";
+     var streetName:String="";
     
     func onGetReverseGeoCodeResult(searcher:BMKGeoCodeSearch, result:BMKReverseGeoCodeResult,  errorCode:BMKSearchErrorCode)
         
@@ -363,49 +363,37 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
         if(errorCode.rawValue==0)
             
         {
-            
-            
-            
             print("province: \(result.addressDetail.province)")
-            
             print("city: \(result.addressDetail.city)")
-            
             print("district: \(result.addressDetail.district)")
-            
             print("streetName: \(result.addressDetail.streetName)")
-            
             print("streetNumber: \(result.addressDetail.streetNumber)")
-            
-            
-            
-            
-            
-            
-            
+            province=result.addressDetail.province;
+            city=result.addressDetail.city;
+            district=result.addressDetail.district;
+            streetName=result.addressDetail.streetName;
             print("address: \(result.address)")
-            
             let defaults = NSUserDefaults.standardUserDefaults();
-            
             defaults.setObject(result.addressDetail.province, forKey: "province");//省直辖市
-            
             defaults.setObject(result.addressDetail.city , forKey: "city");//城市
-            
             defaults.setObject(result.addressDetail.district , forKey: "sublocality");//区县
-            
             defaults.setObject(result.addressDetail.streetName, forKey: "thoroughfare");//街道
-            
+            defaults.setObject(result.addressDetail.streetName, forKey: "street");//街道
+
             defaults.setObject(result.address  , forKey: "address");
-            
             defaults.synchronize();
             
-            
+            //求距离求小区
+
+            loaduservisiblerange();
+            //求距离求小区
+            loaduservisiblexiaoqu();
+            //self.loaduservisiblexiaoqu();
             
         }else
             
         {
-            
             let defaults = NSUserDefaults.standardUserDefaults();
-            
             let a:String = "";
             
             defaults.setObject("", forKey: "province");//省直辖市
@@ -425,7 +413,95 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
         }
         
     }
+    func loaduservisiblerange()
+    {
+        
+        Alamofire.request(.POST, "http://api.bbxiaoqu.com/getuservisiblerange.php", parameters:["country" : "中国","province":province,"city":city,"district":district,"street":streetName])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                print(response.result.value)
+                if(response.result.isSuccess)
+                {
+                    if let JSON = response.result.value {
+                        print("JSON1: \(JSON.count)")
+                        if(JSON.count>0)
+                        {
+                            let rang:NSNumber = JSON.objectForKey("rang") as! NSNumber;
+                            let defaults = NSUserDefaults.standardUserDefaults();
+                            let formatter = NSNumberFormatter ( )
+                            let rangstr=formatter.stringFromNumber(rang);
+
+                            defaults.setObject(rangstr, forKey: "rang");//省直辖市
+                            defaults.synchronize();
+
+
+                        }
+                    }
+                }
+                
+        }
+     }
+
     
     
+    func loaduservisiblexiaoqu()
+        
+    {
+        
+        let defaults = NSUserDefaults.standardUserDefaults();
+        
+        let _userid = defaults.objectForKey("userid") as! NSString;
+        
+        Alamofire.request(.POST, "http://api.bbxiaoqu.com/getuservisiblecommunity.php", parameters:["userid" :_userid])
+            
+            .responseJSON { response in
+                if(response.result.isSuccess)
+                    
+                {
+                    
+                    if let JSON = response.result.value {
+                        
+                        print("JSON1: \(JSON.count)")
+                        
+                        if(JSON.count>0)
+                            
+                        {
+                            
+                            let community:String = JSON.objectForKey("community") as! String;
+                            
+                            let community_id:String = JSON.objectForKey("community_id") as! String;
+                            
+                            
+                            
+                            let defaults = NSUserDefaults.standardUserDefaults();
+                            
+                            defaults.setObject(community, forKey: "community");//省直辖市
+                            
+                            defaults.setObject(community_id, forKey: "community_id");//省直辖市
+                            
+                            defaults.synchronize();
+                            
+                            
+                            
+                            
+                            
+                        }
+                        
+                    }
+                    
+                    
+                    
+                }
+        }
+        
+                
+        }
+        
+
+    
+
 }
 

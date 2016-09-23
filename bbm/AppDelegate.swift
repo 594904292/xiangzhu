@@ -169,6 +169,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
         xs!.sendElement(p)
     }
     
+    
+    
+    var _xmpphost:String="101.200.194.1"
+    var xmpphost:String {
+        set {
+            self._xmpphost = newValue;
+        }
+        get {
+            return self._xmpphost
+        }
+    }
+    
+    
+    var _xmppport:UInt16=5222
+    var xmppport:UInt16 {
+        set {
+            self._xmppport = newValue;
+        }
+        get {
+            return self._xmppport
+        }
+    }
+    
+    var _xmppdomain:String=""
+    var xmppdomain:String {
+        set {
+            self._xmppdomain = newValue;
+        }
+        get {
+            return self._xmppdomain
+        }
+    }
+    
     //连接服务器（查看服务器是否可连接）
     func connect() -> Bool {
         buildStream()
@@ -184,12 +217,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
         //获取系统中保存的用户名、密码、服务器地址
         let user:String = userid.stringByAppendingString("@bbxiaoqu")
         let password:String = pass
-        let server:String = "101.200.194.1"
+        let hostName:String = xmpphost
+        //let hostPort:UInt16 = xmppport
         
         // (user!= nil && password != nil) {
             //通道的用户名
             xs!.myJID = XMPPJID.jidWithString(user)
-            xs!.hostName = server
+            xs!.hostName = "101.200.194.1"
+
+            //xs!.hostPort = hostPort
             //密码保存备用
             pwd = password
         do
@@ -197,7 +233,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
                     _  = try xs!.connectWithTimeout(5000)
                }catch let error as NSError {
                   print(error.localizedDescription)
-                  print("cannot connect \(server)")
+                  print("cannot connect \(hostName)")
                   return false;
                 }
                 print("connect success!!!")
@@ -228,6 +264,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
         if !ret! {  // 如果 ret 为 false，先在后面！强制拆包，再在前面！取反
             NSLog("manager start failed!") // 这里推荐使用 NSLog，当然你使用 println 也是可以的
         }
+        
+        
+        //微信1902119443
+        WXApi.registerApp("wxe2123e88c6896750")
         
         print("\(NSHomeDirectory())")
         

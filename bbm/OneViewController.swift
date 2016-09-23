@@ -56,10 +56,19 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
         _tableView!.delegate=self
         _tableView!.dataSource=self
   
-        self._tableView.headerView = XWRefreshNormalHeader(target: self, action: "upPullLoadData")
-        self._tableView.headerView?.beginRefreshing()
-        self._tableView.headerView?.endRefreshing()
-        self._tableView.footerView = XWRefreshAutoNormalFooter(target: self, action: "downPlullLoadData")
+//        self._tableView.headerView = XWRefreshNormalHeader(target: self, action: "upPullLoadData")
+//        self._tableView.headerView?.beginRefreshing()
+//        self._tableView.headerView?.endRefreshing()
+//        self._tableView.footerView = XWRefreshAutoNormalFooter(target: self, action: "downPlullLoadData")
+        
+        self._tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: "headerRefresh")
+        
+        //普通带文字上拉加载的定义
+        
+        self._tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(OneViewController.footerRefresh))
+        
+  
+        
         _tableView.frame=CGRectMake(0,44,self.view.frame.size.width,self.view.frame.size.height)
         addtabbar()
         var w:CGFloat = UIScreen.mainScreen().bounds.width
@@ -200,10 +209,10 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
     
     
     //MARK: 加载数据
-    func upPullLoadData(){
+    func headerRefresh(){
         
         //延迟执行 模拟网络延迟，实际开发中去掉
-        xwDelay(1) { () -> Void in
+       // xwDelay(1) { () -> Void in
             self.start=0;
             if(self.selectedSegmentval==0)
             {
@@ -216,13 +225,13 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
                 self.querydata(2)
             }
             self._tableView.reloadData()
-            self._tableView.headerView?.endRefreshing()
-        }
+            self._tableView.mj_header.endRefreshing()
+        //}
     }
     
-    func downPlullLoadData(){
+    func footerRefresh(){
         
-        xwDelay(1) { () -> Void in
+        //xwDelay(1) { () -> Void in
             self.start=self.limit;
             if(self.selectedSegmentval==0)
             {
@@ -238,8 +247,8 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
                 self.querydata(2)
             }
             self._tableView.reloadData()
-            self._tableView.footerView?.endRefreshing()
-        }
+            self._tableView.mj_footer.endRefreshing()
+        //}
         
     }
 
@@ -538,7 +547,7 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
 
                         }
                         self._tableView.reloadData()
-                        self._tableView.doneRefresh()
+                        //self._tableView.doneRefresh()
 
                     }
                     }else
