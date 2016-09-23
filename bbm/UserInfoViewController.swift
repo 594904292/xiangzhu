@@ -37,7 +37,7 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
         tabBar = UITabBar(frame:
             CGRectMake(0,0,CGRectGetWidth(self.view.bounds),30))
         let tabItem1 = UITabBarItem(title: tabs[0], image: nil, tag: 0)
-        var tabItem2 = UITabBarItem(title: tabs[1], image: nil, tag: 1)
+        let tabItem2 = UITabBarItem(title: tabs[1], image: nil, tag: 1)
         var attributes =  [NSForegroundColorAttributeName: UIColor(red: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 1.0),NSFontAttributeName: UIFont(name: "Heiti SC", size: 18.0)!]
         var selattributes =  [NSForegroundColorAttributeName: UIColor(red: 255/255.0, green: 0/255.0, blue: 0/255.0, alpha: 1.0),NSFontAttributeName: UIFont(name: "Heiti SC", size: 18.0)!]
         tabItem1.setTitleTextAttributes(attributes , forState: UIControlState.Selected)
@@ -116,15 +116,7 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
 
     }
     
-//    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-//       
-//        cell.textLabel?.numberOfLines = 0
-//        cell.textLabel?.preferredMaxLayoutWidth = CGRectGetWidth(tableView.bounds)
-//    }
-    
-//    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-//        return UITableViewAutomaticDimension
-//    }
+
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -226,12 +218,7 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
                         self.username.text=username;
                         if(telphone.characters.count>10)
                         {
-                            var ns1=(telphone as NSString).substringToIndex(3)
-                        
-                            var ns2=(telphone as NSString).substringFromIndex(7)
-                            var ns3=ns1.stringByAppendingString("****").stringByAppendingString(ns2)
-                            
-                            self.telphone.text=ns3;
+                             self.telphone.text=Util.hiddentelphonechartacter(telphone);
 
                         }else
                         {
@@ -241,20 +228,11 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
                         if(headfaceurl.characters.count>0)
                         {
                             let url="http://api.bbxiaoqu.com/uploads/"+headfaceurl;
-                            Alamofire.request(.GET, url).response { (_, _, data, _) -> Void in
-                                if let d = data as? NSData!
-                                {
-                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                        self.headface?.image = UIImage(data: d)
-                                    })
-                                }
-                            }
+                            Util.loadheadface(self.headface, url: url)
                         }else
                         {
                             dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                //self.headface?.image = UIImage(named: "logo"))
-                                
-                                self.headface?.image = UIImage(named: "logo")
+                                 self.headface?.image = UIImage(named: "logo")
                             })
                         }
                         self.headface?.layer.cornerRadius = 5.0
@@ -334,7 +312,7 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
                             
                         }
                         self._tableview.reloadData()
-                        self._tableview.doneRefresh()
+                        //self._tableview.doneRefresh()
                         
                     }
                 }else
@@ -474,7 +452,7 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
                             
                         }
                         self._tableview.reloadData()
-                        self._tableview.doneRefresh()
+                        //self._tableview.doneRefresh()
                         
                     }
                 }else
@@ -544,10 +522,10 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
             
             var myhead:String="http://api.bbxiaoqu.com/uploads/".stringByAppendingString((evaluateitems[indexPath.row] as ItemEvaluate).headface)
             
-            let myheadnsd = NSData(contentsOfURL:NSURL(string: myhead)!)
-            cell!.headface.image=UIImage(data: myheadnsd!);
+            cell!.headface.layer.cornerRadius = (cell!.headface.frame.width) / 2
+            cell!.headface.layer.masksToBounds = true
+            Util.loadpic(cell!.headface, url: myhead)
 
-            
             
             cell?.infouser.text=(evaluateitems[indexPath.row] as ItemEvaluate).username
             
@@ -649,8 +627,8 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
             {
                 var myhead:String="http://api.bbxiaoqu.com/uploads/".stringByAppendingString((items[indexPath.row] as itemMess).headface)
                 
-                let myheadnsd = NSData(contentsOfURL:NSURL(string: myhead)!)
-                cell.headface.image=UIImage(data: myheadnsd!);
+                
+                Util.loadpic(cell.headface, url: myhead)
                 
                 cell.headface.layer.cornerRadius = cell.headface.frame.width / 2
                 // image还需要加上这一句, 不然无效
@@ -678,15 +656,14 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
                 imageView.tag=indexPath.row*100+j
                 let picname:String = photoArr[j]
                 var imgurl = "http://api.bbxiaoqu.com/uploads/".stringByAppendingString(picname)
-                let nsd = NSData(contentsOfURL:NSURL(string: imgurl)!)
-                //var img = UIImage(data: nsd!,scale:1.5);  //在这里对图片显示进行比例缩放
-                imageView.image=UIImage(data: nsd!);
                 //添加边框
                 var layer:CALayer = imageView.layer
                 layer.borderColor=UIColor.lightGrayColor().CGColor
                 layer.opacity=1
                 layer.borderWidth = 1.0;
-                
+                imageView.image=UIImage(named: "xz_pic_text_loading")
+                Util.loadpic(imageView,url: imgurl);
+
                 cell.imgview.addSubview(imageView);
             }
             cell.delimg.hidden=true

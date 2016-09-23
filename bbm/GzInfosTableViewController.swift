@@ -38,7 +38,7 @@ class GzInfosTableViewController: UITableViewController {
     func initnavbar(titlestr:String)
     {
         self.title=titlestr
-        var returnimg=UIImage(named: "xz_nav_return_icon")
+        let returnimg=UIImage(named: "xz_nav_return_icon")
         
         let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: #selector(GzInfosTableViewController.backClick))
         
@@ -65,7 +65,7 @@ class GzInfosTableViewController: UITableViewController {
     
     func searchClick()
     {
-        var sb = UIStoryboard(name:"Main", bundle: nil)
+        let sb = UIStoryboard(name:"Main", bundle: nil)
         var vc = sb.instantiateViewControllerWithIdentifier("souviewcontroller") as! SouViewController
         self.navigationController?.pushViewController(vc, animated: true)
         //var vc = SearchViewController()
@@ -73,34 +73,7 @@ class GzInfosTableViewController: UITableViewController {
     }
   
     
-    
-    //MARK: 加载数据
-    func upPullLoadData(){
-        
-        //延迟执行 模拟网络延迟，实际开发中去掉
-        xwDelay(1) { () -> Void in
-            self.start=0;
-            self.querydata()
-            self.tableView.reloadData()
-            self.tableView.headerView?.endRefreshing()
-            
-        }
-        
-    }
-    
-    func downPlullLoadData(){
-        
-        xwDelay(1) { () -> Void in
-            self.start=self.limit;
-            
-            
-            self.querydata()
-            self.tableView.reloadData()
-            self.tableView.footerView?.endRefreshing()
-        }
-        
-    }
-    override func didReceiveMemoryWarning() {
+        override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
@@ -175,8 +148,9 @@ class GzInfosTableViewController: UITableViewController {
         {
             var myhead:String="http://api.bbxiaoqu.com/uploads/".stringByAppendingString((items[indexPath.row] as itemMess).headface)
             
-            let myheadnsd = NSData(contentsOfURL:NSURL(string: myhead)!)
-            cell.headface.image=UIImage(data: myheadnsd!);
+            
+             Util.loadpic(cell.headface, url: myhead)
+            
             
             cell.headface.layer.cornerRadius = cell.headface.frame.width / 2
             // image还需要加上这一句, 不然无效
@@ -204,15 +178,14 @@ class GzInfosTableViewController: UITableViewController {
             imageView.tag=indexPath.row*100+j
             let picname:String = photoArr[j]
             var imgurl = "http://api.bbxiaoqu.com/uploads/".stringByAppendingString(picname)
-            let nsd = NSData(contentsOfURL:NSURL(string: imgurl)!)
-            //var img = UIImage(data: nsd!,scale:1.5);  //在这里对图片显示进行比例缩放
-            imageView.image=UIImage(data: nsd!);
             //添加边框
             var layer:CALayer = imageView.layer
             layer.borderColor=UIColor.lightGrayColor().CGColor
             layer.opacity=1
             layer.borderWidth = 1.0;
-            
+            imageView.image=UIImage(named: "xz_pic_text_loading")
+            Util.loadpic(imageView,url: imgurl);
+
             cell.imgview.addSubview(imageView);
         }
         cell.delimg.hidden=true
@@ -407,7 +380,7 @@ class GzInfosTableViewController: UITableViewController {
                         
                     }
                     self.tableView.reloadData()
-                    self.tableView.doneRefresh()
+                    
                     
                 }
                 }else

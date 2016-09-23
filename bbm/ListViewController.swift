@@ -55,32 +55,16 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
         let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "backClick")
         
         item3.tintColor=UIColor.whiteColor()
-        
         self.navigationItem.leftBarButtonItem=item3
-        
-        
-        
-        
         var item2 = UIBarButtonItem(title: "添加", style: UIBarButtonItemStyle.Done, target: self, action: "addClick")
         item2.tintColor=UIColor.whiteColor()
         self.navigationItem.rightBarButtonItem=item2
-        
-        
-       
-        
         addtabbar()
         var w:CGFloat = UIScreen.mainScreen().bounds.width
         var posx=w/CGFloat(3);
         addline(posx);
         addline(posx*2);
-        
-        
         tabBar.selectedItem=tabBar.items![selectedTabNumber] as! UITabBarItem
-        
-        
-        
-        
-        
         //var rect  = self.view.frame
         var rect  =  UIScreen.mainScreen().applicationFrame
         rect.origin.y += tabBar.frame.origin.y+tabBar.frame.size.height-1
@@ -92,10 +76,28 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
         _tableView.delegate = self
         _tableView.dataSource = self
         
-        self._tableView.headerView = XWRefreshNormalHeader(target: self, action: "upPullLoadData")
-        self._tableView.headerView?.beginRefreshing()
-        self._tableView.headerView?.endRefreshing()
-        self._tableView.footerView = XWRefreshAutoNormalFooter(target: self, action: "downPlullLoadData")
+//        self._tableView.headerView = XWRefreshNormalHeader(target: self, action: #selector(ListViewController.upPullLoadData))
+//        self._tableView.headerView?.beginRefreshing()
+//        self._tableView.headerView?.endRefreshing()
+//        self._tableView.footerView = XWRefreshAutoNormalFooter(target: self, action: #selector(ListViewController.downPlullLoadData))
+
+        
+//        //定义动画刷新Header
+//        let header:MJRefreshGifHeader = MJRefreshGifHeader(refreshingTarget: self, refreshingAction: "headerRefresh")
+//        //设置普通状态动画图片
+//        header.setImages(idleImages as [AnyObject], forState: MJRefreshState.Idle)
+//        //设置下拉操作时动画图片
+//        header.setImages(refreshingImages as [AnyObject], forState: MJRefreshState.Pulling)
+//        //设置正在刷新时动画图片
+//        header.setImages(idleImages as [AnyObject], forState: MJRefreshState.Refreshing)
+//        
+//        //设置mj_header
+//        self._tableView.mj_header = header
+        //普通带文字下拉刷新的定义
+       self._tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: "headerRefresh")
+        //普通带文字上拉加载的定义
+    self._tableView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: "footerRefresh")
+      
         
         
         _tableView.estimatedRowHeight = 250
@@ -123,6 +125,54 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
         
     }
    
+    
+    
+    //下拉刷新操作
+    func headerRefresh(){
+        //模拟数据请求，设置10s是为了便于观察动画
+        //self.delay(10) { () -> () in
+
+                        self.start=0;
+                        if(self.selectedTabNumber==0)
+                        {
+                            self.querydata(0)
+                        }else if(self.selectedTabNumber==1)
+                        {
+                            self.querydata(1)
+                        }else if(self.selectedTabNumber==2)
+                        {
+                            self.querydata(2)
+                        }
+                        self._tableView.reloadData()
+                        self._tableView.mj_header.endRefreshing()
+        
+        //}
+    }
+    
+    //上拉加载操作
+    func footerRefresh(){
+        //模拟数据请求，设置10s是为了便于观察动画
+        
+            //self.start=self.limit;
+            if(self.selectedTabNumber==0)
+            {
+                self.querydata(0)
+            }else if(self.selectedTabNumber==1)
+            {
+                self.querydata(1)
+            }else if(self.selectedTabNumber==2)
+            {
+                self.querydata(2)
+            }
+            self._tableView.reloadData()
+            //self._tableView.headerView?.endRefreshing()
+        self._tableView.mj_footer.endRefreshing()
+    }
+    
+//    //延迟方法
+//    func delay(time:Double,closure:() -> ()){
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(time * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), closure)
+    //}
     func addtabbar()
     {
         //在底部创建Tab Bar
@@ -184,73 +234,24 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
     
     // UITabBarDelegate协议的方法，在用户选择不同的标签页时调用
     func tabBar(tabBar: UITabBar, didSelectItem item: UITabBarItem) {
-        //通过tag查询到上方容器的label，并设置为当前选择的标签页的名称
-        //print( item.title);
         self.items.removeAll()
         if(item.title=="待解决")
         {
             selectedTabNumber=0
-            self.items.removeAll()
             querydata(0)
         }else if(item.title=="全部")
         {
             selectedTabNumber=1
-            self.items.removeAll()
             querydata(1)
         }else if(item.title=="我的")
         {
             selectedTabNumber=2
-            self.items.removeAll()
             querydata(2)
         }
         self._tableView.reloadData()
         
     }
    
-    //MARK: 加载数据
-    func upPullLoadData(){
-        
-        //延迟执行 模拟网络延迟，实际开发中去掉
-        xwDelay(1) { () -> Void in
-            self.start=0;
-            if(self.selectedTabNumber==0)
-            {
-                self.querydata(0)
-            }else if(self.selectedTabNumber==1)
-            {
-                self.querydata(1)
-            }else if(self.selectedTabNumber==2)
-            {
-                self.querydata(2)
-            }
-            self._tableView.reloadData()
-            self._tableView.headerView?.endRefreshing()
-        }
-    }
-    
-    func downPlullLoadData(){
-        
-        xwDelay(1) { () -> Void in
-            self.start=self.limit;
-            if(self.selectedTabNumber==0)
-            {
-                
-                self.querydata(0)
-            }else if(self.selectedTabNumber==1)
-            {
-                
-                self.querydata(1)
-            }else if(self.selectedTabNumber==2)
-            {
-                
-                self.querydata(2)
-            }
-            self._tableView.reloadData()
-            self._tableView.footerView?.endRefreshing()
-        }
-        
-    }
-    
     
 
     func backClick()
@@ -304,37 +305,22 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
     
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var str:String = "cell"
-        
-        var cell:OneTableViewCell = tableView.dequeueReusableCellWithIdentifier(str, forIndexPath: indexPath) as! OneTableViewCell
-        
-        if cell.isEqual(nil) {
-            cell = OneTableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: str)
-        }
-        //var senduser=(items[indexPath.row] as itemMess).username
-        var namestr:String=(items[indexPath.row] as itemMess).username
 
+             var str:String = "cell\(indexPath.row)_\(self.selectedTabNumber)"
+            var cell:OneTableViewCell = OneTableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: str)
+
+        var namestr:String=(items[indexPath.row] as itemMess).username
         cell.username.text = namestr//array[indexPath.row]//(items[indexPath.row] as itemMess).username
-        
-        
         let options:NSStringDrawingOptions = .UsesLineFragmentOrigin
-        //let options:NSStringDrawingOptions = .UsesLineFragmentOrigin
-        
         let boundingRect = namestr.boundingRectWithSize(CGSizeMake(200, 0), options: options, attributes:[NSFontAttributeName:cell.username.font], context: nil)
-        
         if((items[indexPath.row] as itemMess).sex == "0")
         {
             cell.seximg.image=UIImage(named: "xz_nan_icon")
-            
         }else
         {
             cell.seximg.image=UIImage(named: "xz_nv_icon")
         }
         cell.seximg.frame=CGRectMake(boundingRect.width+70, 25, 10, 15)
-        
-        
-        
-        
         if (items[indexPath.row] as itemMess).street.characters.count > 0
         {
             cell.street.text=(items[indexPath.row] as itemMess).street
@@ -342,68 +328,62 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
         {
             cell.street.text="未知"
         }
-        
-        
         let streettr:String = cell.street.text!
-        
-        
         let distanceboundingRect = streettr.boundingRectWithSize(CGSizeMake(200, 0), options: options, attributes:[NSFontAttributeName:cell.street.font], context: nil)
-         cell.distance.frame=CGRectMake(distanceboundingRect.width+70, 43, distanceboundingRect.width*2, 30)
+        cell.distance.frame=CGRectMake(distanceboundingRect.width+70, 43, distanceboundingRect.width*2, 30)
         cell.distance.text=(items[indexPath.row] as itemMess).address
-        
         cell.timesgo.text=(items[indexPath.row] as itemMess).time
-        
-        
-        
-    
-  
-        
         cell.content.text=(items[indexPath.row] as itemMess).content
-        
         if((items[indexPath.row] as itemMess).headface.characters.count>0)
         {
             var myhead:String="http://api.bbxiaoqu.com/uploads/".stringByAppendingString((items[indexPath.row] as itemMess).headface)
             
-            let myheadnsd = NSData(contentsOfURL:NSURL(string: myhead)!)
-            cell.headface.image=UIImage(data: myheadnsd!);
+           
 
+            Util.loadpic(cell.headface, url: myhead)
             cell.headface.layer.cornerRadius = cell.headface.frame.width / 2
             // image还需要加上这一句, 不然无效
             cell.headface.layer.masksToBounds = true
+        }else
+        {
+            cell.headface.image=UIImage(named: "xz_wo_icon")
+            cell.headface.layer.cornerRadius = cell.headface.frame.width / 2
+            // image还需要加上这一句, 不然无效
+            cell.headface.layer.masksToBounds = true
+
+        
         }
         let bw:CGFloat = UIScreen.mainScreen().bounds.width-20
+        let sw=bw/4;
         var index=0
-
         var photoArr:[String] = (items[indexPath.row] as itemMess).photo.characters.split{$0 == ","}.map{String($0)}
-        
-        
         var picnum=photoArr.count
         if(picnum>4)
         {
-        picnum=4
+            picnum=4
         }
-        
         let count = 4;
+        //cell.imgview.subviews.removeAll()
+        
         for(var j:Int=0;j<picnum;j++)
         {
             let imageView:UIImageView = UIImageView();
-            let sw=bw/4;
-            var x:CGFloat = sw * CGFloat(j);
+             var x:CGFloat = sw * CGFloat(j);
             imageView.frame=CGRectMake(x+5, 5, sw-10, sw-10);
             imageView.tag=indexPath.row*100+j
             let picname:String = photoArr[j]
             var imgurl = "http://api.bbxiaoqu.com/uploads/".stringByAppendingString(picname)
-            let nsd = NSData(contentsOfURL:NSURL(string: imgurl)!)
-            //var img = UIImage(data: nsd!,scale:1.5);  //在这里对图片显示进行比例缩放
-            imageView.image=UIImage(data: nsd!);
-            //添加边框
             var layer:CALayer = imageView.layer
             layer.borderColor=UIColor.lightGrayColor().CGColor
             layer.opacity=1
             layer.borderWidth = 1.0;
-            
+            imageView.image=UIImage(named: "xz_pic_text_loading")
+            Util.loadpic(imageView,url: imgurl);
+            //cell.imageView!.image = UIImage(named :"logo")
+            cell.imgview.contentMode = UIViewContentMode.ScaleAspectFit
             cell.imgview.addSubview(imageView);
         }
+        
         let defaults = NSUserDefaults.standardUserDefaults();
         
         var userid = defaults.objectForKey("userid") as! String;
@@ -447,8 +427,7 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
         return cell
     }
     
-    
-    var sel_guid:String="";
+      var sel_guid:String="";
         func tapLabel(recognizer:UITapGestureRecognizer){
             let labelView:UIView = recognizer.view!;
             let tapTag:NSInteger = labelView.tag;
@@ -513,17 +492,6 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
     
    
 
-//    func leftCall(sender:AnyObject) {
-//        _tableView.setEditing(!_tableView.editing, animated: true)
-//        var btn:UIBarButtonItem = sender as! UIBarButtonItem
-//        btn.title = "Done"
-//        print("leftButton pressed")
-//    }
-//    func rightCall(sender:AnyObject) {
-//        array.append("新建cell")
-//        _tableView.reloadData()
-//        print("rightButton pressed")
-//    }
     func tableViewCellClicked(sender:AnyObject) {
         print("tableViewCell appButton at \((sender as! UIButton).tag) clicked")
     }
@@ -545,18 +513,21 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
         let userid = defaults.objectForKey("userid") as! String;
         var lat = defaults.objectForKey("lat") as! String;
         var lng = defaults.objectForKey("lng") as! String;
+        let visiblerange = defaults.objectForKey("rang") as! String;
+        let community_id = defaults.objectForKey("community_id") as! String;
+        self.start=self.items.count;
         if(Category==0)
         {
-            url="http://api.bbxiaoqu.com/getinfos.php?userid=".stringByAppendingString(userid).stringByAppendingString("&latitude=").stringByAppendingString(lat).stringByAppendingString("&longitude=").stringByAppendingString(lng).stringByAppendingString("&rang=xiaoqu&status=0&start=").stringByAppendingString(String(self.start)).stringByAppendingString("&limit=").stringByAppendingString(String(self.limit));
+            url="http://api.bbxiaoqu.com/getinfos_v2.php?userid=".stringByAppendingString(userid).stringByAppendingString("&latitude=").stringByAppendingString(lat).stringByAppendingString("&longitude=").stringByAppendingString(lng).stringByAppendingString("&visiblerange=").stringByAppendingString(visiblerange).stringByAppendingString("&community_id=").stringByAppendingString(community_id).stringByAppendingString("&rang=xiaoqu&status=0&start=").stringByAppendingString(String(self.start)).stringByAppendingString("&limit=").stringByAppendingString(String(self.limit));
             
             
         }else if(Category==1)
         {
-            url="http://api.bbxiaoqu.com/getinfos.php?userid=".stringByAppendingString(userid).stringByAppendingString("&latitude=").stringByAppendingString(lat).stringByAppendingString("&longitude=").stringByAppendingString(lng).stringByAppendingString("&rang=xiaoqu&status=1&start=").stringByAppendingString(String(self.start)).stringByAppendingString("&limit=").stringByAppendingString(String(self.limit));
+            url="http://api.bbxiaoqu.com/getinfos_v2.php?userid=".stringByAppendingString(userid).stringByAppendingString("&latitude=").stringByAppendingString(lat).stringByAppendingString("&longitude=").stringByAppendingString(lng).stringByAppendingString("&visiblerange=").stringByAppendingString(visiblerange).stringByAppendingString("&community_id=").stringByAppendingString(community_id).stringByAppendingString("&rang=xiaoqu&status=1&start=").stringByAppendingString(String(self.start)).stringByAppendingString("&limit=").stringByAppendingString(String(self.limit));
             
         }else if(Category==2)
         {
-            url="http://api.bbxiaoqu.com/getinfos.php?userid=".stringByAppendingString(userid).stringByAppendingString("&latitude=").stringByAppendingString(lat).stringByAppendingString("&longitude=").stringByAppendingString(lng).stringByAppendingString("&rang=self&status=1&start=").stringByAppendingString(String(self.start)).stringByAppendingString("&limit=").stringByAppendingString(String(self.limit));
+            url="http://api.bbxiaoqu.com/getinfos_v2.php?userid=".stringByAppendingString(userid).stringByAppendingString("&latitude=").stringByAppendingString(lat).stringByAppendingString("&longitude=").stringByAppendingString(lng).stringByAppendingString("&visiblerange=").stringByAppendingString(visiblerange).stringByAppendingString("&community_id=").stringByAppendingString(community_id).stringByAppendingString("&rang=self&status=1&start=").stringByAppendingString(String(self.start)).stringByAppendingString("&limit=").stringByAppendingString(String(self.limit));
             
         }
         print("url: \(url)")
@@ -587,11 +558,6 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
                             let guid:String = data.objectForKey("guid") as! String;
                             let sendtime:String;
                             var temptime:String=data.objectForKey("sendtime") as! String;
-                            
-                            
-                            
-                            //temptime	String	"2016-04-06 13:40:11"
-                            
                             var date:NSDate = NSDate()
                             var formatter:NSDateFormatter = NSDateFormatter()
                             formatter.dateFormat = "yyyy-MM-dd"
@@ -606,10 +572,6 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
                                 
                                 sendtime = (temptime as NSString).substringWithRange(NSRange(location: 0,length: 10))
                             }
-                            
-                            
-                            
-                            //let address:String = data.objectForKey("address") as! String;
                             
                             var infolng:String = data.objectForKey("lng") as! String;
                             var infolat:String = data.objectForKey("lat") as! String;
@@ -632,20 +594,15 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
                             {
                                 var currentLocation:CLLocation = CLLocation(latitude:lat_1,longitude:lng_1);
                                 var targetLocation:CLLocation = CLLocation(latitude:lat_2,longitude:lng_2);
-                                
-                                
                                 var distance:CLLocationDistance=currentLocation.distanceFromLocation(targetLocation);
                                 address = ("\(distance)米");
                             }else
                             {
                                 var p1:BMKMapPoint = BMKMapPointForCoordinate(CLLocationCoordinate2D(latitude: lat_1, longitude: lng_1))
                                 var p2:BMKMapPoint = BMKMapPointForCoordinate(CLLocationCoordinate2D(latitude: lat_2, longitude: lng_2))
-                                //var a2:BMKMapPoint = CLLocationCoordinate2D(latitude: lat_2, longitude: lng_2)
-                                
                                 var distance:CLLocationDistance = BMKMetersBetweenMapPoints(p1, p2);
                                 
                                 print("距离: %0.2f米", distance);
-                                
                                 var one:UInt32 = UInt32(distance)
                                 
                                 if(one>1000)
@@ -656,10 +613,7 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
                                     address = ("\(one)米");
                                 }
                             }
-                            
-                            
-                            
-                            let city:String = data.objectForKey("city") as! String;
+                             let city:String = data.objectForKey("city") as! String;
                             let street:String = data.objectForKey("street") as! String;
                             let photo:String = data.objectForKey("photo") as! String;
                             var community:String = ""
@@ -681,7 +635,8 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
                             
                         }
                         self._tableView.reloadData()
-                        self._tableView.doneRefresh()
+                    
+                        //self._tableView.doneRefresh()
                         self.activityIndicatorView.stopAnimating()
                     }
                 }else
