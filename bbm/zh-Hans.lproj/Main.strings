@@ -68,9 +68,6 @@
 /* Class = "UILabel"; text = "message"; ObjectID = "8nf-sa-H4w"; */
 "8nf-sa-H4w.text" = "message";
 
-/* Class = "UIButton"; normalTitle = "登陆"; ObjectID = "9Dq-t7-Z7U"; */
-"9Dq-t7-Z7U.normalTitle" = "登陆";
-
 /* Class = "UILabel"; text = "cat"; ObjectID = "9Ql-Zx-Zvb"; */
 "9Ql-Zx-Zvb.text" = "cat";
 
@@ -110,8 +107,8 @@
 /* Class = "UILabel"; text = "Label"; ObjectID = "FeB-hc-yFA"; */
 "FeB-hc-yFA.text" = "Label";
 
-/* Class = "UILabel"; text = "帮助他人,快乐你我"; ObjectID = "FlW-Tq-ymY"; */
-"FlW-Tq-ymY.text" = "帮助他人,快乐你我";
+/* Class = "UILabel"; text = "襄助何必曾相识"; ObjectID = "FlW-Tq-ymY"; */
+"FlW-Tq-ymY.text" = "襄助何必曾相识";
 
 /* Class = "UILabel"; text = "sendtime"; ObjectID = "Frz-PF-QoF"; */
 "Frz-PF-QoF.text" = "sendtime";
