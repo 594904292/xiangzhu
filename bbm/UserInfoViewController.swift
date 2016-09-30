@@ -35,7 +35,7 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
     {
         //在底部创建Tab Bar
         tabBar = UITabBar(frame:
-            CGRectMake(0,0,CGRectGetWidth(self.view.bounds),30))
+            CGRectMake(0,0,CGRectGetWidth(self.view.bounds),50))
         let tabItem1 = UITabBarItem(title: tabs[0], image: nil, tag: 0)
         let tabItem2 = UITabBarItem(title: tabs[1], image: nil, tag: 1)
         var attributes =  [NSForegroundColorAttributeName: UIColor(red: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 1.0),NSFontAttributeName: UIFont(name: "Heiti SC", size: 18.0)!]
@@ -108,10 +108,7 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
         addtabbar()
         tabBar.selectedItem=tabBar.items![currentpage] as! UITabBarItem
         self._tableview.registerClass(OneTableViewCell.self, forCellReuseIdentifier: "helpcell")//注册自定义cell
-//        self._tableview.estimatedRowHeight=100
-//        self._tableview.rowHeight=UITableViewAutomaticDimension
         queryevaluatedata();
-        //queryhelpdata();
 
 
     }
