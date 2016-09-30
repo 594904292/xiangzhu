@@ -1247,7 +1247,8 @@ enum GCDAsyncSocketConfig
 	dispatch_block_t block = ^{
 		
 		if (flag)
-			config &= ~kIPv6Disabled;
+			//config &= ~kIPv6Disabled;//20160926 modify ydz
+            config |= kPreferIPv6;
 		else
 			config |= kIPv6Disabled;
 	};
@@ -2192,6 +2193,12 @@ enum GCDAsyncSocketConfig
 	LogVerbose(@"IPv4: %@:%hu", [[self class] hostFromAddress:address4], [[self class] portFromAddress:address4]);
 	LogVerbose(@"IPv6: %@:%hu", [[self class] hostFromAddress:address6], [[self class] portFromAddress:address6]);
 	
+    //20160926 modify ydz
+    if(address6)
+    {
+        [self setIPv6Enabled:YES];
+    }
+    //20160926 modify ydz
 	// Determine socket type
 	
 	BOOL preferIPv6 = (config & kPreferIPv6) ? YES : NO;
