@@ -98,9 +98,21 @@ class SouXiaoQuViewController: UIViewController,UITableViewDataSource,UITableVie
         let defaults = NSUserDefaults.standardUserDefaults();
         let userid = defaults.objectForKey("userid") as! NSString;
         var aname:String = name.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
-        
-
-        var url:String="http://api.bbxiaoqu.com/getcxhfdm.php?name=".stringByAppendingString(aname);
+        var url:String=""
+        if aname.characters.count>0
+        {
+            url="http://api.bbxiaoqu.com/getcxhfdm_v1.php?name=".stringByAppendingString(aname);
+        }else{
+            let province = defaults.objectForKey("province") as! NSString;
+            let city = defaults.objectForKey("city") as! NSString;
+            let sublocality = defaults.objectForKey("sublocality") as! NSString;
+            
+            var aprovince:String = province.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
+            var acity:String = city.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
+            var asublocality:String = sublocality.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
+            url="http://api.bbxiaoqu.com/getcxhfdm_v1.php?province=".stringByAppendingString(aprovince).stringByAppendingString("&city=").stringByAppendingString(acity).stringByAppendingString("&district=").stringByAppendingString(asublocality)
+           
+        }
         print("url: \(url)")
         self.items.removeAll()
         Alamofire.request(.GET, url, parameters: nil)
