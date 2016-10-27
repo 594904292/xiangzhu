@@ -278,6 +278,7 @@
 		80169C021D98B8E900AF92CE /* BaiduMapAPI_Radar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80169BFB1D98B8E900AF92CE /* BaiduMapAPI_Radar.framework */; };
 		80169C031D98B8E900AF92CE /* BaiduMapAPI_Search.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80169BFC1D98B8E900AF92CE /* BaiduMapAPI_Search.framework */; };
 		80169C041D98B8E900AF92CE /* BaiduMapAPI_Utils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80169BFD1D98B8E900AF92CE /* BaiduMapAPI_Utils.framework */; };
+		80169C061DADDC4B00AF92CE /* FaqViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80169C051DADDC4B00AF92CE /* FaqViewController.swift */; };
 		80249C6F1CABA2DC00DF58A0 /* BmUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80249C6E1CABA2DC00DF58A0 /* BmUserViewController.swift */; };
 		80249C771CABC83700DF58A0 /* BmuserUITableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80249C761CABC83700DF58A0 /* BmuserUITableViewCell.swift */; };
 		80249C791CABCA0200DF58A0 /* ItemBm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80249C781CABCA0200DF58A0 /* ItemBm.swift */; };
@@ -298,6 +299,8 @@
 		80578F671CAA57530000F891 /* TopTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80578F661CAA57530000F891 /* TopTableViewCell.swift */; };
 		80578F691CAA66470000F891 /* itemTop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80578F681CAA66470000F891 /* itemTop.swift */; };
 		80578F6B1CAB75C10000F891 /* RatingBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80578F6A1CAB75C10000F891 /* RatingBar.swift */; };
+		805BFB071DBEFEC600B94322 /* OneTableViewCellForGg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805BFB061DBEFEC600B94322 /* OneTableViewCellForGg.swift */; };
+		805BFB0C1DC1A39300B94322 /* RootTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8004D6801D54491900FE4458 /* RootTabBarController.swift */; };
 		8067B0B41D8FBA8200D68F55 /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8067B0AF1D8FBA8200D68F55 /* libWeChatSDK.a */; };
 		8067B0B51D8FBA8200D68F55 /* read_me.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8067B0B01D8FBA8200D68F55 /* read_me.txt */; };
 		80779AA91D587B4900A459A9 /* MyCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80779AA81D587B4800A459A9 /* MyCanvas.swift */; };
@@ -424,7 +427,7 @@
 		494435C11BB52E44004EAECB /* SQLiteDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteDB.swift; sourceTree = "<group>"; };
 		494435C21BB52E44004EAECB /* String-Extras.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String-Extras.swift"; sourceTree = "<group>"; };
 		494435C51BB52FFE004EAECB /* data.db */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = data.db; sourceTree = "<group>"; };
-		494CE6471BCF7ABA00F68A30 /* itemMess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = itemMess.swift; sourceTree = "<group>"; };
+		494CE6471BCF7ABA00F68A30 /* itemMess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = itemMess.swift; path = ../itemMess.swift; sourceTree = "<group>"; };
 		497E7B7E1BCCFC2000BAEB2F /* MyInfoiewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyInfoiewController.swift; sourceTree = "<group>"; };
 		497E9AE81BB8D4CC00653FB4 /* OneViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneViewController.swift; sourceTree = "<group>"; };
 		497E9AEA1BB8D4F100653FB4 /* TwoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwoViewController.swift; sourceTree = "<group>"; };
@@ -854,6 +857,7 @@
 		80169BFB1D98B8E900AF92CE /* BaiduMapAPI_Radar.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Radar.framework; sourceTree = "<group>"; };
 		80169BFC1D98B8E900AF92CE /* BaiduMapAPI_Search.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Search.framework; sourceTree = "<group>"; };
 		80169BFD1D98B8E900AF92CE /* BaiduMapAPI_Utils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BaiduMapAPI_Utils.framework; sourceTree = "<group>"; };
+		80169C051DADDC4B00AF92CE /* FaqViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaqViewController.swift; sourceTree = "<group>"; };
 		80249C6E1CABA2DC00DF58A0 /* BmUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BmUserViewController.swift; sourceTree = "<group>"; };
 		80249C761CABC83700DF58A0 /* BmuserUITableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BmuserUITableViewCell.swift; sourceTree = "<group>"; };
 		80249C781CABCA0200DF58A0 /* ItemBm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemBm.swift; sourceTree = "<group>"; };
@@ -874,6 +878,7 @@
 		80578F661CAA57530000F891 /* TopTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopTableViewCell.swift; sourceTree = "<group>"; };
 		80578F681CAA66470000F891 /* itemTop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = itemTop.swift; sourceTree = "<group>"; };
 		80578F6A1CAB75C10000F891 /* RatingBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RatingBar.swift; sourceTree = "<group>"; };
+		805BFB061DBEFEC600B94322 /* OneTableViewCellForGg.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneTableViewCellForGg.swift; sourceTree = "<group>"; };
 		8067B0AF1D8FBA8200D68F55 /* libWeChatSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeChatSDK.a; sourceTree = "<group>"; };
 		8067B0B01D8FBA8200D68F55 /* read_me.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = read_me.txt; sourceTree = "<group>"; };
 		8067B0B11D8FBA8200D68F55 /* WechatAuthSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WechatAuthSDK.h; sourceTree = "<group>"; };
@@ -2009,7 +2014,6 @@
 		49FE1DA51BD0A09D009B81D9 /* model */ = {
 			isa = PBXGroup;
 			children = (
-				494CE6471BCF7ABA00F68A30 /* itemMess.swift */,
 				49FE1DAA1BD0A112009B81D9 /* ChatDataSource.swift */,
 				49FE1DA71BD0A0E2009B81D9 /* MessageItem.swift */,
 				49FE1DBB1BD0AD11009B81D9 /* UserInfo.swift */,
@@ -2035,6 +2039,7 @@
 		49FE1DAC1BD0A1F9009B81D9 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				494CE6471BCF7ABA00F68A30 /* itemMess.swift */,
 				800323111D781C2000498019 /* broswerPic1.jpg */,
 				800322FF1D781A1300498019 /* broswerPic0.jpg */,
 				800323001D781A1300498019 /* broswerPic2.jpg */,
@@ -2208,6 +2213,7 @@
 				80249C801CAE205D00DF58A0 /* UserInfoViewController.swift */,
 				49F3E7F11C293A370036F7C7 /* GzInfosTableViewController.swift */,
 				802BD2641D62CAD90076F2C9 /* OneTableViewCell.swift */,
+				805BFB061DBEFEC600B94322 /* OneTableViewCellForGg.swift */,
 				802BD2A51D62E12E0076F2C9 /* ListViewController.swift */,
 				80B367461D6FFF23008D16DB /* Util.swift */,
 			);
@@ -2265,8 +2271,8 @@
 				802B9C681D64024700CB525A /* MybaseInfoViewController.swift */,
 				49F3E7EF1C291F9E0036F7C7 /* AboutSugguestViewController.swift */,
 				49CAC3961BBB7EA2006560A6 /* PublishViewController.swift */,
-				491398711BC90A8F007866C1 /* ContentViewController.swift */,
 				498701881C192951006361F8 /* TabOneViewController.swift */,
+				491398711BC90A8F007866C1 /* ContentViewController.swift */,
 				80578F641CAA4EC80000F891 /* TopViewController.swift */,
 				49F3E7ED1C291F460036F7C7 /* MyinfosTableViewController.swift */,
 				49F6E98C1C3A0DEC007E5B0F /* PicViewController.swift */,
@@ -2278,6 +2284,7 @@
 				8032FB331D7D0CAF00173A4D /* SugguestAboutViewController.swift */,
 				804678A61D7D213E002BDCC3 /* SettingViewController.swift */,
 				804678AC1D7D2520002BDCC3 /* AboutViewController.swift */,
+				80169C051DADDC4B00AF92CE /* FaqViewController.swift */,
 			);
 			name = main;
 			sourceTree = "<group>";
@@ -2727,6 +2734,7 @@
 				804678AD1D7D2520002BDCC3 /* AboutViewController.swift in Sources */,
 				49F3E7811C27EA720036F7C7 /* XMPPSystemInputActivityMonitor.m in Sources */,
 				80FAEA671D65D22400693CF6 /* DiscuzzViewController.swift in Sources */,
+				805BFB071DBEFEC600B94322 /* OneTableViewCellForGg.swift in Sources */,
 				49F6E98D1C3A0DEC007E5B0F /* PicViewController.swift in Sources */,
 				802BD2F11D63893A0076F2C9 /* singleInfoViewController.swift in Sources */,
 				49F3E7DB1C27EA730036F7C7 /* DDASLLogger.m in Sources */,
@@ -2737,6 +2745,7 @@
 				80FAEA651D65945A00693CF6 /* BorderUIView.swift in Sources */,
 				802BD2EB1D6357BC0076F2C9 /* SouViewController.swift in Sources */,
 				80169BDC1D93CF0B00AF92CE /* MJRefreshAutoFooter.m in Sources */,
+				80169C061DADDC4B00AF92CE /* FaqViewController.swift in Sources */,
 				80169BE31D93CF0B00AF92CE /* MJRefreshAutoStateFooter.m in Sources */,
 				80169BDD1D93CF0B00AF92CE /* MJRefreshBackFooter.m in Sources */,
 				49F3E7C21C27EA720036F7C7 /* XMPPStreamManagementStanzas.m in Sources */,
@@ -2783,6 +2792,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				494435661BB3E20D004EAECB /* bbmUITests.swift in Sources */,
+				805BFB0C1DC1A39300B94322 /* RootTabBarController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
