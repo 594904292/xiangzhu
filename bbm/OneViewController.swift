@@ -148,6 +148,9 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
         {
             selectedSegmentval=0
             self.items.removeAll()
+            
+            
+           
             querydata(0)
         }else if(item.title=="全部")
         {
@@ -302,24 +305,6 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
                     
                     cell?.sendtime.text=(items[indexPath.row] as itemMess).time
                     cell?.sendaddress.text=(items[indexPath.row] as itemMess).address
-            
-//                    if ((items[indexPath.row] as itemMess).status == "0")
-//                    {
-//                        cell?.status.text="求助中"
-//                        cell?.status.textColor = UIColor.redColor()
-//                        
-//                    }else if ((items[indexPath.row] as itemMess).status == "1")
-//                    {
-//                        cell?.status.text="解决中"
-//                        cell?.status.textColor = UIColor.redColor()
-//                        
-//                    }else if ((items[indexPath.row] as itemMess).status == "2")
-//                    {
-//                        cell?.status.text="已解决"
-//                        cell?.status.textColor = UIColor.greenColor()
-//                        
-//                    }
-
                     cell?.gz.text="关:"+(items[indexPath.row] as itemMess).visnum;
                     cell?.pl.text="评:"+(items[indexPath.row] as itemMess).plnum;
                     return cell!
@@ -327,51 +312,6 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
             
         }
     
-//    var seltel:String = "";
-//    func teltapped(button:UIButton){
-//        //print(button.titleForState(.Normal))
-//        var pos:Int = button.tag
-//        seltel = (fwitems[pos] as itemfwMess).telphone;
-//        
-//        var alertView = UIAlertView()
-//        alertView.title = "系统提示"
-//        alertView.message = "您确定要呼叫吗？"
-//        alertView.addButtonWithTitle("取消")
-//        alertView.addButtonWithTitle("确定")
-//        alertView.cancelButtonIndex=0
-//        alertView.delegate=self;
-//        alertView.show()
-//
-//    }
-//    func zantapped(button:UIButton){
-//        //判断
-//        var pos:Int = button.tag
-//        NSLog("indexPath is = %i",pos);
-//        var zan:String = (fwitems[pos] as itemfwMess).zannum;
-//        let defaults = NSUserDefaults.standardUserDefaults();
-//        
-//
-//        var sqlitehelpInstance1=sqlitehelp.shareInstance()
-//        var userid = defaults.objectForKey("userid") as! String;
-//        var guid:String=(fwitems[pos] as itemfwMess).guid;
-//        
-//        var v:Bool=sqlitehelpInstance1.isexitzan(guid, userid: userid);
-//        if(v)
-//        {
-//            var zann:Int = Int(zan)!
-//            button.setTitle(String(zann-1), forState: UIControlState.Normal)
-//            sqlitehelpInstance1.removezan(guid, userid: userid)
-//            button.setBackgroundImage(UIImage(named: "tab_sub_sos"), forState: UIControlState.Normal)
-//        }else
-//        {
-//            var zann:Int = Int(zan)!
-//            button.setTitle(String(zann+1), forState: UIControlState.Normal)
-//            
-//            sqlitehelpInstance1.addzan(guid, userid: userid)
-//            button.setBackgroundImage(UIImage(named: "tab_sub_sos_sel"), forState: UIControlState.Normal)
-//        }
-//        
-//    }
 
     
     
@@ -440,6 +380,8 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
                     {
                         
                         
+   
+                        
                         if let jsonItem = response.result.value as? NSArray{
                             for data in jsonItem{
                                 //print("data: \(data)")
@@ -459,43 +401,26 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
                             let guid:String = data.objectForKey("guid") as! String;
                             let sendtime:String;
                             var temptime:String=data.objectForKey("sendtime") as! String;
-                                
-                                
-                                
-                                //temptime	String	"2016-04-06 13:40:11"
-                                
-                                var date:NSDate = NSDate()
-                                var formatter:NSDateFormatter = NSDateFormatter()
-                                formatter.dateFormat = "yyyy-MM-dd"
-                                var dateString = formatter.stringFromDate(date)
+                            var date:NSDate = NSDate()
+                            var formatter:NSDateFormatter = NSDateFormatter()
+                            formatter.dateFormat = "yyyy-MM-dd"
+                            var dateString = formatter.stringFromDate(date)
                                 
                               if(temptime.containsString(dateString))
                               {
                                 sendtime = temptime.subStringFrom(11)
-                                
                               }else
                               {
-                                
                                 sendtime = (temptime as NSString).substringWithRange(NSRange(location: 0,length: 10))
                               }
-                                
-                                
-                                
-                            //let address:String = data.objectForKey("address") as! String;
-                                
                             let lng:String = data.objectForKey("lng") as! String;
                             let lat:String = data.objectForKey("lat") as! String;
-                                
-                                
                             var lat_1=(lat as NSString).doubleValue;
                             var lng_1=(lng as NSString).doubleValue;
-                                
                             let defaults = NSUserDefaults.standardUserDefaults();
                             let userid = defaults.objectForKey("userid") as! String;
                             let mylat = defaults.objectForKey("lat") as! String;
                             let mylng = defaults.objectForKey("lng") as! String;
-                                
-                                
                             var lat_2=(mylat as NSString).doubleValue;
                             var lng_2=(mylng as NSString).doubleValue;
                             var address:String="";
@@ -504,27 +429,18 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
                                 {
                                     var currentLocation:CLLocation = CLLocation(latitude:lat_1,longitude:lng_1);
                                     var targetLocation:CLLocation = CLLocation(latitude:lat_2,longitude:lng_2);
-                                        
-                                        
-                                    var distance:CLLocationDistance=currentLocation.distanceFromLocation(targetLocation);
+                                     var distance:CLLocationDistance=currentLocation.distanceFromLocation(targetLocation);
                                      address = ("\(distance)米");
                                 }else
                                 {
                                     var p1:BMKMapPoint = BMKMapPointForCoordinate(CLLocationCoordinate2D(latitude: lat_1, longitude: lng_1))
                                     var p2:BMKMapPoint = BMKMapPointForCoordinate(CLLocationCoordinate2D(latitude: lat_2, longitude: lng_2))
-                                    //var a2:BMKMapPoint = CLLocationCoordinate2D(latitude: lat_2, longitude: lng_2)
-                                    
                                      var distance:CLLocationDistance = BMKMetersBetweenMapPoints(p1, p2);
-                                    
-                                    
                                     var one:UInt32 = UInt32(distance)
                                       address = ("\(one)米");
                                 }
-                                
-                                
-                                
-                             let city:String = data.objectForKey("city") as! String;
-                                let street:String = data.objectForKey("street") as! String;
+                            let city:String = data.objectForKey("city") as! String;
+                            let street:String = data.objectForKey("street") as! String;
                             let photo:String = data.objectForKey("photo") as! String;
                             var community:String = ""
                              if(data.objectForKey("community")!.isKindOfClass(NSNull))
@@ -535,20 +451,18 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
                                 community = data.objectForKey("community") as! String;
                                 
                             }
-                             let infocatagroy:String = data.objectForKey("infocatagroy") as! String;
+                            let infocatagroy:String = data.objectForKey("infocatagroy") as! String;
                             let status:String = data.objectForKey("status") as! String;
                             let visit:String = data.objectForKey("visit") as! String;
                             let plnum:String = data.objectForKey("plnum") as! String;
-                                 let headface:String = data.objectForKey("headface") as! String;
-                                let sex:String = data.objectForKey("sex") as! String;
+                            let headface:String = data.objectForKey("headface") as! String;
+                            let sex:String = data.objectForKey("sex") as! String;
 
                                 let item_obj:itemMess = itemMess(userid: senduserid, headface:headface,sex:sex,vname: sendnickname, vtime: sendtime, city: city,street: street,vaddress: address, vcontent: content, vcommunity: community, vlng: lng, vlat: lat, vguid: guid, vinfocatagory: infocatagroy, vphoto: photo, status: status, visnum: visit, plnum: plnum)
                              self.items.append(item_obj)
 
                         }
                         self._tableView.reloadData()
-                        //self._tableView.doneRefresh()
-
                     }
                     }else
                     {
