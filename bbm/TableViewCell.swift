@@ -17,6 +17,7 @@ class TableViewCell:UITableViewCell
     {
         self.msgItem = data
         super.init(style: UITableViewCellStyle.Default, reuseIdentifier:cellId)
+        //self.backgroundColor=UIColor.redColor()
         rebuildUserInterface()
     }
     
@@ -31,13 +32,15 @@ class TableViewCell:UITableViewCell
             self.addSubview(self.bubbleImage)
             
         }
-        
         let type =  self.msgItem.mtype
+        let screenw = UIScreen.mainScreen().applicationFrame.size.width
+        self.frame.size.width=screenw;//针对大屏要重设frame.size.width
+        let framewidth =  self.frame.size.width
         let width =  self.msgItem.view.frame.size.width
-        
         let height =  self.msgItem.view.frame.size.height
         
-        var x =  (type == ChatType.Someone) ? 0 : self.frame.size.width - width - self.msgItem.insets.left - self.msgItem.insets.right
+         var x =  (type == ChatType.Someone) ? 0 : self.frame.size.width - width - self.msgItem.insets.left - self.msgItem.insets.right
+        
         
         var y:CGFloat =  0
         //if we have a chatUser show the avatar of the YDChatUser property
@@ -97,7 +100,6 @@ class TableViewCell:UITableViewCell
                 self.addSubview(self.avatarImage)
                 
                 let delta =  self.frame.size.height - (self.msgItem.insets.top + self.msgItem.insets.bottom + self.msgItem.view.frame.size.height)
-                print("delta:\(delta)")
                 if (delta > 0)
                 {
                     y = delta
@@ -105,16 +107,18 @@ class TableViewCell:UITableViewCell
                 if (type == ChatType.Someone)
                 {
                     x += 54
+                    //x = 54
                 }
                 if (type == ChatType.Mine)
                 {
                     x -= 54
+
                 }
             }
         //}
+        print("x:\(x)")
         print("Y:\(y)")
         //self.customView.removeFromSuperview()
-        
         self.customView = self.msgItem.view
         self.customView.frame = CGRectMake(x + self.msgItem.insets.left, y + self.msgItem.insets.top, width, height)
         

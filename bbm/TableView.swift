@@ -182,7 +182,6 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
        
         
         let cell =  TableViewCell(data:data as! MessageItem, reuseIdentifier:cellId)
-        
         return cell
     }
 }
