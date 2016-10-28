@@ -52,7 +52,8 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate,U
         
         loaduserinfo(from)
         loaduserinfo(myself)
-        
+        let screenw = UIScreen.mainScreen().applicationFrame.size.width
+        let framewidth =  self.view.frame.size.width
         setupChatTable()
         setupSendPanel()
         getData()
@@ -234,6 +235,9 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate,U
     
     func setupSendPanel()
     {
+        
+        
+        
         sendView = UIView(frame:CGRectMake(0,self.view.frame.size.height-56,self.view.frame.size.width,56))
         var afg = UIView(frame:CGRectMake(0,0,self.view.frame.size.width,1))
         afg.backgroundColor=UIColor(colorLiteralRed: 212/255.0, green: 212/255.0, blue: 212/255.0, alpha: 1)
@@ -245,7 +249,7 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate,U
 
         txtMsg.backgroundColor = UIColor.whiteColor()
         txtMsg.textColor=UIColor.blackColor()
-        txtMsg.font=UIFont.boldSystemFontOfSize(12)
+        txtMsg.font=UIFont.boldSystemFontOfSize(18)
         //txtMsg.layer.cornerRadius = 10.0
         //Set the delegate so you can respond to user input
         txtMsg.delegate=self
@@ -342,11 +346,13 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate,U
     
     func setupChatTable()
     {
-        
-        self.tableView = TableView(frame:CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 100))
+        var f:CGRect = CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 100)
+        //self.tableView = TableView(frame:CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 100))
+        self.tableView = TableView(frame:f);
         //创建一个重用的单元格
         
         self.tableView!.registerClass(TableViewCell.self, forCellReuseIdentifier: "ChatCell")
+        
         self.tableView.chatDataSource = self
         self.tableView.reloadData()
         self.view.addSubview(self.tableView)
