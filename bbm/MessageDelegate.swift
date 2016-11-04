@@ -16,5 +16,5 @@ struct Message{
 }
 
 protocol MessageDelegate{
-    func newMessageReceived(msg:Message)
+    func newMessageReceived(_ msg:Message)
 }

@@ -31,23 +31,23 @@ class TopTableViewCell: UITableViewCell {
        
         super.awakeFromNib()
         // Initialization code
-        var namestr:String=username.text!
+        let namestr:String=username.text!
         
-        let options:NSStringDrawingOptions = .UsesLineFragmentOrigin
-        
-        
-        
-        let boundingRect = namestr.boundingRectWithSize(CGSizeMake(200, 0), options: options, attributes:[NSFontAttributeName:username.font], context: nil)
+        let options:NSStringDrawingOptions = .usesLineFragmentOrigin
         
         
         
-        var pox=boundingRect.size.width+36+10
+        let boundingRect = namestr.boundingRect(with: CGSize(width: 200, height: 0), options: options, attributes:[NSFontAttributeName:username.font], context: nil)
         
-        seximg.frame = CGRectMake(pox, 20, 10, 15)
+        
+        
+        let pox=boundingRect.size.width+36+10
+        
+        seximg.frame = CGRect(x: pox, y: 20, width: 10, height: 15)
         
     }
 
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
         // Configure the view for the selected state

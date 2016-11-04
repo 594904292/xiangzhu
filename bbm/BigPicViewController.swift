@@ -13,7 +13,7 @@ class BigPicViewController: UIViewController,UIScrollViewDelegate{
     @IBOutlet weak var iv: UIImageView!
     @IBOutlet weak var myScrollView: UIScrollView!
     
-    private var lastDistance:CGFloat = 0.0
+    fileprivate var lastDistance:CGFloat = 0.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,39 +27,39 @@ class BigPicViewController: UIViewController,UIScrollViewDelegate{
         self.navigationItem.title="放大/缩小"
         let returnimg=UIImage(named: "xz_nav_return_icon")
         
-        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: #selector(BigPicViewController.backClick))
+        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(BigPicViewController.backClick))
         
-        item3.tintColor=UIColor.whiteColor()
+        item3.tintColor=UIColor.white
         
         self.navigationItem.leftBarButtonItem=item3
 
         
         iv.image=showimage;
-        self.view.multipleTouchEnabled = true
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.isMultipleTouchEnabled = true
+        self.view.backgroundColor = UIColor.white
         
 
         
-        iv.contentMode = UIViewContentMode.ScaleAspectFit
+        iv.contentMode = UIViewContentMode.scaleAspectFit
         
         
     }
-    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
     return iv
     }
     
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
         
     }
 
     
     //////手势处理函数
-    func tapHandler(sender:UITapGestureRecognizer) {
+    func tapHandler(_ sender:UITapGestureRecognizer) {
         ///////todo....
-        self.dismissViewControllerAnimated(true) { () -> Void in
+        self.dismiss(animated: true) { () -> Void in
             
         }
     }

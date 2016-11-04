@@ -23,28 +23,28 @@ class ResetPassViewController: UIViewController {
     @IBOutlet weak var submit: UIButton!
     
     
-    @IBAction func uicontrolTouchDown(sender: UIControl) {
+    @IBAction func uicontrolTouchDown(_ sender: UIControl) {
         pass1.resignFirstResponder()
         pass2.resignFirstResponder()
     }
     
     
-    @IBAction func resetpass(sender: UIButton) {
+    @IBAction func resetpass(_ sender: UIButton) {
         if(pass1.text != pass2.text)
         {
             
             self.alertView = UIAlertView()
             self.alertView!.title = "提示"
             self.alertView!.message = "电话不能为空"
-            self.alertView!.addButtonWithTitle("关闭")
-            NSTimer.scheduledTimerWithTimeInterval(1, target:self, selector:"dismiss:", userInfo:self.alertView!, repeats:false)
+            self.alertView!.addButton(withTitle: "关闭")
+            Timer.scheduledTimer(timeInterval: 1, target:self, selector:#selector(ResetPassViewController.dismiss(_:)), userInfo:self.alertView!, repeats:false)
             self.alertView!.show()
             return;
 
         }
         
         let  dic:Dictionary<String,String> = ["_telphone" : telphone,"_password" : pass1.text!]
-        Alamofire.request(.POST, "http://api.bbxiaoqu.com/resetpass.php", parameters: dic)
+        Alamofire.request( "http://api.bbxiaoqu.com/resetpass.php",method:HTTPMethod.post, parameters: dic)
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -53,18 +53,18 @@ class ResetPassViewController: UIViewController {
                 print(response.result.value)
                 if let ret = response.result.value  {
                     // print("JSON: \(JSON)")
-                    if String(ret)=="1"
+                    if String(describing: ret)=="1"
                     {
                         self.alertView = UIAlertView()
                         self.alertView!.title = "提示"
                         self.alertView!.message = "重设成功"
-                        self.alertView!.addButtonWithTitle("关闭")
-                        NSTimer.scheduledTimerWithTimeInterval(1, target:self, selector:"dismiss:", userInfo:self.alertView!, repeats:false)
+                        self.alertView!.addButton(withTitle: "关闭")
+                        Timer.scheduledTimer(timeInterval: 1, target:self, selector:#selector(ResetPassViewController.dismiss(_:)), userInfo:self.alertView!, repeats:false)
                         self.alertView!.show()
                         
                         let sb = UIStoryboard(name:"Main", bundle: nil)
-                        let vc = sb.instantiateViewControllerWithIdentifier("loginController") as! LoginViewController
-                        self.presentViewController(vc, animated: true, completion: nil)
+                        let vc = sb.instantiateViewController(withIdentifier: "loginController") as! LoginViewController
+                        self.present(vc, animated: true, completion: nil)
 
                         
                     } else
@@ -72,8 +72,8 @@ class ResetPassViewController: UIViewController {
                         self.alertView = UIAlertView()
                         self.alertView!.title = "提示"
                         self.alertView!.message = "重设失败"
-                        self.alertView!.addButtonWithTitle("关闭")
-                        NSTimer.scheduledTimerWithTimeInterval(1, target:self, selector:"dismiss:", userInfo:self.alertView!, repeats:false)
+                        self.alertView!.addButton(withTitle: "关闭")
+                        Timer.scheduledTimer(timeInterval: 1, target:self, selector:#selector(ResetPassViewController.dismiss(_:)), userInfo:self.alertView!, repeats:false)
                         self.alertView!.show()
                     }
                 }
@@ -82,8 +82,8 @@ class ResetPassViewController: UIViewController {
     }
     
     
-    func dismiss(timer:NSTimer){
-        alertView!.dismissWithClickedButtonIndex(0, animated:true)
+    func dismiss(_ timer:Timer){
+        alertView!.dismiss(withClickedButtonIndex: 0, animated:true)
     }
     
     
@@ -95,28 +95,28 @@ class ResetPassViewController: UIViewController {
         let navBar=UINavigationBar.appearance()
         navBar.barTintColor=UIColor(red: 204/255, green: 0, blue: 0, alpha: 1)
         var arrs=[String:AnyObject]();
-        arrs[NSForegroundColorAttributeName]=UIColor.whiteColor()
+        arrs[NSForegroundColorAttributeName]=UIColor.white
         navBar.titleTextAttributes=arrs
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "返回", style: UIBarButtonItemStyle.Done, target: self, action: "backClick")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "返回", style: UIBarButtonItemStyle.done, target: self, action: #selector(ResetPassViewController.backClick))
         
         
         
-        let usView_pass = UIView.init(frame:CGRectMake(0,0, 25,20))
+        let usView_pass = UIView.init(frame:CGRect(x: 0,y: 0, width: 25,height: 20))
         let userImageV_pass = UIImageView()
         userImageV_pass.image = UIImage(named: "pass")
-        userImageV_pass.frame = CGRectMake(10,0, 11,16)
+        userImageV_pass.frame = CGRect(x: 10,y: 0, width: 11,height: 16)
         usView_pass.addSubview(userImageV_pass)
         pass1.leftView = usView_pass
-        pass1.leftViewMode = UITextFieldViewMode.Always
+        pass1.leftViewMode = UITextFieldViewMode.always
         
-        let usView_pass1 = UIView.init(frame:CGRectMake(0,0, 25,20))
+        let usView_pass1 = UIView.init(frame:CGRect(x: 0,y: 0, width: 25,height: 20))
         let userImageV_pass1 = UIImageView()
         userImageV_pass1.image = UIImage(named: "pass")
-        userImageV_pass1.frame = CGRectMake(10,0, 11,16)
+        userImageV_pass1.frame = CGRect(x: 10,y: 0, width: 11,height: 16)
         usView_pass1.addSubview(userImageV_pass1)
         pass2.leftView = usView_pass1
-        pass2.leftViewMode = UITextFieldViewMode.Always
+        pass2.leftViewMode = UITextFieldViewMode.always
         
     }
     
@@ -124,12 +124,12 @@ class ResetPassViewController: UIViewController {
     {
         NSLog("back");
         let sb = UIStoryboard(name:"Main", bundle: nil)
-        let vc = sb.instantiateViewControllerWithIdentifier("loginController") as! LoginViewController
+        let vc = sb.instantiateViewController(withIdentifier: "loginController") as! LoginViewController
         //创建导航控制器
         //let nvc=UINavigationController(rootViewController:vc);
         //设置根视图
         //self.view.window!.rootViewController=nvc;
-        self.presentViewController(vc, animated: true, completion: nil)
+        self.present(vc, animated: true, completion: nil)
 
        
         

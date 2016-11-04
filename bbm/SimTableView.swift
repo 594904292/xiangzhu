@@ -4,28 +4,32 @@ import UIKit
 class SimTableView:UITableView,UITableViewDelegate, UITableViewDataSource
 {
     //用于保存所有消息
-    var bubbleSection:Array<SimMessageItem>!
+    var bubbleSection:NSArray
     //数据源，用于与 ViewController 交换数据
     var chatDataSource:SimChatDataSource!
     
-    required init?(coder aDecoder: NSCoder) {
-        
-        super.init(coder: aDecoder)
-    }
+//    required init?(coder aDecoder: NSCoder) {
+//        
+//        super.init(coder: aDecoder)
+//    }
     
     init(frame:CGRect)
     {
-        self.bubbleSection = Array<SimMessageItem>()
+        self.bubbleSection = Array<SimMessageItem>() as NSArray
         
-        super.init(frame:frame,  style:UITableViewStyle.Grouped)
+        super.init(frame:frame,  style:UITableViewStyle.grouped)
         
-        self.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.clear
         
-        self.separatorStyle = UITableViewCellSeparatorStyle.None
+        self.separatorStyle = UITableViewCellSeparatorStyle.none
         self.delegate = self
         self.dataSource = self
         
         
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func reloadData()
@@ -42,11 +46,11 @@ class SimTableView:UITableView,UITableViewDelegate, UITableViewDataSource
             if(count > 0)
             {
                 
-                for (var i = 0; i < count; i++)
+                for i:Int in 0 ..< count
                 {
                     
                     let object =  self.chatDataSource.chatTableView(self, dataForRow:i)
-                    bubbleSection.append(object)
+                    bubbleSection.adding(object)
                     
                 }
                 
@@ -58,13 +62,13 @@ class SimTableView:UITableView,UITableViewDelegate, UITableViewDataSource
     }
     
     //第一个方法返回分区数，在本例中，就是1
-    func numberOfSectionsInTableView(tableView:UITableView)->Int
+    func numberOfSections(in tableView:UITableView)->Int
     {
         return 1
     }
     
     //返回指定分区的行数
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         if (section >= self.bubbleSection.count)
         {
@@ -75,7 +79,7 @@ class SimTableView:UITableView,UITableViewDelegate, UITableViewDataSource
     }
     
     //用于确定单元格的高度，如果此方法实现得不对，单元格与单元格之间会错位
-    func tableView(tableView:UITableView,heightForRowAtIndexPath indexPath:NSIndexPath) -> CGFloat
+    func tableView(_ tableView:UITableView,heightForRowAt indexPath:IndexPath) -> CGFloat
     {
         
         // Header
@@ -84,13 +88,13 @@ class SimTableView:UITableView,UITableViewDelegate, UITableViewDataSource
             return 30.0
         }
         
-        let data =  self.bubbleSection[indexPath.row - 1]
+        let data:SimMessageItem =  self.bubbleSection[indexPath.row - 1] as! SimMessageItem
         
         return max(data.insets.top + data.view.frame.size.height + data.insets.bottom, 52)
     }
     
     //返回自定义的 TableViewCell
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath)
         -> UITableViewCell
     {
         
@@ -99,14 +103,14 @@ class SimTableView:UITableView,UITableViewDelegate, UITableViewDataSource
         {
             let data =  self.bubbleSection[indexPath.row-1]
             
-            let cell =  SimTableViewCell(data:data, reuseIdentifier:cellId)
+            let cell =  SimTableViewCell(data:data as! SimMessageItem, reuseIdentifier:cellId)
             
             return cell
         }
         else
         {
             
-            return UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: cellId)
+            return UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: cellId)
         }
     }
 }

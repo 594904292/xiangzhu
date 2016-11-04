@@ -19,11 +19,11 @@ class PicsViewController: UIViewController,UICollectionViewDelegate,UICollection
             super.viewDidLoad()
             // Do any additional setup after loading the view, typically from a nib.
             self.navigationItem.title="全部图片"
-            var returnimg=UIImage(named: "xz_nav_return_icon")
+            let returnimg=UIImage(named: "xz_nav_return_icon")
             
-            let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "backClick")
+            let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(PicsViewController.backClick))
             
-            item3.tintColor=UIColor.whiteColor()
+            item3.tintColor=UIColor.white
             
             self.navigationItem.leftBarButtonItem=item3
             
@@ -35,20 +35,20 @@ class PicsViewController: UIViewController,UICollectionViewDelegate,UICollection
                 cellW=(self.view.frame.size.width - 10) / 3
             }
             let layOut = UICollectionViewFlowLayout()
-            layOut.itemSize = CGSizeMake(cellW, cellW)
+            layOut.itemSize = CGSize(width: cellW, height: cellW)
             layOut.minimumLineSpacing = 2
             layOut.minimumInteritemSpacing = 0
-            layOut.scrollDirection = .Vertical
+            layOut.scrollDirection = .vertical
             
-            let collectionView = UICollectionView.init(frame: CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height), collectionViewLayout: layOut)
-            collectionView.backgroundColor = UIColor.whiteColor()
+            let collectionView = UICollectionView.init(frame: CGRect(x: 0, y: 20, width: self.view.frame.size.width, height: self.view.frame.size.height), collectionViewLayout: layOut)
+            collectionView.backgroundColor = UIColor.white
             collectionView.delegate = self
             collectionView.dataSource = self
             collectionView.showsHorizontalScrollIndicator = false
             collectionView.showsVerticalScrollIndicator = false
-            collectionView.pagingEnabled = true
+            collectionView.isPagingEnabled = true
             collectionView.bounces = true
-            collectionView.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier:"cell")
+            collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier:"cell")
             
             self.view.addSubview(collectionView)
         }
@@ -56,16 +56,16 @@ class PicsViewController: UIViewController,UICollectionViewDelegate,UICollection
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
         
     }
 
     
         func preparePictures() {
-            var totalCount:NSInteger = self.pics.count;//轮播的图片数量；
+            let totalCount:NSInteger = self.pics.count;//轮播的图片数量；
             for index in 0..<totalCount{
-                var imgurl:String = self.pics[index]
-                let nsd = NSData(contentsOfURL:NSURL(string: imgurl)!)
+                let imgurl:String = self.pics[index]
+                let nsd = try? Data(contentsOf: URL(string: imgurl)!)
                 let image:UIImage = UIImage(data: nsd!)!
                 self.picturesArray.append(image)
                 
@@ -73,19 +73,19 @@ class PicsViewController: UIViewController,UICollectionViewDelegate,UICollection
             }
         }
         
-        func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-            let cell:UICollectionViewCell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath)
-            cell.backgroundColor = UIColor.clearColor()
+        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+            let cell:UICollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+            cell.backgroundColor = UIColor.clear
             cell.backgroundView = UIImageView(image: self.picturesArray[indexPath.item] as UIImage)
             
             return cell
         }
         
-        func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
             return self.picturesArray.count
         }
         
-        func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
             
             let imageBroswer = LGImageBroswer.init()
             imageBroswer.picturesArray = self.picturesArray

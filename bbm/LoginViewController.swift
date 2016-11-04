@@ -9,7 +9,7 @@
 import UIKit
 import Alamofire
 
-class LoginViewController: UIViewController,NSXMLParserDelegate {
+class LoginViewController: UIViewController,XMLParserDelegate {
     @IBOutlet weak var loginbtn: UIButton!
     @IBOutlet weak var searchpassbtn: UIButton!
     @IBOutlet weak var savepassbtn: UIButton!
@@ -17,22 +17,62 @@ class LoginViewController: UIViewController,NSXMLParserDelegate {
     
     @IBOutlet weak var login_username: UITextField!
     @IBOutlet weak var login_password: UITextField!
-    var alertView:UIAlertView?
+    var alertView:UIAlertController?
     var db: SQLiteDB!
-    
+
     var issavepass:Bool=true;
+    //键盘的出现
+    func keyBoardWillShow(_ notification: Notification){
+        //获取userInfo
+        let kbInfo = notification.userInfo
+        //获取键盘的size
+        let kbRect = (kbInfo?[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+        let screenSize: CGRect = UIScreen.main.bounds
+        
+        //let screenWidth = screenSize.width
+        let screenHeight = screenSize.height
+        
+        
+        //键盘的y偏移量
+        let changeY = kbRect.origin.y - screenHeight
+        //键盘弹出的时间
+        let duration = kbInfo?[UIKeyboardAnimationDurationUserInfoKey] as! Double
+        
+        //界面偏移动画
+        UIView.animate(withDuration: duration) {
+            
+            self.view.transform = CGAffineTransform(translationX: 0, y: changeY)
+        }
+    }
+    
+    //键盘的隐藏
+    func keyBoardWillHide(_ notification: Notification){
+        
+        let kbInfo = notification.userInfo
+        //let kbRect = (kbInfo?[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+        //let changeY = kbRect.origin.y
+        let duration = kbInfo?[UIKeyboardAnimationDurationUserInfoKey] as! Double
+        //界面偏移动画
+        UIView.animate(withDuration: duration) {
+            
+            self.view.transform = CGAffineTransform(translationX: 0, y: 0)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
         let navBar=UINavigationBar.appearance()
         navBar.barTintColor=UIColor(red: 204/255, green: 0, blue: 0, alpha: 1)
         var arrs=[String:AnyObject]();
-        arrs[NSForegroundColorAttributeName]=UIColor.whiteColor()
+        arrs[NSForegroundColorAttributeName]=UIColor.white
         
         navBar.titleTextAttributes=arrs
         
-        db = SQLiteDB.sharedInstance()
+        db = SQLiteDB.sharedInstance
         let dbHelp = DbHelp()
         dbHelp.initdb()//生成表
         //设置用户名textfiled圆角
@@ -43,26 +83,26 @@ class LoginViewController: UIViewController,NSXMLParserDelegate {
         //username.backgroundColor =UIColor.init(red:97/255, green:193/255, blue:171/255, alpha:1)
         
         //添加左边view
-        let usView = UIView.init(frame:CGRectMake(0,0, 25,20))
+        let usView = UIView.init(frame:CGRect(x: 0,y: 0, width: 25,height: 20))
          //把imageView添加到view中可以设置左边和右边的输入距离
         let userImageV = UIImageView()
         userImageV.image = UIImage(named: "tel")
-        userImageV.frame = CGRectMake(10,0, 11,16)
+        userImageV.frame = CGRect(x: 10,y: 0, width: 11,height: 16)
         //图片变形
          //userImageV.contentMode = UIViewContentMode.ScaleAspectFit
         usView.addSubview(userImageV)
         login_username.leftView = usView
         //显示leftview的方法
-        login_username.leftViewMode = UITextFieldViewMode.Always
+        login_username.leftViewMode = UITextFieldViewMode.always
         
         
-        let usView_pass = UIView.init(frame:CGRectMake(0,0, 25,20))
+        let usView_pass = UIView.init(frame:CGRect(x: 0,y: 0, width: 25,height: 20))
         let userImageV_pass = UIImageView()
         userImageV_pass.image = UIImage(named: "pass")
-        userImageV_pass.frame = CGRectMake(10,0, 11,16)
+        userImageV_pass.frame = CGRect(x: 10,y: 0, width: 11,height: 16)
         usView_pass.addSubview(userImageV_pass)
         login_password.leftView = usView_pass
-        login_password.leftViewMode = UITextFieldViewMode.Always
+        login_password.leftViewMode = UITextFieldViewMode.always
         
 
         
@@ -71,8 +111,8 @@ class LoginViewController: UIViewController,NSXMLParserDelegate {
         self.login_username.text=name;
         
         
-        let defaults = NSUserDefaults.standardUserDefaults();
-        if defaults.boolForKey("savepass") == false
+        let defaults = UserDefaults.standard;
+        if defaults.bool(forKey: "savepass") == false
         {
             issavepass=false
             savepassimg.image=UIImage(named: "against")
@@ -81,17 +121,17 @@ class LoginViewController: UIViewController,NSXMLParserDelegate {
         {
             issavepass=true
             savepassimg.image=UIImage(named: "agree")
-            if defaults.objectForKey("password") != nil
+            if defaults.object(forKey: "password") != nil
             {
-                self.login_password.text = defaults.objectForKey("password") as? String
+                self.login_password.text = defaults.object(forKey: "password") as? String
             }
 
         }
         
         
         
-        let url = NSURL(string:"http://api.bbxiaoqu.com/sys.xml")!
-        guard let parserXML = NSXMLParser(contentsOfURL: url) else {
+        let url = URL(string:"http://api.bbxiaoqu.com/sys.xml")!
+        guard let parserXML = XMLParser(contentsOf: url) else {
             return
         }
         
@@ -103,16 +143,16 @@ class LoginViewController: UIViewController,NSXMLParserDelegate {
     
     
     var currentNodeName:String!
-    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
         currentNodeName = elementName
         if elementName == "sys"{
             //print("id:\(attributeDict.count)")
         }
     }
     
-    func parser(parser: NSXMLParser, foundCharacters string: String) {
+    func parser(_ parser: XMLParser, foundCharacters string: String) {
         //2
-        let str = string.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        let str = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         if str != "" {
             print("\(currentNodeName):\(str)")
             if currentNodeName=="xmpphost"{
@@ -127,17 +167,17 @@ class LoginViewController: UIViewController,NSXMLParserDelegate {
     
     //获取总代理
     func zdl() -> AppDelegate {
-        return UIApplication.sharedApplication().delegate as! AppDelegate
+        return UIApplication.shared.delegate as! AppDelegate
     }
     
     func getuser()->String{
         let sql="select * from [user] order by lastlogintime desc limit 0,1";
         NSLog(sql)
-        let row = db.query(sql)
+        let row = db.query(sql: sql)
         if row.count > 0 {
             
-            let item = row[0] as SQLRow
-            let nickname = item["userid"]!.asString()
+            let item = row[0]
+            let nickname = item["userid"] as! String
             
             return nickname
             
@@ -147,28 +187,28 @@ class LoginViewController: UIViewController,NSXMLParserDelegate {
         }
     }
     //控件失去焦点
-    @IBAction func usernameExit(sender: UITextField) {
+    @IBAction func usernameExit(_ sender: UITextField) {
         sender.resignFirstResponder()
     }
     //控件失去焦点
-    @IBAction func passExit(sender: UITextField) {
+    @IBAction func passExit(_ sender: UITextField) {
         sender.resignFirstResponder()
     }
     //login_username控件失去焦点旁边
-    @IBAction func uicontrolTouchDown(sender: UIControl) {
+    @IBAction func uicontrolTouchDown(_ sender: UIControl) {
         login_username.resignFirstResponder()
     }
     
     
-    @IBAction func loginAction(sender: AnyObject) {
+    @IBAction func loginAction(_ sender: AnyObject) {
         let a = self.login_username.text as String!
         let b = self.login_password.text as String!
-        var date:NSDate = NSDate()
-        var formatter:NSDateFormatter = NSDateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        var lastlogintime = formatter.stringFromDate(date)
+        //let date:Date = Date()
+        //let formatter:DateFormatter = DateFormatter()
+        //formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        //var lastlogintime = formatter.string(from: date)
         //updateuserlogintime(a,lastlogintime: lastlogintime);
-        login_r(a,password:b)
+        login_r(a!,password:b!)
 //        if(login(a,pass:b))
 //        {
 //            
@@ -218,10 +258,10 @@ class LoginViewController: UIViewController,NSXMLParserDelegate {
 //        }
     }
     
-    @IBAction func register(sender: UIButton) {
+    @IBAction func register(_ sender: UIButton) {
         self.navigationItem.title=""
         let sb = UIStoryboard(name:"Main", bundle: nil)
-        let vc = sb.instantiateViewControllerWithIdentifier("registerController") as! RegisterViewController
+        let vc = sb.instantiateViewController(withIdentifier: "registerController") as! RegisterViewController
         //创建导航控制器
         let nvc=UINavigationController(rootViewController:vc);
         //设置根视图
@@ -233,13 +273,13 @@ class LoginViewController: UIViewController,NSXMLParserDelegate {
     }
     
     
-    @IBAction func savepassact(sender: UIButton) {
+    @IBAction func savepassact(_ sender: UIButton) {
         if issavepass == true{
             issavepass=false
             savepassimg.image=UIImage(named: "against")
             
-            let defaults = NSUserDefaults.standardUserDefaults();
-            defaults.setObject(false, forKey: "savepass");
+            let defaults = UserDefaults.standard;
+            defaults.set(false, forKey: "savepass");
             defaults.synchronize();
 
 
@@ -247,18 +287,18 @@ class LoginViewController: UIViewController,NSXMLParserDelegate {
         {
             issavepass=true
             savepassimg.image=UIImage(named: "agree")
-            let defaults = NSUserDefaults.standardUserDefaults();
-            defaults.setObject(true, forKey: "savepass");
+            let defaults = UserDefaults.standard;
+            defaults.set(true, forKey: "savepass");
             defaults.synchronize();
 
         }
     }
     
     
-    @IBAction func jumpsearchpass(sender: UIButton) {
+    @IBAction func jumpsearchpass(_ sender: UIButton) {
         self.navigationItem.title=""
         let sb = UIStoryboard(name:"Main", bundle: nil)
-        let vc = sb.instantiateViewControllerWithIdentifier("searchController") as! SearchPassViewController
+        let vc = sb.instantiateViewController(withIdentifier: "searchController") as! SearchPassViewController
         //创建导航控制器
         let nvc=UINavigationController(rootViewController:vc);
         //设置根视图
@@ -268,60 +308,57 @@ class LoginViewController: UIViewController,NSXMLParserDelegate {
     
 
     
-    func login_r(username:String,password:String)
+    func login_r(_ username:String,password:String)
     {
         if(username.characters.count==0)
         {
-            self.alertView = UIAlertView()
-            self.alertView!.title = "登陆提示"
-            self.alertView!.message = "用户名不能为空"
-            self.alertView!.addButtonWithTitle("关闭")
-            NSTimer.scheduledTimerWithTimeInterval(1, target:self, selector:"dismiss:", userInfo:self.alertView!, repeats:false)
-            self.alertView!.show()
+            
+            self.alertView = UIAlertController(title: "登陆提示", message: "用户名不能为空", preferredStyle: .alert)
+            self.alertView?.addAction(UIAlertAction(title: "关闭", style: .default, handler: nil))
+            self.present(self.alertView!, animated: true, completion: nil)
             return;
+            
+            
         }
-      Alamofire.request(.POST, "http://api.bbxiaoqu.com/login.php", parameters:["_userid" : username])
+        Alamofire.request("http://api.bbxiaoqu.com/login.php", method:HTTPMethod.post,parameters:["_userid" : username])
             .responseJSON { response in
                 if(response.result.isSuccess)
                 {
-                if let JSON = response.result.value {
+                    if let JSON:NSDictionary = response.result.value as? NSDictionary {
                     print("JSON1: \(JSON.count)")
                    if(JSON.count==0)
                     {
-                        self.alertView = UIAlertView()
-                        self.alertView!.title = "登陆提示"
-                        self.alertView!.message = "用户名不存在"
-                        self.alertView!.addButtonWithTitle("关闭")
-                        NSTimer.scheduledTimerWithTimeInterval(1, target:self, selector:"dismiss:", userInfo:self.alertView!, repeats:false)
-                        self.alertView!.show()
+                        self.alertView = UIAlertController(title: "登陆提示", message: "用户名不存在", preferredStyle: .alert)
+                        self.alertView?.addAction(UIAlertAction(title: "关闭", style: .default, handler: nil))
+                        self.present(self.alertView!, animated: true, completion: nil)
 
                     }else
                     {
-                        let userid:String = JSON.objectForKey("userid") as! String;
-                        let pass:String = JSON.objectForKey("pass") as! String;
+                        let userid:String = JSON.object(forKey: "userid") as! String;
+                        let pass:String = JSON.object(forKey: "pass") as! String;
                         if(pass==password)
                         {
-                            let telphone:String = JSON.objectForKey("telphone") as! String;
-                            let headface:String = JSON.objectForKey("headface") as! String;
-                            let username:String = JSON.objectForKey("username") as! String;
-                            let isrecvmess:String = JSON.objectForKey("isrecvmess") as! String;
-                            let isopenvoice:String = JSON.objectForKey("isopenvoice") as! String;
+                            let telphone:String = JSON.object(forKey: "telphone") as! String;
+                            let headface:String = JSON.object(forKey: "headface") as! String;
+                            let username:String = JSON.object(forKey: "username") as! String;
+                            let isrecvmess:String = JSON.object(forKey: "isrecvmess") as! String;
+                            let isopenvoice:String = JSON.object(forKey: "isopenvoice") as! String;
                             //lastlogintime
-                            var date:NSDate = NSDate()
-                            var formatter:NSDateFormatter = NSDateFormatter()
+                            let date:Date = Date()
+                            let formatter:DateFormatter = DateFormatter()
                             formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                            var lastlogintime = formatter.stringFromDate(date)
+                            let lastlogintime = formatter.string(from: date)
                             //println(dateString)
                             
-                            let defaults = NSUserDefaults.standardUserDefaults();
+                            let defaults = UserDefaults.standard;
                             
-                            defaults.setObject(userid, forKey: "userid");
+                            defaults.set(userid, forKey: "userid");
 
-                            defaults.setObject(pass, forKey: "pass");
+                            defaults.set(pass, forKey: "pass");
 
                             
-                            defaults.setObject(isrecvmess, forKey: "openmessflag");
-                            defaults.setObject(isopenvoice, forKey: "openvoiceflag");
+                            defaults.set(isrecvmess, forKey: "openmessflag");
+                            defaults.set(isopenvoice, forKey: "openvoiceflag");
                             defaults.synchronize();
 
                             self.saveuser(userid, nickname: username, password: pass, telphone: telphone, headface: headface,lastlogintime:lastlogintime)
@@ -335,12 +372,12 @@ class LoginViewController: UIViewController,NSXMLParserDelegate {
 
                             }else
                             {
-                                self.alertView = UIAlertView()
-                                self.alertView!.title = "登陆提示"
-                                self.alertView!.message = "密码错误"
-                                self.alertView!.addButtonWithTitle("关闭")
-                                NSTimer.scheduledTimerWithTimeInterval(1, target:self, selector:"dismiss:", userInfo:self.alertView!, repeats:false)
-                                self.alertView!.show()
+                                
+                                self.alertView = UIAlertController(title: "登陆提示", message: "密码错误", preferredStyle: .alert)
+                                self.alertView?.addAction(UIAlertAction(title: "关闭", style: .default, handler: nil))
+                                self.present(self.alertView!, animated: true, completion: nil)
+
+                            
                             }
                         }else
                         {
@@ -357,36 +394,32 @@ class LoginViewController: UIViewController,NSXMLParserDelegate {
         }
     }
     
-    func dismiss(timer:NSTimer){
-        alertView!.dismissWithClickedButtonIndex(0, animated:true)
-    }
     
-    
-    func login(username:String,pass:String)->Bool{
+    func login(_ username:String,pass:String)->Bool{
         let sql="select * from [user] where userid='\(username)'and password='\(pass)'";
         NSLog(sql)
-        let row = db.query(sql)
+        let row = db.query(sql: sql)
         if row.count > 0 {
             
-                let item = row[0] as SQLRow
-                let nickname = item["nickname"]!.asString()
-                let userid = item["userid"]!.asString()
-                let telphone = item["telphone"]!.asString()
-                let headface = item["headface"]!.asString()
+                let item = row[0]
+                let nickname = item["nickname"] as! String
+                let userid = item["userid"] as! String
+                let telphone = item["telphone"] as! String
+                let headface = item["headface"] as! String
             
                 //使用NSUserDefaults存储数据
-                let defaults = NSUserDefaults.standardUserDefaults();
-                defaults.setObject(nickname, forKey: "nickname");
-                defaults.setObject(userid, forKey: "userid");
-                defaults.setObject(pass, forKey: "password");
-                defaults.setObject(telphone, forKey: "telphone");
-                defaults.setObject(headface, forKey: "headface");
-                defaults.setObject("0", forKey: "lng");
-                defaults.setObject("0", forKey: "lat");
-                defaults.setObject(issavepass, forKey: "savepass");
+                let defaults = UserDefaults.standard;
+                defaults.set(nickname, forKey: "nickname");
+                defaults.set(userid, forKey: "userid");
+                defaults.set(pass, forKey: "password");
+                defaults.set(telphone, forKey: "telphone");
+                defaults.set(headface, forKey: "headface");
+                defaults.set("0", forKey: "lng");
+                defaults.set("0", forKey: "lat");
+                defaults.set(issavepass, forKey: "savepass");
                 
                 defaults.synchronize();
-                let name = defaults.objectForKey("nickname") as! NSString;
+                let name = defaults.object(forKey: "nickname") as! NSString;
                 print("\(name)");
             
                 return true
@@ -398,20 +431,20 @@ class LoginViewController: UIViewController,NSXMLParserDelegate {
     }
     
     
-    func saveuser(userid: String, nickname: String, password: String, telphone: String,headface:String,lastlogintime:String)  {
+    func saveuser(_ userid: String, nickname: String, password: String, telphone: String,headface:String,lastlogintime:String)  {
         let sql = "insert into user(userid,nickname,password,telphone,headface,pass,online,lastlogintime) values('\(userid)','\(nickname)','\(password)','\(telphone)','\(headface)','1','0','\(lastlogintime)')"
         NSLog("sql: \(sql)")
         //通过封装的方法执行sql
-        db.execute(sql)
+        _ = db.execute(sql: sql)
     }
     
     
-    func updateuserlogintime(userid: String,lastlogintime:String)  {
+    func updateuserlogintime(_ userid: String,lastlogintime:String)  {
         //let sql = "update user (userid,lastlogintime) values('\(userid)','\(lastlogintime)')";
         let sql = "update user set lastlogintime='\(lastlogintime)' where userid='\(userid)'";
         NSLog("sql: \(sql)")
         //通过封装的方法执行sql
-        db.execute(sql)
+        _ = db.execute(sql: sql)
     }
 
     

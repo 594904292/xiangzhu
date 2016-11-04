@@ -3,9 +3,9 @@
 import UIKit
 enum ChatBubbleTypingType
 {
-    case Nobody
-    case Me
-    case Somebody
+    case nobody
+    case me
+    case somebody
 }
 class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
 {
@@ -13,39 +13,39 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
     var bubbleSection:NSMutableArray!
     var chatDataSource:ChatDataSource!
     
-    var  snapInterval:NSTimeInterval!
+    var  snapInterval:TimeInterval!
     var  typingBubble:ChatBubbleTypingType!
     
-    required init?(coder aDecoder: NSCoder!) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
     init(frame:CGRect)
     {
         //the snap interval in seconds implements a headerview to seperate chats
-        self.snapInterval = 60 * 60 * 24; //one day
-        self.typingBubble = ChatBubbleTypingType.Nobody
+        self.snapInterval = 60 * 60 * 24 as TimeInterval; //one day
+        self.typingBubble = ChatBubbleTypingType.nobody
         self.bubbleSection = NSMutableArray()
         
-        super.init(frame:frame,  style:UITableViewStyle.Grouped)
+        super.init(frame:frame,  style:UITableViewStyle.grouped)
         
-        self.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.clear
         
-        self.separatorStyle = UITableViewCellSeparatorStyle.None
+        self.separatorStyle = UITableViewCellSeparatorStyle.none
         self.delegate = self
         self.dataSource = self
         
         
     }
     //按日期排序方法
-    func sortDate(m1: AnyObject!, m2: AnyObject!) -> NSComparisonResult {
+    func sortDate(m1: AnyObject!, m2: AnyObject!) -> ComparisonResult {
         if((m1 as! MessageItem).date.timeIntervalSince1970 < (m2 as! MessageItem).date.timeIntervalSince1970)
         {
-            return NSComparisonResult.OrderedAscending
+            return ComparisonResult.orderedAscending
         }
         else
         {
-            return NSComparisonResult.OrderedDescending
+            return ComparisonResult.orderedDescending
         }
     }
     
@@ -63,38 +63,54 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
             if(count > 0)
             {
                 
-                var bubbleData =  NSMutableArray(capacity:count)
+                let bubbleData =  NSMutableArray(capacity:count)
                 
-                for (var i = 0; i < count; i++)
+                for i:Int in 0 ..< count
+                    
                 {
                     
-                    var object =  self.chatDataSource.chatTableView(self, dataForRow:i)
+                    let object =  self.chatDataSource.chatTableView(self, dataForRow:i)
                     
-                    bubbleData.addObject(object)
+                    bubbleData.add(object)
                     
                 }
-                bubbleData.sortUsingComparator(sortDate)
+                //var arrays:NSMutableArray=NSMutableArray()
+                //bubbleData.sort(
+                 //   comparator: {
+                 //       (m1:AnyObject!,m2:AnyObject!)->ComparisonResult in
+                  //      if((m1 as! MessageItem).date.timeIntervalSince1970 < (m2 as! MessageItem).date.timeIntervalSince1970)
+                 //       {
+                 //           return ComparisonResult.orderedAscending
+                  //      }
+                 //       else
+                  //      {
+                   //         return ComparisonResult.orderedDescending
+                 //       }
+               // } as! (Any, Any) -> ComparisonResult)
+
+                
+                 //bubbleData.sort(comparator: sortDate as! (Any, Any) -> ComparisonResult)
                 
                 var last =  ""
                 
                 var currentSection = NSMutableArray()
                 // 创建一个日期格式器
-                var dformatter = NSDateFormatter()
+                let dformatter = DateFormatter()
                 // 为日期格式器设置格式字符串
                 dformatter.dateFormat = "dd"
                 
                 
-                for (var i = 0; i < count; i++)
+                for i:Int in 0 ..< count
                 {
-                    var data =  bubbleData[i] as! MessageItem
+                    let data =  bubbleData[i] as! MessageItem
                     // 使用日期格式器格式化日期，日期不同，就新分组
-                    var datestr = dformatter.stringFromDate(data.date)
+                    let datestr = dformatter.string(from: data.date)
                     if (datestr != last)
                     {
                         currentSection = NSMutableArray()
-                        self.bubbleSection.addObject(currentSection)
+                        self.bubbleSection.add(currentSection)
                     }
-                    self.bubbleSection[self.bubbleSection.count-1].addObject(data)
+                    (self.bubbleSection[self.bubbleSection.count-1] as AnyObject).add(data)
                     
                     last = datestr
                 }
@@ -110,17 +126,17 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
 //            self.scrollToRowAtIndexPath(indexPath,                atScrollPosition:UITableViewScrollPosition.Bottom,animated:true)
 //        }
     }
-    func numberOfSectionsInTableView(tableView:UITableView)->Int
+    func numberOfSections(in tableView:UITableView)->Int
     {
         var result = self.bubbleSection.count
-        if (self.typingBubble != ChatBubbleTypingType.Nobody)
+        if (self.typingBubble != ChatBubbleTypingType.nobody)
         {
-            result++;
+            result += 1;
         }
         return result;
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         
         if (section >= self.bubbleSection.count)
@@ -128,11 +144,11 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
             return 1
         }
         
-        return self.bubbleSection[section].count+1
+        return (self.bubbleSection[section] as AnyObject).count+1
     }
     
     
-    func tableView(tableView:UITableView,heightForRowAtIndexPath  indexPath:NSIndexPath) -> CGFloat
+    func tableView(_ tableView:UITableView,heightForRowAt  indexPath:IndexPath) -> CGFloat
     {
         
         // Header
@@ -140,31 +156,31 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
         {
             return TableHeaderViewCell.getHeight()
         }
-        var section : AnyObject  =  self.bubbleSection[indexPath.section]
-        var pos:Int=indexPath.row - 1
-        var data:AnyObject = section[pos] as AnyObject
+        let section : NSArray  =  self.bubbleSection[indexPath.section] as! NSArray
+        let pos:Int=indexPath.row - 1
+        let data:AnyObject = section[pos] as AnyObject
         
-        var item =  data as! MessageItem
-        var height  = max(item.insets.top + item.view.frame.size.height + item.insets.bottom, 52)
+        let item =  data as! MessageItem
+        let height  = max(item.insets.top + item.view.frame.size.height + item.insets.bottom, 52)
         print("height:\(height)")
         return height
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         
         // Header based on snapInterval
         if (indexPath.row == 0)
         {
-            var cellId = "HeaderCell"
+            let cellId = "HeaderCell"
             
-            var hcell =  TableHeaderViewCell(reuseIdentifier:cellId)
+            let hcell =  TableHeaderViewCell(reuseIdentifier:cellId)
             var secno = indexPath.section
-            var section : AnyObject  =  self.bubbleSection[indexPath.section]
-            var pos:Int=indexPath.row
-            var data:AnyObject = section[pos] as AnyObject
+            let section : NSArray  =  self.bubbleSection[indexPath.section] as! NSArray
+            let pos:Int=indexPath.row
+            let data:AnyObject = section[pos] as AnyObject
             
-            var item =  data as! MessageItem
+            let item =  data as! MessageItem
             
             //var msgdata:MessageItem = section[indexPath.row] as! MessageItem
             
@@ -172,17 +188,16 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
             return hcell
         }
         // Standard
-        var cellId = "ChatCell"
+        let cellId = "ChatCell"
         
-        var section : AnyObject  =  self.bubbleSection[indexPath.section]
+        let section : NSArray  =  self.bubbleSection[indexPath.section] as! NSArray
         
-        var pos:Int=indexPath.row - 1
-        var data:AnyObject = section[pos] as AnyObject
+        let pos:Int=indexPath.row - 1
+        let data:AnyObject = section[pos] as AnyObject
 
        
         
         let cell =  TableViewCell(data:data as! MessageItem, reuseIdentifier:cellId)
-        
         return cell
     }
 }

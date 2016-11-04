@@ -13,30 +13,33 @@ class SugguestAboutViewController: UIViewController {
     @IBOutlet weak var row1: UIView!
     
     @IBOutlet weak var row2: UIView!
+    
+    @IBOutlet weak var faq: UIView!
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         self.navigationItem.title="设置"
-        var returnimg=UIImage(named: "xz_nav_return_icon")
+        let returnimg=UIImage(named: "xz_nav_return_icon")
         
-        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "backClick")
+        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(SugguestAboutViewController.backClick))
         
-        item3.tintColor=UIColor.whiteColor()
+        item3.tintColor=UIColor.white
         
         self.navigationItem.leftBarButtonItem=item3
         
         
-        var searchimg=UIImage(named: "xz_nav_icon_search")
+        let searchimg=UIImage(named: "xz_nav_icon_search")
         
-        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "searchClick")
+        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(SugguestAboutViewController.searchClick))
         
-        item4.tintColor=UIColor.whiteColor()
+        item4.tintColor=UIColor.white
         
         self.navigationItem.rightBarButtonItem=item4
         
         AddRow1Click();
         AddRow2Click();
+        AddfaqClick();
 
     }
 
@@ -44,17 +47,17 @@ class SugguestAboutViewController: UIViewController {
     func AddRow1Click()
     {
         
-        row1.userInteractionEnabled = true
+        row1.isUserInteractionEnabled = true
         
-        var singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "gorow1")
+        let singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(SugguestAboutViewController.gorow1))
         row1 .addGestureRecognizer(singleTap)
         
     }
     
     func gorow1()
     {
-        var sb = UIStoryboard(name:"Main", bundle: nil)
-        let vc = sb.instantiateViewControllerWithIdentifier("settingviewcontroller") as!SettingViewController
+        let sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "settingviewcontroller") as!SettingViewController
         self.navigationController?.pushViewController(vc, animated: true)
         
     }
@@ -62,17 +65,35 @@ class SugguestAboutViewController: UIViewController {
     func AddRow2Click()
     {
         
-        row2.userInteractionEnabled = true
+        row2.isUserInteractionEnabled = true
         
-        var singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "gorow2")
+        let singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(SugguestAboutViewController.gorow2))
         row2 .addGestureRecognizer(singleTap)
         
     }
     
     func gorow2()
     {
-        var sb = UIStoryboard(name:"Main", bundle: nil)
-        let vc = sb.instantiateViewControllerWithIdentifier("aboutviewcontroller") as!AboutViewController
+        let sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "aboutviewcontroller") as!AboutViewController
+        self.navigationController?.pushViewController(vc, animated: true)
+        
+    }
+
+    func AddfaqClick()
+    {
+        
+        faq.isUserInteractionEnabled = true
+        
+        let singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(SugguestAboutViewController.gofaq))
+        faq .addGestureRecognizer(singleTap)
+        
+    }
+    
+    func gofaq()
+    {
+        let sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "faqviewcontroller") as!FaqViewController
         self.navigationController?.pushViewController(vc, animated: true)
         
     }
@@ -81,13 +102,13 @@ class SugguestAboutViewController: UIViewController {
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
     
     func searchClick()
     {
-        var sb = UIStoryboard(name:"Main", bundle: nil)
-        var vc = sb.instantiateViewControllerWithIdentifier("souviewcontroller") as! SouViewController
+        let sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "souviewcontroller") as! SouViewController
         self.navigationController?.pushViewController(vc, animated: true)
         //var vc = SearchViewController()
         //self.navigationController?.pushViewController(vc, animated: true)

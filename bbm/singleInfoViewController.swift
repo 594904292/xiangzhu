@@ -12,7 +12,7 @@ class singleInfoViewController: UIViewController ,UITableViewDataSource,UITableV
     var dataTable:UITableView!;                                             //数据表格
     var itemString=["昵称","账号","生日","性别","电话","微信","紧急联系人","接收消息","系统设置","退出"]
     //当前屏幕对象
-    var screenObject=UIScreen.mainScreen().bounds;
+    var screenObject=UIScreen.main.bounds;
     
     //页面初始化
     override func viewDidLoad() {
@@ -24,7 +24,7 @@ class singleInfoViewController: UIViewController ,UITableViewDataSource,UITableV
      */
     func initView(){
         self.title="我的资料";
-        self.view.backgroundColor = UIColor.lightGrayColor()
+        self.view.backgroundColor = UIColor.lightGray
         creatTable();
     }
     /**
@@ -35,18 +35,18 @@ class singleInfoViewController: UIViewController ,UITableViewDataSource,UITableV
         let dataTableH:CGFloat=screenObject.height;
         let dataTableX:CGFloat=0;
         let dataTableY:CGFloat=0;
-        dataTable=UITableView(frame: CGRectMake(dataTableX, dataTableY, dataTableW, dataTableH),style:UITableViewStyle.Grouped);
+        dataTable=UITableView(frame: CGRect(x: dataTableX, y: dataTableY, width: dataTableW, height: dataTableH),style:UITableViewStyle.grouped);
         dataTable.delegate=self;
         dataTable.dataSource=self;
         self.view.addSubview(dataTable);
     }
     //1.1默认返回一组
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 4;
     }
     
     // 1.2 返回行数
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if(section == 0){
             return 4;
         }else if(section == 1){
@@ -59,7 +59,7 @@ class singleInfoViewController: UIViewController ,UITableViewDataSource,UITableV
     }
     
     //1.3 返回行高
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat{
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat{
         
         if(indexPath.section == 0){
             return 40;
@@ -70,20 +70,20 @@ class singleInfoViewController: UIViewController ,UITableViewDataSource,UITableV
     }
     
     //1.4每组的头部高度
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 10;
     }
     
     //1.5每组的底部高度
-    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 1;
     }
     //1.6 返回数据源
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let identifier="identtifier";
-        var cell=tableView.dequeueReusableCellWithIdentifier(identifier);
+        var cell=tableView.dequeueReusableCell(withIdentifier: identifier);
         if(cell == nil){
-            cell=UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: identifier);
+            cell=UITableViewCell(style: UITableViewCellStyle.value1, reuseIdentifier: identifier);
         }
         
         cell?.textLabel?.text=itemString[indexPath.row];
@@ -97,13 +97,13 @@ class singleInfoViewController: UIViewController ,UITableViewDataSource,UITableV
         }else if(indexPath.section == 3){
             cell?.textLabel?.text=itemString[indexPath.row+9];
         }
-        cell?.accessoryType=UITableViewCellAccessoryType.DisclosureIndicator;
+        cell?.accessoryType=UITableViewCellAccessoryType.disclosureIndicator;
         return cell!;
     }
     //1.7 表格点击事件
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //取消选中的样式
-        tableView.deselectRowAtIndexPath(indexPath, animated: true);
+        tableView.deselectRow(at: indexPath, animated: true);
         if(indexPath.row == 0){
             let pushSingleInfo=singleInfoViewController();
             pushSingleInfo.hidesBottomBarWhenPushed=true;

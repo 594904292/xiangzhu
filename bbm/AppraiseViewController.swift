@@ -31,18 +31,18 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
     
     @IBOutlet weak var line3: UIView!
     
-    @IBAction func controltouchdown(sender: UIControl) {
+    @IBAction func controltouchdown(_ sender: UIControl) {
          self.view.endEditing(true)
     }
     
-    @IBAction func controltouchdown1(sender: UIControl) {
+    @IBAction func controltouchdown1(_ sender: UIControl) {
          self.view.endEditing(true)
     }
     
     @IBOutlet weak var tag1view: UIView!
     @IBOutlet weak var tag2view: UIView!
     
-     @IBAction func save(sender: UIButton) {
+     @IBAction func save(_ sender: UIButton) {
         
         //xzArray
         if(content_tv.text?.characters.count==0)
@@ -50,26 +50,26 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
             self.successNotice("评价不能为空")
             return;
         }
-        let date = NSDate()
-        let timeFormatter = NSDateFormatter()
+        let date = Date()
+        let timeFormatter = DateFormatter()
         timeFormatter.dateFormat = "yyy-MM-dd HH:mm:ss"
-        let strNowTime = timeFormatter.stringFromDate(date) as String
+        let strNowTime = timeFormatter.string(from: date) as String
         
-        let defaults = NSUserDefaults.standardUserDefaults();
-        var myuserid = defaults.objectForKey("userid") as! String;
-        let evaluatetag = xzArray.joinWithSeparator("|")
+        let defaults = UserDefaults.standard;
+        let myuserid = defaults.object(forKey: "userid") as! String;
+        let evaluatetag = xzArray.joined(separator: "|")
         print(evaluatetag) //"1,2,3"
-        headface = defaults.objectForKey("headface") as! String;
+        headface = defaults.object(forKey: "headface") as! String;
         let  dic:Dictionary<String,String> = ["_guid" : guid,
-                                              "_fromuser" : senduserid,
-                                              "_userid" : myuserid,
+                                              "_fromuser" : senduserid,//提供帮助的人
+                                              "_userid" : myuserid,//发表人
                                               "_status" : "2",
-                                              "_rating" : String(score_ratingbar.rating),
+                                              "_rating" : String(describing: score_ratingbar.rating),
                                               "_content" : content_tv.text,
                                               "_evaluatetag":evaluatetag
                                               ]
         let url_str:String = "http://api.bbxiaoqu.com/genfinshorder_v1.php";
-        Alamofire.request(.POST,url_str, parameters:dic)
+        Alamofire.request(url_str,method:HTTPMethod.post, parameters:dic)
             .responseString{ response in
                 if(response.result.isSuccess)
                 {
@@ -92,10 +92,10 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
     
     
     func savesolution(){
-        var date = NSDate()
-        var timeFormatter = NSDateFormatter()
+        let date = Date()
+        let timeFormatter = DateFormatter()
         timeFormatter.dateFormat = "yyy-MM-dd HH:mm:ss"
-        var strNowTime = timeFormatter.stringFromDate(date) as String
+        let strNowTime = timeFormatter.string(from: date) as String
         var  dic:Dictionary<String,String> = [ "_guid": guid]
         if(type=="pl")
         {
@@ -107,7 +107,7 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
         dic["_solutionpostion"] = contentid
         dic["_solutionuserid"] = senduserid
         dic["_solutiontime"] = strNowTime
-        Alamofire.request(.POST, "http://api.bbxiaoqu.com/solution.php", parameters: dic)
+        Alamofire.request( "http://api.bbxiaoqu.com/solution.php",method:HTTPMethod.post, parameters: dic)
             .responseJSON { response in
                 if(response.result.isSuccess)
                 {
@@ -173,21 +173,21 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
         
         
         
-        var f  =  CGFloat ( 3)
+        let f  =  CGFloat ( 3)
         score_ratingbar.rating = f
         
         
-        let screenWidth = UIScreen.mainScreen().bounds.size;
+        let screenWidth = UIScreen.main.bounds.size;
         
         
-        allTag.frame = CGRectMake(10, 0, screenWidth.width-20, 60)
+        allTag.frame = CGRect(x: 10, y: 0, width: screenWidth.width-20, height: 60)
         allTag.delegate = self;
-        allTag.setTags(allArray);
+        allTag.setTags(allArray as NSArray);
         
         
-        xzTag.frame = CGRectMake(10, 0, screenWidth.width-20, 60)
+        xzTag.frame = CGRect(x: 10, y: 0, width: screenWidth.width-20, height: 60)
         xzTag.delegate = self;
-        xzTag.setTags(xzArray);
+        xzTag.setTags(xzArray as NSArray);
         
         tag1view.addSubview(xzTag);
         tag2view.addSubview(allTag);
@@ -199,7 +199,7 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
     
     
     
-    func textViewShouldBeginEditing(textView: UITextView!) -> Bool {
+    func textViewShouldBeginEditing(_ textView: UITextView!) -> Bool {
         if (textView.text=="请输入你要对帮助的人说些什么") {
           textView.text = "";
             content_tv.textColor=UIColor(colorLiteralRed: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 1)
@@ -208,14 +208,14 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
         return true;
     }
     
-    func textViewShouldEndEditing(textView: UITextView!) -> Bool {
+    func textViewShouldEndEditing(_ textView: UITextView!) -> Bool {
         return true;
     }
     
-    func textViewDidBeginEditing(textView: UITextView!) {
+    func textViewDidBeginEditing(_ textView: UITextView!) {
     }
     
-    func textViewDidEndEditing(textView: UITextView!) {
+    func textViewDidEndEditing(_ textView: UITextView!) {
         
         if (textView.text.characters.count<1) {
             textView.text = "请输入你要对帮助的人说些什么";
@@ -224,7 +224,7 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
         }
     }
     
-    func textView(textView: UITextView!, shouldChangeTextInRange range: NSRange, replacementText text: String!) -> Bool {
+    func textView(_ textView: UITextView!, shouldChangeTextIn range: NSRange, replacementText text: String!) -> Bool {
         if(text=="\n")
         {
             self.view.endEditing(true)
@@ -233,21 +233,21 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
         return true;
     }
     
-    func textViewDidChange(textView: UITextView!) {
+    func textViewDidChange(_ textView: UITextView!) {
     }
     
-    func textViewDidChangeSelection(textView: UITextView!) {
+    func textViewDidChangeSelection(_ textView: UITextView!) {
     }
     
-    func textView(textView: UITextView!, shouldInteractWithURL URL: NSURL!, inRange characterRange: NSRange) -> Bool {
+    func textView(_ textView: UITextView!, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {
         return true;
     }
     
-    func textView(textView: UITextView!, shouldInteractWithTextAttachment textAttachment: NSTextAttachment!, inRange characterRange: NSRange) -> Bool {
+    func textView(_ textView: UITextView!, shouldInteractWith textAttachment: NSTextAttachment!, in characterRange: NSRange) -> Bool {
         return true;
     }
 
-    func xzatapedTagLabel(labTag: NSInteger, labelText: String, tapedView: UIView) {
+    func xzatapedTagLabel(_ labTag: NSInteger, labelText: String, tapedView: UIView) {
         print("tag:\(labTag)  text:\(labelText)");
         var sel:Int = -1;
         for i in 0..<allArray.count
@@ -260,16 +260,16 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
         }
         if(sel > -1)
         {
-             allArray.removeAtIndex(sel)
+             allArray.remove(at: sel)
         }
         xzArray.append(labelText)
         
-        xzTag.setTags(xzArray)
-       allTag.setTags(allArray);
+        xzTag.setTags(xzArray as NSArray)
+       allTag.setTags(allArray as NSArray);
         
     }
     
-    func xztapedTagLabel(labTag: NSInteger, labelText: String, tapedView: UIView) {
+    func xztapedTagLabel(_ labTag: NSInteger, labelText: String, tapedView: UIView) {
         print("tag:\(labTag)  text:\(labelText)");
         var sel:Int = -1;
         for i in 0..<xzArray.count
@@ -282,41 +282,41 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
         }
         if(sel > -1)
         {
-            xzArray.removeAtIndex(sel)
+            xzArray.remove(at: sel)
         }
         allArray.append(labelText)
-        xzTag.setTags(xzArray);
-        allTag.setTags(allArray);
+        xzTag.setTags(xzArray as NSArray);
+        allTag.setTags(allArray as NSArray);
         
     }
 
     @IBOutlet weak var addtag: UIButton!
     
-    @IBAction func AddTabEvent(sender: UIButton) {
+    @IBAction func AddTabEvent(_ sender: UIButton) {
         var tagNameTextField: UITextField?
         // 2.
         let alertController = UIAlertController(
             title: "新建标签",
             message: "请输入新标签",
-            preferredStyle: UIAlertControllerStyle.Alert)
+            preferredStyle: UIAlertControllerStyle.alert)
         
         // 3.
         let addAction = UIAlertAction(
-        title: "确认", style: UIAlertActionStyle.Default) {
+        title: "确认", style: UIAlertActionStyle.default) {
             (action) -> Void in
             
             if let usernamestr = tagNameTextField?.text {
                 print(" tag = \(usernamestr)")
                 
                 self.xzArray.append(usernamestr)
-                self.xzTag.setTags(self.xzArray);
+                self.xzTag.setTags(self.xzArray as NSArray);
             } else {
                 print("No tag entered")
             }
         }
         
         // 4.
-        alertController.addTextFieldWithConfigurationHandler {
+        alertController.addTextField {
             (txtUsername) -> Void in
             tagNameTextField = txtUsername
             tagNameTextField!.placeholder = "新标签"
@@ -324,17 +324,17 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
         
         
         // 5.
-        alertController.addAction(UIAlertAction(title: "取消", style: UIAlertActionStyle.Cancel,handler:nil))
+        alertController.addAction(UIAlertAction(title: "取消", style: UIAlertActionStyle.cancel,handler:nil))
         alertController.addAction(addAction)
-        self.presentViewController(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: nil)
 
     }
 
-    func loadheadface(headname:String)
+    func loadheadface(_ headname:String)
     {
         if(headname.characters.count>0)
         {
-            var myhead:String="http://api.bbxiaoqu.com/uploads/".stringByAppendingString(headface)
+            let myhead:String="http://api.bbxiaoqu.com/uploads/" + headface
             Util.loadheadface(self.headfaceimg, url: myhead)
             self.headfaceimg.layer.cornerRadius = (self.headfaceimg.frame.width) / 2
             self.headfaceimg.layer.masksToBounds = true
@@ -348,38 +348,38 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
     }
 
     
-    func initnavbar(titlestr:String)
+    func initnavbar(_ titlestr:String)
     {
         self.title=titlestr
-        var returnimg=UIImage(named: "xz_nav_return_icon")
+        let returnimg=UIImage(named: "xz_nav_return_icon")
         
-        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "backClick")
+        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(AppraiseViewController.backClick))
         
-        item3.tintColor=UIColor.whiteColor()
+        item3.tintColor=UIColor.white
         
         self.navigationItem.leftBarButtonItem=item3
         
         
         
         
-        var searchimg=UIImage(named: "xz_nav_icon_search")
+        let searchimg=UIImage(named: "xz_nav_icon_search")
         
-        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "searchClick")
+        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(AppraiseViewController.searchClick))
         
-        item4.tintColor=UIColor.whiteColor()
+        item4.tintColor=UIColor.white
         
         self.navigationItem.rightBarButtonItem=item4
     }
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
     
     func searchClick()
     {
-        var sb = UIStoryboard(name:"Main", bundle: nil)
-        var vc = sb.instantiateViewControllerWithIdentifier("souviewcontroller") as! SouViewController
+        let sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "souviewcontroller") as! SouViewController
         self.navigationController?.pushViewController(vc, animated: true)
         //var vc = SearchViewController()
         //self.navigationController?.pushViewController(vc, animated: true)

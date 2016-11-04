@@ -20,9 +20,9 @@ class LGOneImageBroswer: UICollectionViewController {
     
     init(){
         let layout:UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSizeMake(UIScreen.mainScreen().bounds.width,UIScreen.mainScreen().bounds.height)
+        layout.itemSize = CGSize(width: UIScreen.main.bounds.width,height: UIScreen.main.bounds.height)
         layout.minimumLineSpacing = paddingY
-        layout.scrollDirection = .Horizontal
+        layout.scrollDirection = .horizontal
         super.init(collectionViewLayout: layout)
     }
     
@@ -34,29 +34,29 @@ class LGOneImageBroswer: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title="相册"
-        var returnimg=UIImage(named: "xz_nav_return_icon")
+        let returnimg=UIImage(named: "xz_nav_return_icon")
         
-        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "backClick")
+        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(LGOneImageBroswer.backClick))
         
-        item3.tintColor=UIColor.whiteColor()
+        item3.tintColor=UIColor.white
         
         self.navigationItem.leftBarButtonItem=item3
 
         // Register cell classes
-        self.collectionView!.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        self.collectionView?.frame = CGRectMake(0, 0, self.view.frame.width + paddingY, self.view.frame.height)
+        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        self.collectionView?.frame = CGRect(x: 0, y: 0, width: self.view.frame.width + paddingY, height: self.view.frame.height)
         self.collectionView?.bounces = true
-        self.collectionView?.pagingEnabled = true        // Do any additional setup after loading the view.
-        self.collectionView!.contentSize = CGSizeMake(self.collectionView!.frame.width * CGFloat(self.picturesArray.count) + 10, 0)
+        self.collectionView?.isPagingEnabled = true        // Do any additional setup after loading the view.
+        self.collectionView!.contentSize = CGSize(width: self.collectionView!.frame.width * CGFloat(self.picturesArray.count) + 10, height: 0)
         let www = CGFloat(self.currentPageIndex)
-        self.collectionView?.contentOffset = CGPointMake((self.collectionView?.frame.width)! * www, 0)
+        self.collectionView?.contentOffset = CGPoint(x: (self.collectionView?.frame.width)! * www, y: 0)
     }
     
     
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
         
     }
     
@@ -68,32 +68,32 @@ class LGOneImageBroswer: UICollectionViewController {
 
     // MARK: UICollectionViewDataSource
 
-    override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
     }
 
 
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
         return self.picturesArray.count
     }
 
-    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath)
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
     
         // Configure the cell
-        cell.backgroundColor = UIColor.blackColor()
+        cell.backgroundColor = UIColor.black
         cell.backgroundView = UIImageView(image: self.picturesArray[indexPath.item] as UIImage)
-        cell.backgroundView?.contentMode = UIViewContentMode.ScaleAspectFit
+        cell.backgroundView?.contentMode = UIViewContentMode.scaleAspectFit
         return cell
     }
 
     // MARK: UICollectionViewDelegate
 
-    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let sb = UIStoryboard(name:"Main", bundle: nil)
-        let vc = sb.instantiateViewControllerWithIdentifier("bigpicviewcontroller") as! BigPicViewController
+        let vc = sb.instantiateViewController(withIdentifier: "bigpicviewcontroller") as! BigPicViewController
         //创建导航控制器
         
         vc.showimage = self.picturesArray[indexPath.item] as UIImage;

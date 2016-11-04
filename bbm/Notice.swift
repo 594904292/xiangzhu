@@ -18,11 +18,11 @@ class Notice{
         //建立的SystemSoundID对象
         var soundID:SystemSoundID = 0
         //获取声音地址
-        let path = NSBundle.mainBundle().pathForResource("msg", ofType: "wav")
+        let path = Bundle.main.path(forResource: "msg", ofType: "wav")
         //地址转换
-        let baseURL = NSURL(fileURLWithPath: path!)
+        let baseURL = URL(fileURLWithPath: path!)
         //赋值
-        AudioServicesCreateSystemSoundID(baseURL, &soundID)
+        AudioServicesCreateSystemSoundID(baseURL as CFURL, &soundID)
         //播放声音
         AudioServicesPlaySystemSound(soundID)
     }
@@ -31,11 +31,11 @@ class Notice{
         //建立的SystemSoundID对象
         var soundID:SystemSoundID = 0
         //获取声音地址
-        let path = NSBundle.mainBundle().pathForResource("msg", ofType: "wav")
+        let path = Bundle.main.path(forResource: "msg", ofType: "wav")
         //地址转换
-        let baseURL = NSURL(fileURLWithPath: path!)
+        let baseURL = URL(fileURLWithPath: path!)
         //赋值
-        AudioServicesCreateSystemSoundID(baseURL, &soundID)
+        AudioServicesCreateSystemSoundID(baseURL as CFURL, &soundID)
         //提醒（同上面唯一的一个区别）
         AudioServicesPlayAlertSound(soundID)
     }
@@ -43,7 +43,7 @@ class Notice{
     
     func systemVibration() {
         //建立的SystemSoundID对象
-        var soundID = SystemSoundID(kSystemSoundID_Vibrate)
+        let soundID = SystemSoundID(kSystemSoundID_Vibrate)
         //振动
         AudioServicesPlaySystemSound(soundID)
     }

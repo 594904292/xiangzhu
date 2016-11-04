@@ -3,14 +3,14 @@ import UIKit
 
 enum ChatType
 {
-    case Mine
-    case Someone
+    case mine
+    case someone
 }
 
 class MessageItem
 {
     var user:UserInfo
-    var date:NSDate
+    var date:Date
     var mtype:ChatType
     var view:UIView
     var insets:UIEdgeInsets
@@ -35,9 +35,9 @@ class MessageItem
     }
     
     //初始化
-    convenience init(body:NSString, user:UserInfo, date:NSDate, mtype:ChatType)
+    convenience init(body:NSString, user:UserInfo, date:Date, mtype:ChatType)
     {
-        var font =  UIFont.boldSystemFontOfSize(14)
+        let font =  UIFont.boldSystemFont(ofSize: 14)
         
         var width =  225, height = 10000.0
         
@@ -45,25 +45,25 @@ class MessageItem
         //atts.setObject(font,forKey:NSFontAttributeName)
         
         //let attributes = NSDictionary(object: font, forKey: NSFontAttributeName)
-          let option = NSStringDrawingOptions.UsesLineFragmentOrigin
-        let atts = NSDictionary(object: font, forKey: NSFontAttributeName)
+          let option = NSStringDrawingOptions.usesLineFragmentOrigin
+        let atts = NSDictionary(object: font, forKey: NSFontAttributeName as NSCopying)
 
-        var size =  body.boundingRectWithSize(CGSizeMake(CGFloat(width), CGFloat(height)),options:option,attributes:atts as! [String : AnyObject] ,context:nil)
+        let size =  body.boundingRect(with: CGSize(width: CGFloat(width), height: CGFloat(height)),options:option,attributes:atts as! [String : AnyObject] ,context:nil)
         
-        var label =  UILabel(frame:CGRectMake(0, 0, size.size.width+2, size.size.height))
+        let label =  UILabel(frame:CGRect(x: 0, y: 0, width: size.size.width+2, height: size.size.height))
         
         label.numberOfLines = 0
-        label.lineBreakMode = NSLineBreakMode.ByWordWrapping
-        label.text = (body.length != 0 ? body as String : "").stringByAppendingString(" ")
+        label.lineBreakMode = NSLineBreakMode.byWordWrapping
+        label.text = (body.length != 0 ? body as String : "") + " "
         label.font = font
-        label.backgroundColor = UIColor.clearColor()
+        label.backgroundColor = UIColor.clear
         
-        var insets:UIEdgeInsets =  (mtype == ChatType.Mine ? MessageItem.getTextInsetsMine() : MessageItem.getTextInsetsSomeone())
+        let insets:UIEdgeInsets =  (mtype == ChatType.mine ? MessageItem.getTextInsetsMine() : MessageItem.getTextInsetsSomeone())
         
         self.init(user:user, date:date, mtype:mtype, view:label, insets:insets)
     }
     
-    init(user:UserInfo, date:NSDate, mtype:ChatType, view:UIView, insets:UIEdgeInsets)
+    init(user:UserInfo, date:Date, mtype:ChatType, view:UIView, insets:UIEdgeInsets)
     {
         self.view = view
         self.user = user
@@ -72,7 +72,7 @@ class MessageItem
         self.insets = insets
     }
     
-    convenience init(image:UIImage, user:UserInfo,  date:NSDate, mtype:ChatType)
+    convenience init(image:UIImage, user:UserInfo,  date:Date, mtype:ChatType)
     {
         var size = image.size
         //等比缩放
@@ -81,12 +81,12 @@ class MessageItem
             size.height /= (size.width / 220);
             size.width = 220;
         }
-        let imageView = UIImageView(frame:CGRectMake(0, 0, size.width, size.height))
+        let imageView = UIImageView(frame:CGRect(x: 0, y: 0, width: size.width, height: size.height))
         imageView.image = image
         imageView.layer.cornerRadius = size.width/2
         imageView.layer.masksToBounds = true
         
-        let insets:UIEdgeInsets =  (mtype == ChatType.Mine ? MessageItem.getImageInsetsMine() : MessageItem.getImageInsetsSomeone())
+        let insets:UIEdgeInsets =  (mtype == ChatType.mine ? MessageItem.getImageInsetsMine() : MessageItem.getImageInsetsSomeone())
         
         self.init(user:user,  date:date, mtype:mtype, view:imageView, insets:insets)
     }

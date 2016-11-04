@@ -8,6 +8,7 @@
 
 import UIKit
 import Alamofire
+import AlamofireImage
 
 class ContentViewController: UIViewController,UINavigationControllerDelegate,UIScrollViewDelegate,UIActionSheetDelegate,UITableViewDataSource,UITableViewDelegate ,BMKLocationServiceDelegate,BMKGeoCodeSearchDelegate{
     var alertView:UIAlertView?
@@ -33,7 +34,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
   
    
    
-    var timer:NSTimer!
+    var timer:Timer!
     var picnum:Int = 0
     var photoArr:[String] = []
     var items:[itempl]=[]
@@ -54,7 +55,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     var activityIndicatorView: UIActivityIndicatorView!
     //举报
     @IBOutlet weak var inforeport_btn: UIButton!
-    @IBAction func inforeportaction(sender: UIButton) {
+    @IBAction func inforeportaction(_ sender: UIButton) {
         
         
         
@@ -63,28 +64,29 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         {
             let actionSheet=UIActionSheet()
             actionSheet.title = "请选择举报类型"
-            actionSheet.addButtonWithTitle("取消")
-            actionSheet.addButtonWithTitle("广告")
-            actionSheet.addButtonWithTitle("政治")
-            actionSheet.addButtonWithTitle("暴恐")
-            actionSheet.addButtonWithTitle("淫秽")
-            actionSheet.addButtonWithTitle("赌博")
-            actionSheet.addButtonWithTitle("诈骗")
-            actionSheet.addButtonWithTitle("其它")
+            actionSheet.addButton(withTitle: "取消")
+            actionSheet.addButton(withTitle: "广告")
+            actionSheet.addButton(withTitle: "政治")
+            actionSheet.addButton(withTitle: "暴恐")
+            actionSheet.addButton(withTitle: "淫秽")
+            actionSheet.addButton(withTitle: "赌博")
+            actionSheet.addButton(withTitle: "诈骗")
+            actionSheet.addButton(withTitle: "其它")
             actionSheet.cancelButtonIndex=0
             actionSheet.delegate=self
-            actionSheet.showInView(self.view);
+            actionSheet.show(in: self.view);
         }else if(self.inforeport_btn.titleLabel?.text! == "取消")
         {
-            let defaults = NSUserDefaults.standardUserDefaults();
-            let senduseridstr = defaults.objectForKey("userid") as! String;
+            let defaults = UserDefaults.standard;
+            let senduseridstr = defaults.object(forKey: "userid") as! String;
             let  dics:Dictionary<String,String> = ["_tsuid" : self.puserid,"_uid" : senduseridstr,"_infoid" : self.infoid,"_guid" : self.guid,"_tsreason" : "","_action" : "remove"]
-            var url_str:String = "http://api.bbxiaoqu.com/addusertsinfo.php";
-            Alamofire.request(.POST,url_str, parameters:dics)
+            let url_str:String = "http://api.bbxiaoqu.com/addusertsinfo.php";
+            
+            Alamofire.request(url_str, method:HTTPMethod.post,parameters:dics)
                 .responseString{ response in
                     if(response.result.isSuccess)
                     {
-                        self.inforeport_btn.setTitle("举报", forState: UIControlState.Normal)
+                        self.inforeport_btn.setTitle("举报", for: UIControlState())
                     }
             }
             
@@ -93,14 +95,14 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
 
     //评价
     @IBOutlet weak var evaluate_btn: UIButton!
-    @IBAction func evaluateacton(sender: UIButton) {
-        let defaults = NSUserDefaults.standardUserDefaults();
-        senduserid = defaults.objectForKey("userid") as! String;
+    @IBAction func evaluateacton(_ sender: UIButton) {
+        let defaults = UserDefaults.standard;
+        senduserid = defaults.object(forKey: "userid") as! String;
         let sb = UIStoryboard(name:"Main", bundle: nil)
 
         if(puserid==senduserid)
         {
-            let vc = sb.instantiateViewControllerWithIdentifier("bmuserviewcontroller") as! BmUserViewController
+            let vc = sb.instantiateViewController(withIdentifier: "bmuserviewcontroller") as! BmUserViewController
             //创建导航控制器
             vc.guid=self.guid;
             self.navigationController?.pushViewController(vc, animated: true)
@@ -114,21 +116,21 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     
     //收藏
     @IBOutlet weak var gzbtn: UIButton!
-    @IBAction func gzbtnaction(sender: UIButton) {
+    @IBAction func gzbtnaction(_ sender: UIButton) {
         print("gzbtnaction")
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+        DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).async { () -> Void in
             if(self.gzbtn.titleLabel?.text == "收藏")
             {
                 let sqlitehelpInstance1=sqlitehelp.shareInstance()
                 
-                let defaults = NSUserDefaults.standardUserDefaults();
-                var userid = defaults.objectForKey("userid") as! String;
+                let defaults = UserDefaults.standard;
+                let userid = defaults.object(forKey: "userid") as! String;
                 sqlitehelpInstance1.addgz(self.guid, userid: userid)
                 
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    self.gzbtn.setTitle("取消", forState: UIControlState.Normal)
+                DispatchQueue.main.async(execute: { () -> Void in
+                    self.gzbtn.setTitle("取消", for: UIControlState())
                     //self.gzbtn.imageView?.image=UIImage(named: "xz_aixin_icon_sel")
-                    self.gzbtn.setImage(UIImage(named: "xz_aixin_icon_sel"), forState: UIControlState.Normal)
+                    self.gzbtn.setImage(UIImage(named: "xz_aixin_icon_sel"), for: UIControlState())
                     self.successNotice("收藏成功")
                 })
             }else if(self.gzbtn.titleLabel?.text == "取消")
@@ -136,14 +138,14 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
                 
                 let sqlitehelpInstance1=sqlitehelp.shareInstance()
                 
-                let defaults = NSUserDefaults.standardUserDefaults();
-                let userid = defaults.objectForKey("userid") as! String;
+                let defaults = UserDefaults.standard;
+                let userid = defaults.object(forKey: "userid") as! String;
                 sqlitehelpInstance1.removegz(self.guid, userid: userid)
                 
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    self.gzbtn.setTitle("收藏", forState: UIControlState.Normal)
+                DispatchQueue.main.async(execute: { () -> Void in
+                    self.gzbtn.setTitle("收藏", for: UIControlState())
                     //self.gzbtn.imageView?.image=UIImage(named: "xz_aixin_icon")
-                    self.gzbtn.setImage(UIImage(named: "xz_aixin_icon"), forState: UIControlState.Normal)
+                    self.gzbtn.setImage(UIImage(named: "xz_aixin_icon"), for: UIControlState())
                     self.successNotice("取消收藏成功")
                 })
             }
@@ -152,26 +154,26 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     //交流处理
     @IBOutlet weak var rl_bottom: UIView!
     @IBOutlet weak var chat_btn: UIButton!
-    @IBAction func dohelp(sender: UIButton) {
-        var actionSheet=UIActionSheet()
+    @IBAction func dohelp(_ sender: UIButton) {
+        let actionSheet=UIActionSheet()
         actionSheet.title = "请选择举报类型"
-        actionSheet.addButtonWithTitle("取消")
-        actionSheet.addButtonWithTitle("在线聊天")
-        actionSheet.addButtonWithTitle("文字评论")
+        actionSheet.addButton(withTitle: "取消")
+        actionSheet.addButton(withTitle: "在线聊天")
+        actionSheet.addButton(withTitle: "文字评论")
         actionSheet.cancelButtonIndex=0
         actionSheet.delegate=self
-        actionSheet.showInView(self.view);
+        actionSheet.show(in: self.view);
 
     }
 
     @IBOutlet weak var _tableview: UITableView!
-    @IBAction func runchat(sender: UIButton) {
-        let defaults = NSUserDefaults.standardUserDefaults();
-        senduserid = defaults.objectForKey("userid") as! String;
+    @IBAction func runchat(_ sender: UIButton) {
+        let defaults = UserDefaults.standard;
+        senduserid = defaults.object(forKey: "userid") as! String;
         let sb = UIStoryboard(name:"Main", bundle: nil)
         if(puserid==senduserid)
         {
-            let vc = sb.instantiateViewControllerWithIdentifier("bmuserviewcontroller") as! BmUserViewController
+            let vc = sb.instantiateViewController(withIdentifier: "bmuserviewcontroller") as! BmUserViewController
             //创建导航控制器
             vc.guid=self.guid;
             self.navigationController?.pushViewController(vc, animated: true)
@@ -181,11 +183,11 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
             self.savebmThread();
 
             
-            let defaults = NSUserDefaults.standardUserDefaults();
-            let myuserid = defaults.objectForKey("userid") as! String;
+            let defaults = UserDefaults.standard;
+            let myuserid = defaults.object(forKey: "userid") as! String;
             
             let sb = UIStoryboard(name:"Main", bundle: nil)
-            let vc = sb.instantiateViewControllerWithIdentifier("chatviewController") as! ChatViewController
+            let vc = sb.instantiateViewController(withIdentifier: "chatviewController") as! ChatViewController
             vc.from=puserid
             vc.myself=myuserid;
             self.navigationController?.pushViewController(vc, animated: true)
@@ -194,13 +196,13 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         }
     }
     
-    func actionSheet(actionSheet: UIActionSheet, clickedButtonAtIndex buttonIndex: Int) {
-                        print("点击了："+actionSheet.buttonTitleAtIndex(buttonIndex)!)
-        var tag:String = actionSheet.buttonTitleAtIndex(buttonIndex)!
+    func actionSheet(_ actionSheet: UIActionSheet, clickedButtonAt buttonIndex: Int) {
+                        print("点击了："+actionSheet.buttonTitle(at: buttonIndex)!)
+        let tag:String = actionSheet.buttonTitle(at: buttonIndex)!
        if(tag == "在线聊天")
        {
-            let defaults = NSUserDefaults.standardUserDefaults();
-            var userid = defaults.objectForKey("userid") as! String;
+            let defaults = UserDefaults.standard;
+            let userid = defaults.object(forKey: "userid") as! String;
             if(self.puserid==userid)
             {
                 self.successNotice("请选择与其它人聊天")
@@ -209,10 +211,10 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
                 //做了一次报名动作
                 self.savebmThread();
                 self.AddInfoHelpUserThread();
-                let defaults = NSUserDefaults.standardUserDefaults();
-                let myuserid = defaults.objectForKey("userid") as! String;
+                let defaults = UserDefaults.standard;
+                let myuserid = defaults.object(forKey: "userid") as! String;
                 let sb = UIStoryboard(name:"Main", bundle: nil)
-                let vc = sb.instantiateViewControllerWithIdentifier("chatviewController") as! ChatViewController
+                let vc = sb.instantiateViewController(withIdentifier: "chatviewController") as! ChatViewController
                 vc.from=puserid
                 vc.myself=myuserid;
                 self.navigationController?.pushViewController(vc, animated: true)
@@ -220,7 +222,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         }else if(tag == "文字评论")
         {
             let sb = UIStoryboard(name:"Main", bundle: nil)
-            let vc = sb.instantiateViewControllerWithIdentifier("discuzzviewcontroller") as! DiscuzzViewController
+            let vc = sb.instantiateViewController(withIdentifier: "discuzzviewcontroller") as! DiscuzzViewController
             //创建导航控制器
             vc.guid=self.guid;
             self.navigationController?.pushViewController(vc, animated: true)
@@ -233,29 +235,29 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
             {
                 if(tag != "取消")
                 {
-                    let defaults = NSUserDefaults.standardUserDefaults();
-                    var senduseridstr = defaults.objectForKey("userid") as! String;
+                    let defaults = UserDefaults.standard;
+                    let senduseridstr = defaults.object(forKey: "userid") as! String;
                     let  dics:Dictionary<String,String> = ["_tsuid" : self.puserid,"_uid" : senduseridstr,"_infoid" : self.infoid,"_guid" : self.guid,"_tsreason" : tag,"_action" : "add"]
-                    var url_str:String = "http://api.bbxiaoqu.com/addusertsinfo.php";
-                    Alamofire.request(.POST,url_str, parameters:dics)
+                    let url_str:String = "http://api.bbxiaoqu.com/addusertsinfo.php";
+                    Alamofire.request(url_str,method:HTTPMethod.post, parameters:dics)
                         .responseString{ response in
                             if(response.result.isSuccess)
                             {
-                                self.inforeport_btn.setTitle("取消", forState: UIControlState.Normal)
+                                self.inforeport_btn.setTitle("取消", for: UIControlState())
                             }
                     }
                 }
             }else if(self.inforeport_btn.titleLabel?.text! == "取消")
             {
-                let defaults = NSUserDefaults.standardUserDefaults();
-                var senduseridstr = defaults.objectForKey("userid") as! String;
+                let defaults = UserDefaults.standard;
+                let senduseridstr = defaults.object(forKey: "userid") as! String;
                 let  dics:Dictionary<String,String> = ["_tsuid" : self.puserid,"_uid" : senduseridstr,"_infoid" : self.infoid,"_guid" : self.guid,"_tsreason" : tag,"_action" : "remove"]
-                var url_str:String = "http://api.bbxiaoqu.com/addusertsinfo.php";
-                Alamofire.request(.POST,url_str, parameters:dics)
+                let url_str:String = "http://api.bbxiaoqu.com/addusertsinfo.php";
+                Alamofire.request(url_str,method:HTTPMethod.post, parameters:dics)
                     .responseString{ response in
                         if(response.result.isSuccess)
                         {
-                            self.inforeport_btn.setTitle("举报", forState: UIControlState.Normal)
+                            self.inforeport_btn.setTitle("举报", for: UIControlState())
                         }
                 }
                 
@@ -267,8 +269,8 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     }
     func searchClick()
     {
-        var sb = UIStoryboard(name:"Main", bundle: nil)
-        var vc = sb.instantiateViewControllerWithIdentifier("souviewcontroller") as! SouViewController
+        let sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "souviewcontroller") as! SouViewController
         self.navigationController?.pushViewController(vc, animated: true)
         //var vc = SearchViewController()
         //self.navigationController?.pushViewController(vc, animated: true)
@@ -277,22 +279,22 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
    
         super.viewDidLoad()
         self.navigationItem.title="查看"
-        var returnimg=UIImage(named: "xz_nav_return_icon")
+        let returnimg=UIImage(named: "xz_nav_return_icon")
         
-        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "backClick")
+        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(ContentViewController.backClick))
         
-        item3.tintColor=UIColor.whiteColor()
+        item3.tintColor=UIColor.white
         
         self.navigationItem.leftBarButtonItem=item3
         
         
         
         
-        var searchimg=UIImage(named: "xz_nav_icon_search")
+        let searchimg=UIImage(named: "xz_nav_icon_search")
         
-        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "searchClick")
+        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(ContentViewController.searchClick))
         
-        item4.tintColor=UIColor.whiteColor()
+        item4.tintColor=UIColor.white
         
         self.navigationItem.rightBarButtonItem=item4        
         _tableview!.delegate=self
@@ -304,7 +306,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
 
         
         
-        self.headimgview!.userInteractionEnabled = true
+        self.headimgview!.isUserInteractionEnabled = true
         self.headimgview.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(ContentViewController.showuser)))
  
   
@@ -323,15 +325,15 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         _search.delegate=self
         //addline();//内容上方细线
         
-        activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
+        activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.white)
         
-        activityIndicatorView.frame = CGRectMake(self.view.frame.size.width/2 - 50, 250, 100, 100)
+        activityIndicatorView.frame = CGRect(x: self.view.frame.size.width/2 - 50, y: 250, width: 100, height: 100)
         
         
         
         activityIndicatorView.hidesWhenStopped = true
         
-        activityIndicatorView.color = UIColor.blackColor()
+        activityIndicatorView.color = UIColor.black
         
         self.view.addSubview(activityIndicatorView)
 
@@ -353,15 +355,15 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     
     override func viewDidLayoutSubviews() {
     
-        let w:CGFloat = UIScreen.mainScreen().bounds.width
+        let w:CGFloat = UIScreen.main.bounds.width
         
-        content_view.frame=CGRectMake(0,130,CGFloat(w),content_view_hight)
+        content_view.frame=CGRect(x: 0,y: 130,width: CGFloat(w),height: content_view_hight)
 
-        content_end_view.frame=CGRectMake(0,130+content_view_hight,CGFloat(w),30)
+        content_end_view.frame=CGRect(x: 0,y: 130+content_view_hight,width: CGFloat(w),height: 30)
         
         let th = self.view.frame.size.height-(130+content_view_hight+30);
         
-        _tableview.frame=CGRectMake(0,130+content_view_hight+30,CGFloat(w),th)
+        _tableview.frame=CGRect(x: 0,y: 130+content_view_hight+30,width: CGFloat(w),height: th)
         
         headimgview.layer.cornerRadius = headimgview.frame.width / 2
         
@@ -372,57 +374,56 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     
     
     var photo:String=""
-    func loadinfo(idtype:String,id:String)
+    func loadinfo(_ idtype:String,id:String)
     {
         var url_str:String = "";
         if(idtype == "guid")
         {
-            url_str = "http://api.bbxiaoqu.com/getinfo_v1.php?idtype=guid&guid=".stringByAppendingString(id)
+            url_str = "http://api.bbxiaoqu.com/getinfo_v1.php?idtype=guid&guid=" + id
             
         }else
         {
-            url_str = "http://api.bbxiaoqu.com/getinfo_v1.php?idtype=infoid&guid=".stringByAppendingString(id)
+            url_str = "http://api.bbxiaoqu.com/getinfo_v1.php?idtype=infoid&guid=" + id
         }
          activityIndicatorView.startAnimating()
-        Alamofire.request(.GET,url_str, parameters:nil)
+        Alamofire.request(url_str,method:HTTPMethod.get, parameters:nil)
             .responseJSON {response in
                 self.activityIndicatorView.stopAnimating()
                 if(response.result.isSuccess)
                 {
                     print(response.result.value)
                     
-                    if let JSON = response.result.value {
+                    if let JSON:NSArray = response.result.value as! NSArray {
                         print("JSON1: \(JSON.count)")
-                        if(JSON.count==0)
+                        if(JSON.count>0)
                         {
-                            
-                        }else
-                        {
-                            self.infoid = JSON[0].objectForKey("id") as! String;
-                            let title:String = JSON[0].objectForKey("title") as! String;
-                            let contentstr:String = JSON[0].objectForKey("content") as! String;
-                            self.photo = JSON[0].objectForKey("photo") as! String;
-                            let sendtimestr:String = JSON[0].objectForKey("sendtime") as! String;
-                            let sendaddress = JSON[0].objectForKey("address") as! String
-                            let status = JSON[0].objectForKey("status") as! String
+                            self.infoid = (JSON[0] as! NSDictionary).object(forKey: "id") as! String;
+                            let title:String = (JSON[0] as! NSDictionary).object(forKey: "title") as! String;
+                            let contentstr:String = (JSON[0] as! NSDictionary).object(forKey: "content") as! String;
+                             
+                                
+                            self.photo = (JSON[0] as! NSDictionary).object(forKey: "photo") as! String;
+                            let sendtimestr:String = (JSON[0] as! NSDictionary).object(forKey: "sendtime") as! String;
+                            let sendaddress = (JSON[0] as! NSDictionary).object(forKey: "address") as! String
+                            let status = (JSON[0] as! NSDictionary).object(forKey: "status") as! String
 
                             
-                            let infocatagroy:String = JSON[0].objectForKey("infocatagroy") as! String;
-                            self.headface = JSON[0].objectForKey("headface") as! String
-                            self.puserid = JSON[0].objectForKey("senduser") as! String;
-                            self.puser = JSON[0].objectForKey("username") as! String;
+                            let infocatagroy:String = (JSON[0] as! NSDictionary).object(forKey: "infocatagroy") as! String;
+                            self.headface = (JSON[0] as! NSDictionary).object(forKey: "headface") as! String
+                            self.puserid = (JSON[0] as! NSDictionary).object(forKey: "senduser") as! String;
+                            self.puser = (JSON[0] as! NSDictionary).object(forKey: "username") as! String;
                             
-                            var report = JSON[0].objectForKey("report") as! String;
-                            if(JSON[0].objectForKey("issolution") as! String == "1")
+                            let report = (JSON[0] as! NSDictionary).object(forKey: "report") as! String;
+                            if((JSON[0] as! NSDictionary).object(forKey: "issolution") as! String == "1")
                             {
                                 self.issolution=true
                             }else
                             {
                                 self.issolution=false
                             }
-                            self.solutionid = JSON[0].objectForKey("solutionid") as! String;
+                            self.solutionid = (JSON[0] as! NSDictionary).object(forKey: "solutionid") as! String;
                             //处理后边数据
-                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            DispatchQueue.main.async(execute: { () -> Void in
                                 self.senduser_label.text=self.puser
                                 self.sendtime.text = sendtimestr;
                                 self.sendaddr.text = sendaddress;
@@ -432,45 +433,45 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
                                 
                                 
                                 //判断是不是本人
-                                let defaults = NSUserDefaults.standardUserDefaults();
-                                var userid = defaults.objectForKey("userid") as! String;
+                                let defaults = UserDefaults.standard;
+                                let userid = defaults.object(forKey: "userid") as! String;
                                 if(self.puserid==userid)
                                 {
                                     //不能举报
-                                    self.inforeport_btn.hidden=true
+                                    self.inforeport_btn.isHidden=true
                                     //不能收藏
-                                    self.gzbtn.hidden=true
+                                    self.gzbtn.isHidden=true
                                     //可以评价
-                                    self.evaluate_btn.hidden=false
+                                    self.evaluate_btn.isHidden=false
                                     //可以评论
-                                    self.rl_bottom.hidden=false
+                                    self.rl_bottom.isHidden=false
                                     
                                 }else
                                 {
                                     //能举报
-                                    self.inforeport_btn.hidden=false
+                                    self.inforeport_btn.isHidden=false
                                     //能收藏
-                                    self.gzbtn.hidden=false
+                                    self.gzbtn.isHidden=false
                                     //不可以评价
-                                     self.evaluate_btn.hidden=true
+                                     self.evaluate_btn.isHidden=true
                                     //可以评论
-                                    self.rl_bottom.hidden=false
+                                    self.rl_bottom.isHidden=false
                                     
                                     
                                     let sqlitehelpInstance1=sqlitehelp.shareInstance()
                                     
-                                    let defaults = NSUserDefaults.standardUserDefaults();
-                                    var userid = defaults.objectForKey("userid") as! String;
-                                    var ishavezhan:Bool = sqlitehelpInstance1.isexitgz(self.infoid, userid: userid)
+                                    let defaults = UserDefaults.standard;
+                                    let userid = defaults.object(forKey: "userid") as! String;
+                                    let ishavezhan:Bool = sqlitehelpInstance1.isexitgz(self.infoid, userid: userid)
                                     if ishavezhan
                                     {
                                         self.gzbtn.titleLabel!.text="取消"
-                                        self.gzbtn.setImage(UIImage(named: "xz_aixin_icon_sel"), forState: UIControlState.Normal)
+                                        self.gzbtn.setImage(UIImage(named: "xz_aixin_icon_sel"), for: UIControlState())
                                         
                                     }else
                                     {
                                         self.gzbtn.titleLabel!.text="收藏"
-                                        self.gzbtn.setImage(UIImage(named: "xz_aixin_icon"), forState: UIControlState.Normal)
+                                        self.gzbtn.setImage(UIImage(named: "xz_aixin_icon"), for: UIControlState())
                                     }
                                     var ishavets:Bool = sqlitehelpInstance1.isexitts(self.infoid, userid: userid)
                                     if ishavezhan
@@ -486,52 +487,45 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
                                 if(status=="2")
                                 {
                                     
-                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                        self.evaluate_btn.setTitle("查看帮助我的人", forState: UIControlState.Normal)
+                                    DispatchQueue.main.async(execute: { () -> Void in
+                                        self.evaluate_btn.setTitle("查看帮助我的人", for: UIControlState())
                                     //self.evaluate_btn.titleLabel?.text="查看帮助我的人"
                                     
                                     self.issolution=true
                                     self.infostatus.image=UIImage(named: "xz_yijiejue_icon")
-                                        });
+                                    });
                                 }else
                                 {
-                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-
-                                    self.issolution=false
-                                    self.infostatus.image=UIImage(named: "xz_qiuzhu_icon")
-
-                                      });
+                                    DispatchQueue.main.async(execute: { () -> Void in
+                                        self.issolution=false
+                                        self.infostatus.image=UIImage(named: "xz_qiuzhu_icon")
+                                    });
                                 }
-
-                                
                                 if(report=="1")
                                 {
                                     self.isjb=true
-                                    //self.reportbtn.hidden=false
-                                    //self.reportbtn.setTitle("已举报", forState: UIControlState.Normal)
-                                    //self.reportbtn.setTitleColor(UIColor.grayColor(), forState: UIControlState.Normal)
-                                }
+                                 }
                             })
-                        }
-                        
-                        
-                        
-                        
-                        //
-                        var sqlitehelpInstance1=sqlitehelp.shareInstance()
-                        let defaults = NSUserDefaults.standardUserDefaults();
-                        var userid = defaults.objectForKey("userid") as! String;
-                        if(sqlitehelpInstance1.isexitgz(self.guid, userid: userid))
-                        {
-                            self.gzbtn.titleLabel?.text="取消"
+                            
+                            let sqlitehelpInstance1=sqlitehelp.shareInstance()
+                            let defaults = UserDefaults.standard;
+                            let userid = defaults.object(forKey: "userid") as! String;
+                            if(sqlitehelpInstance1.isexitgz(self.guid, userid: userid))
+                            {
+                                self.gzbtn.titleLabel?.text="取消"
 
-                        }else
-                        {
-                             self.gzbtn.titleLabel?.text="收藏"
+                            }else
+                            {
+                                 self.gzbtn.titleLabel?.text="收藏"
+                            }
+                            self.loadheadface(self.puserid,headname:self.headface)
+                            self.loaddiscuzzBody(self.infoid)
+                        }else{
+                            self.successNotice("信息已移除")
+                            print("信息已移除")
+                              self.navigationController?.popViewController(animated: true)
+
                         }
-                        
-                        self.loadheadface(self.puserid,headname:self.headface)
-                        self.loaddiscuzzBody(self.infoid)
                         //
                     }
                 }else
@@ -544,11 +538,11 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     
     func addline()
     {
-        var w:CGFloat = UIScreen.mainScreen().bounds.width-20
+        let w:CGFloat = UIScreen.main.bounds.width-20
 
         let posy=CGFloat(130);
         let customView = UIView(frame: CGRect(x: 10, y: posy, width:w, height: CGFloat(1)))
-        customView.backgroundColor=UIColor.grayColor()
+        customView.backgroundColor=UIColor.gray
         self.view.addSubview(customView)
     }
     var imgView:UIView=UIView();
@@ -561,7 +555,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     //添加内容
     var contenthight:CGFloat=0.0;
     var content_view_hight:CGFloat=0.0;
-    func addcontent(contentstr:String)
+    func addcontent(_ contentstr:String)
     {
 //        var content = UILabel.init()
 //        content.text = contentstr
@@ -573,47 +567,47 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
 //        content.numberOfLines = 0;
 //        content.lineBreakMode = NSLineBreakMode.ByWordWrapping
         
-                var content = UICopyLabel.init()
+                let content = UICopyLabel.init()
                 content.text = contentstr
-                 content.font = UIFont.systemFontOfSize(14)
-                let options:NSStringDrawingOptions = .UsesLineFragmentOrigin
-                let boundingRect = contentstr.boundingRectWithSize(CGSizeMake(200, 0), options: options, attributes:[NSFontAttributeName:UIFont(name: "Heiti SC", size: 14.0)!], context: nil)
+                 content.font = UIFont.systemFont(ofSize: 14)
+                let options:NSStringDrawingOptions = .usesLineFragmentOrigin
+                let boundingRect = contentstr.boundingRect(with: CGSize(width: 200, height: 0), options: options, attributes:[NSFontAttributeName:UIFont(name: "Heiti SC", size: 14.0)!], context: nil)
                 contenthight=boundingRect.height
-                content.frame = CGRectMake(10, 0, UIScreen.mainScreen().applicationFrame.width-20, boundingRect.height)
+                content.frame = CGRect(x: 10, y: 0, width: UIScreen.main.applicationFrame.width-20, height: boundingRect.height)
                 content.numberOfLines = 0;
-                content.lineBreakMode = NSLineBreakMode.ByWordWrapping
+                content.lineBreakMode = NSLineBreakMode.byWordWrapping
 
         self.content_view.addSubview(content)
     
     }
  
-    func addimgviewpic(photo:String)
+    func addimgviewpic(_ photo:String)
     {
         self.photoArr = photo.characters.split{$0 == ","}.map{String($0)}
         self.picnum=self.photoArr.count
-        var w:CGFloat = UIScreen.mainScreen().bounds.width-20
+        let w:CGFloat = UIScreen.main.bounds.width-20
         content_view_hight=contenthight+CGFloat(w/4)
         if(self.picnum>0)
         {
             
             imgView = UIView(frame: CGRect(x: 10, y: contenthight, width:w, height: CGFloat(w/4)))
             self.content_view.addSubview(imgView)
-            let bw:CGFloat = UIScreen.mainScreen().bounds.width-20
+            let bw:CGFloat = UIScreen.main.bounds.width-20
             var index=0
             if(self.picnum>4)
             {
                 self.picnum=4
             }
             let count = 4;
-            for(var j:Int=0;j<self.picnum;j++)
+            for j:Int in 0 ..< self.picnum
             {
                 let imageView:UIImageView = UIImageView();
                 let sw=bw/4;
-                var x:CGFloat = sw * CGFloat(j);
-                imageView.frame=CGRectMake(x+5, 5, sw-10, sw-10);
+                let x:CGFloat = sw * CGFloat(j);
+                imageView.frame=CGRect(x: x+5, y: 5, width: sw-10, height: sw-10);
                 imageView.tag=j
                 let picname:String = self.photoArr[j]
-                var imgurl = "http://api.bbxiaoqu.com/uploads/".stringByAppendingString(picname)
+                let imgurl = "http://api.bbxiaoqu.com/uploads/" + picname
                 
                 
                 self.pics.append(imgurl)
@@ -622,20 +616,20 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
                 Util.loadpic(imageView, url: imgurl)
 
                 
-                imageView.userInteractionEnabled=true
+                imageView.isUserInteractionEnabled=true
                 
                 imageView.tag = j
                 
                 //点击事件
                 
-                let touch = UITapGestureRecognizer.init(target: self, action: "tapimg:")
+                let touch = UITapGestureRecognizer.init(target: self, action: #selector(ContentViewController.tapimg(_:)))
                 
 
                 
                 imageView.addGestureRecognizer(touch)
                 //添加边框
-                var layer:CALayer = imageView.layer
-                layer.borderColor=UIColor.lightGrayColor().CGColor
+                let layer:CALayer = imageView.layer
+                layer.borderColor=UIColor.lightGray.cgColor
                 layer.opacity=1
                 layer.borderWidth = 1.0;
                 self.imgView.addSubview(imageView);
@@ -644,7 +638,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
       
     }
 
-    func tapimg(recognizer:UITapGestureRecognizer)
+    func tapimg(_ recognizer:UITapGestureRecognizer)
     {
         let imgView:UIView = recognizer.view!;
         let tapTag:NSInteger = imgView.tag;
@@ -654,7 +648,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         
         let sb = UIStoryboard(name:"Main", bundle: nil)
         //let vc = sb.instantiateViewControllerWithIdentifier("picviewController") as! PicViewController
-        let vc = sb.instantiateViewControllerWithIdentifier("picsviewController") as! PicsViewController
+        let vc = sb.instantiateViewController(withIdentifier: "picsviewController") as! PicsViewController
         //创建导航控制器
         vc.url = url
         vc.pics = self.pics;
@@ -668,7 +662,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     }
 
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         
         _search.delegate=nil
         locService.delegate=self
@@ -676,15 +670,15 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
 
     }
     //处理位置坐标更新
-    func didUpdateBMKUserLocation(userLocation: BMKUserLocation!) {
+    func didUpdate(_ userLocation: BMKUserLocation!) {
         if(userLocation.location != nil)
         {
             print("经度: \(userLocation.location.coordinate.latitude)")
             print("纬度: \(userLocation.location.coordinate.longitude)")
             
-            var defaults = NSUserDefaults.standardUserDefaults();
-            defaults.setObject(String(userLocation.location.coordinate.latitude), forKey: "lat");
-            defaults.setObject(String(userLocation.location.coordinate.longitude), forKey: "lng");
+            let defaults = UserDefaults.standard;
+            defaults.set(String(userLocation.location.coordinate.latitude), forKey: "lat");
+            defaults.set(String(userLocation.location.coordinate.longitude), forKey: "lng");
             
             //            defaults.setNilValueForKey("province");//省直辖市
             //            defaults.setNilValueForKey("city");//城市
@@ -698,18 +692,18 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
             
             let pt:CLLocationCoordinate2D=CLLocationCoordinate2D(latitude: userLocation.location.coordinate.latitude, longitude: userLocation.location.coordinate.longitude)
             
-            var option:BMKReverseGeoCodeOption=BMKReverseGeoCodeOption();
+            let option:BMKReverseGeoCodeOption=BMKReverseGeoCodeOption();
             option.reverseGeoPoint=pt;
             _search.reverseGeoCode(option)
            locService.stopUserLocationService()
-            let _userid = defaults.objectForKey("userid") as! NSString;
+            let _userid = defaults.object(forKey: "userid") as! NSString;
           
-            if(defaults.objectForKey("token") != nil)
+            if(defaults.object(forKey: "token") != nil)
             {
             
-            let _token = defaults.objectForKey("token") as! NSString;
+            let _token = defaults.object(forKey: "token") as! NSString;
             
-            Alamofire.request(.POST, "http://api.bbxiaoqu.com/updatechannelid.php", parameters:["_userId" : _userid,"_channelId":_token])
+            Alamofire.request( "http://api.bbxiaoqu.com/updatechannelid.php", method:HTTPMethod.post,parameters:["_userId" : _userid,"_channelId":_token])
                 .responseJSON { response in
                     print(response.request)  // original URL request
                     print(response.response) // URL response
@@ -723,7 +717,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
             
             
             
-            Alamofire.request(.POST, "http://api.bbxiaoqu.com/updatelocation.php", parameters:["_userId" : _userid,"_lat":String(userLocation.location.coordinate.latitude),"_lng":String(userLocation.location.coordinate.longitude),"_os":"ios"])
+            Alamofire.request("http://api.bbxiaoqu.com/updatelocation.php", method:HTTPMethod.post, parameters:["_userId" : _userid,"_lat":String(userLocation.location.coordinate.latitude),"_lng":String(userLocation.location.coordinate.longitude),"_os":"ios"])
                 .responseJSON { response in
                     print(response.request)  // original URL request
                     print(response.response) // URL response
@@ -739,7 +733,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     }
     
     
-    func onGetReverseGeoCodeResult(searcher:BMKGeoCodeSearch, result:BMKReverseGeoCodeResult,  errorCode:BMKSearchErrorCode)
+    func onGetReverseGeoCodeResult(_ searcher:BMKGeoCodeSearch, result:BMKReverseGeoCodeResult,  errorCode:BMKSearchErrorCode)
     {
         if(errorCode.rawValue==0)
         {
@@ -753,23 +747,23 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
             
             
             print("address: \(result.address)")
-            let defaults = NSUserDefaults.standardUserDefaults();
-            defaults.setObject(result.addressDetail.province, forKey: "province");//省直辖市
-            defaults.setObject(result.addressDetail.city , forKey: "city");//城市
-            defaults.setObject(result.addressDetail.district , forKey: "sublocality");//区县
-            defaults.setObject(result.addressDetail.streetName, forKey: "thoroughfare");//街道
-            defaults.setObject(result.address  , forKey: "address");
+            let defaults = UserDefaults.standard;
+            defaults.set(result.addressDetail.province, forKey: "province");//省直辖市
+            defaults.set(result.addressDetail.city , forKey: "city");//城市
+            defaults.set(result.addressDetail.district , forKey: "sublocality");//区县
+            defaults.set(result.addressDetail.streetName, forKey: "thoroughfare");//街道
+            defaults.set(result.address  , forKey: "address");
             defaults.synchronize();
             
         }else
         {
-            let defaults = NSUserDefaults.standardUserDefaults();
+            let defaults = UserDefaults.standard;
             let a:String = "";
-            defaults.setObject("", forKey: "province");//省直辖市
-            defaults.setObject(a, forKey: "city");//城市
-            defaults.setObject(a, forKey: "sublocality");//区县
-            defaults.setObject(a, forKey: "thoroughfare");//街道
-            defaults.setObject(a, forKey: "address");
+            defaults.set("", forKey: "province");//省直辖市
+            defaults.set(a, forKey: "city");//城市
+            defaults.set(a, forKey: "sublocality");//区县
+            defaults.set(a, forKey: "thoroughfare");//街道
+            defaults.set(a, forKey: "address");
             defaults.synchronize();
             
         }
@@ -780,7 +774,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     func showuser()
     {
         let sb = UIStoryboard(name:"Main", bundle: nil)
-        let vc = sb.instantiateViewControllerWithIdentifier("userinfoviewcontroller") as! UserInfoViewController
+        let vc = sb.instantiateViewController(withIdentifier: "userinfoviewcontroller") as! UserInfoViewController
         //创建导航控制器
         vc.userid=self.puserid;
         self.navigationController?.pushViewController(vc, animated: true)
@@ -789,11 +783,11 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     
   
 
-    func loadheadface(userid:String,headname:String)
+    func loadheadface(_ userid:String,headname:String)
     {
         if(headname.characters.count>0)
         {
-        var myhead:String="http://api.bbxiaoqu.com/uploads/".stringByAppendingString(headface)
+        let myhead:String="http://api.bbxiaoqu.com/uploads/" + headface
         Util.loadheadface(self.headimgview, url: myhead)
             self.headimgview.layer.cornerRadius = self.headimgview.frame.width/2
             self.headimgview.layer.masksToBounds = true
@@ -810,10 +804,10 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     
 
     
-        func loaddiscuzzBody(infoid:String)
+        func loaddiscuzzBody(_ infoid:String)
         {
-            let url_str:String = "http://api.bbxiaoqu.com/getdiscuzz.php?infoid=".stringByAppendingString(infoid)
-            Alamofire.request(.GET,url_str, parameters:nil)
+            let url_str:String = "http://api.bbxiaoqu.com/getdiscuzz.php?infoid=" + infoid
+            Alamofire.request(url_str,  method:HTTPMethod.get,parameters:nil)
                 .responseJSON { response in
                      if(response.result.isSuccess)
                     {
@@ -822,22 +816,22 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
                         if(JSON.count>0)
                         {
                             for data in JSON{
-                                let id:String = data.objectForKey("id") as! String;
-                                let headface:String = data.objectForKey("headface") as! String;
-                                let sendtime:String = data.objectForKey("sendtime") as! String;
-                                let message:String = data.objectForKey("message") as! String;
-                                let uid:String = data.objectForKey("senduserid") as! String;
-                                let username:String = data.objectForKey("senduser") as! String;
+                                let id:String = (data as! NSDictionary).object(forKey: "id") as! String;
+                                let headface:String = (data as! NSDictionary).object(forKey: "headface") as! String;
+                                let sendtime:String = (data as! NSDictionary).object(forKey: "sendtime") as! String;
+                                let message:String = (data as! NSDictionary).object(forKey: "message") as! String;
+                                let uid:String = (data as! NSDictionary).object(forKey: "senduserid") as! String;
+                                let username:String = (data as! NSDictionary).object(forKey: "senduser") as! String;
                                 let item_obj:itempl = itempl(id: id, userid: uid, username: username, headafce: headface, actiontime: sendtime, content: message)
                                   self.items.append(item_obj)
                             }
-                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            DispatchQueue.main.async(execute: { () -> Void in
                                 if(self.items.count==0)
                                 {
-                                    self._tableview.hidden=true
+                                    self._tableview.isHidden=true
                                 }else
                                 {
-                                    self._tableview.hidden=false
+                                    self._tableview.isHidden=false
                                 self._tableview.reloadData();
                                 //self._tableview.doneRefresh();
                                 }
@@ -859,7 +853,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     func backClick()
     {
         NSLog("back");
-         self.navigationController?.popViewControllerAnimated(true)
+         self.navigationController?.popViewController(animated: true)
     }
 
     
@@ -870,11 +864,11 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
             self.successNotice("他人已举报")
         }else
         {
-            var alertView = UIAlertView()
+            let alertView = UIAlertView()
             alertView.title = "系统提示"
             alertView.message = "您确定要举报吗？"
-            alertView.addButtonWithTitle("取消")
-            alertView.addButtonWithTitle("确定")
+            alertView.addButton(withTitle: "取消")
+            alertView.addButton(withTitle: "确定")
             alertView.cancelButtonIndex=0
             alertView.delegate=self;
             alertView.show()
@@ -895,13 +889,13 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     
     func savebmThread()
     {
-        let defaults = NSUserDefaults.standardUserDefaults();
-        var senduseridstr = defaults.objectForKey("userid") as! String;
+        let defaults = UserDefaults.standard;
+        let senduseridstr = defaults.object(forKey: "userid") as! String;
 
         let  dics:Dictionary<String,String> = ["_infoid" : self.infoid,"_userid" : senduseridstr,"_guid" : self.guid,"_action" : "add"]
         
-        var url_str:String = "http://api.bbxiaoqu.com/adduserbminfo.php";
-        Alamofire.request(.POST,url_str, parameters:dics)
+        let url_str:String = "http://api.bbxiaoqu.com/adduserbminfo.php";
+        Alamofire.request(url_str, method:HTTPMethod.post, parameters:dics)
             .responseString{ response in
                 if(response.result.isSuccess)
                 {
@@ -917,13 +911,13 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     
     func AddInfoHelpUserThread()
     {
-        let defaults = NSUserDefaults.standardUserDefaults();
-        var senduseridstr = defaults.objectForKey("userid") as! String;
+        let defaults = UserDefaults.standard;
+        let senduseridstr = defaults.object(forKey: "userid") as! String;
         
         let  dics:Dictionary<String,String> = ["_userid" : self.puserid,"_senduserid" : senduseridstr,"_infoid" : self.infoid,"_guid" : self.guid,"_type" : "chat","_content" : "已通过私信方式与发布者进行了沟通","_action" : "add"]
         
-        var url_str:String = "http://api.bbxiaoqu.com/addinfohelpuser_v1.php";
-        Alamofire.request(.POST,url_str, parameters:dics)
+        let url_str:String = "http://api.bbxiaoqu.com/addinfohelpuser_v1.php";
+        Alamofire.request(url_str,  method:HTTPMethod.post,parameters:dics)
             .responseString{ response in
                 if(response.result.isSuccess)
                 {
@@ -933,22 +927,22 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     }
         
     
-    func alertView(alertView:UIAlertView, clickedButtonAtIndex buttonIndex: Int){
+    func alertView(_ alertView:UIAlertView, clickedButtonAtIndex buttonIndex: Int){
         if(buttonIndex==alertView.cancelButtonIndex){
             print("点击了取消")
         }
         else
         {
             NSLog("add")
-            let defaults = NSUserDefaults.standardUserDefaults();
-            let userid = defaults.objectForKey("userid") as! String;
-            var date = NSDate()
-            var timeFormatter = NSDateFormatter()
+            let defaults = UserDefaults.standard;
+            let userid = defaults.object(forKey: "userid") as! String;
+            let date = Date()
+            let timeFormatter = DateFormatter()
             timeFormatter.dateFormat = "yyy-MM-dd HH:mm:ss"
-            var strNowTime = timeFormatter.stringFromDate(date) as String
+            let strNowTime = timeFormatter.string(from: date) as String
             
-            var  dic:Dictionary<String,String> = ["guid" : guid, "userid": userid, "addtime": strNowTime]
-            Alamofire.request(.POST, "http://api.bbxiaoqu.com/savereport.php", parameters: dic)
+            let  dic:Dictionary<String,String> = ["guid" : guid, "userid": userid, "addtime": strNowTime]
+            Alamofire.request( "http://api.bbxiaoqu.com/savereport.php", method:HTTPMethod.post,parameters: dic)
                 .responseJSON { response in
                     if(response.result.isSuccess)
                     {
@@ -968,56 +962,73 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         }
     }
     
-    func dismiss(timer:NSTimer){
-        alertView!.dismissWithClickedButtonIndex(0, animated:true)
+    func dismiss(_ timer:Timer){
+        alertView!.dismiss(withClickedButtonIndex: 0, animated:true)
     }
 
     
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         return self.items.count;
     }
     
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath:NSIndexPath) -> CGFloat
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath:IndexPath) -> CGFloat
     {
         //计算行高，返回，textview根据数据计算高度
-                   var fixedWidth:CGFloat = 260;
-            var contextLab:UITextView=UITextView()
+                   let fixedWidth:CGFloat = 260;
+            let contextLab:UITextView=UITextView()
             contextLab.text=(self.items[indexPath.row] as itempl).content
-            var newSize:CGSize = contextLab.sizeThatFits(CGSizeMake(fixedWidth, 123));
-            var height=(newSize.height)
+            let newSize:CGSize = contextLab.sizeThatFits(CGSize(width: fixedWidth, height: 123));
+            let height=(newSize.height)
             print("height---\(height)")
             return height+60
            }
 
     
+    lazy var placeholderImage: UIImage = {
+        let image = UIImage(named: "xz_wo_icon")!
+        return image
+    }()
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cellId = "daymiccell"
-        var cell:PlTableViewCell? = tableView.dequeueReusableCellWithIdentifier(cellId) as! PlTableViewCell?
+        var cell:PlTableViewCell? = tableView.dequeueReusableCell(withIdentifier: cellId) as! PlTableViewCell?
         if(cell == nil)
         {
-            cell = PlTableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: cellId)
+            cell = PlTableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: cellId)
         }
         cell?.pluser?.text=(self.items[indexPath.row] as itempl).username
         cell?.pltime.text=(self.items[indexPath.row] as itempl).actiontime
-        cell?.plcontent?.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        cell?.plcontent?.lineBreakMode = NSLineBreakMode.byWordWrapping
         cell?.plcontent?.numberOfLines=0
         cell?.plcontent?.text=(self.items[indexPath.row] as itempl).content
-        var headface:String = (self.items[indexPath.row] as itempl).headface;
+        let headface:String = (self.items[indexPath.row] as itempl).headface;
         if(headface.characters.count>0)
         {
-            var myhead:String="http://api.bbxiaoqu.com/uploads/".stringByAppendingString(headface)
-            Alamofire.request(.GET, myhead).response {
-                (_, _, data, _) -> Void in
-                if let d = data as? NSData!
-                {
-                    cell?.plheadface?.image=UIImage(data: d)
-                }
-            }
+            let myhead:String="http://api.bbxiaoqu.com/uploads/" + headface
+            cell?.plheadface?.af_setImage(
+                withURL: URL(string: myhead)!,
+                placeholderImage: placeholderImage,
+                filter: AspectScaledToFillSizeWithRoundedCornersFilter(size: (cell?.plheadface?.frame.size)!, radius: 2.0),
+                imageTransition: .crossDissolve(0.2)
+            )
+//            Alamofire.request(myhead).responseImage { response in
+//                debugPrint(response)
+//                
+//                print(response.request)
+//                print(response.response)
+//                debugPrint(response.result)
+//                
+//                if let image = response.result.value {
+//                    print("image downloaded: \(image)")
+//                    cell?.plheadface?.image=UIImage(data: image)
+//                }
+//            }
+
         }else
         {
             cell?.plheadface?.image=UIImage(named: "xz_wo_icon")
@@ -1025,25 +1036,25 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         cell?.plheadface.layer.cornerRadius =  (cell?.plheadface.frame.width)! / 2
         cell?.plheadface.layer.masksToBounds = true
 
-        tableView.userInteractionEnabled = true
+        tableView.isUserInteractionEnabled = true
         if(self.issolution)
         {
             if(self.solutionid==(self.items[indexPath.row] as itempl).id)
             {
                 //cell?.plgoodbtn.titleLabel?.text="获最佳"
-                cell?.plgoodbtn.setTitle("获最佳", forState: UIControlState.Normal)
-                cell?.plgoodbtn.enabled=false;
-                cell?.plgoodbtn.hidden=false
+                cell?.plgoodbtn.setTitle("获最佳", for: UIControlState())
+                cell?.plgoodbtn.isEnabled=false;
+                cell?.plgoodbtn.isHidden=false
 
             
             }else
             {
-                cell?.plgoodbtn.hidden=true
+                cell?.plgoodbtn.isHidden=true
 
             }
         }else
         {
-                cell?.plgoodbtn.hidden=true
+                cell?.plgoodbtn.isHidden=true
         }
         
         
@@ -1051,12 +1062,12 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     }
     
     
-    func tapped(button:UIButton){
-        var pos:Int = button.tag
-        var date = NSDate()
-        var timeFormatter = NSDateFormatter()
+    func tapped(_ button:UIButton){
+        let pos:Int = button.tag
+        let date = Date()
+        let timeFormatter = DateFormatter()
         timeFormatter.dateFormat = "yyy-MM-dd HH:mm:ss"
-        var strNowTime = timeFormatter.stringFromDate(date) as String
+        let strNowTime = timeFormatter.string(from: date) as String
         
         var  dic:Dictionary<String,String> = ["_infoid" : infoid, "_guid": guid]
         
@@ -1065,7 +1076,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
          dic["_solutionuserid"] = (self.items[pos] as itempl).userid
         dic["_solutiontime"] = strNowTime
         
-        Alamofire.request(.POST, "http://api.bbxiaoqu.com/solution.php", parameters: dic)
+        Alamofire.request("http://api.bbxiaoqu.com/solution.php", method:HTTPMethod.post,parameters: dic)
             .responseJSON { response in
                 if(response.result.isSuccess)
                 {
@@ -1086,26 +1097,26 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         
     }
     
-    func keyBoardWillShow(note:NSNotification)
+    func keyBoardWillShow(_ note:Notification)
     {
         let userInfo  = note.userInfo as! NSDictionary
-        var  keyBoardBounds = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
+        let  keyBoardBounds = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
         
-        var keyBoardBoundsRect = self.view.convertRect(keyBoardBounds, toView:nil)
+        var keyBoardBoundsRect = self.view.convert(keyBoardBounds, to:nil)
         
         var keyBaoardViewFrame = sendView.frame
-        var deltaY = keyBoardBounds.size.height
+        let deltaY = keyBoardBounds.size.height
         
         let animations:(() -> Void) = {
             
-            self.sendView.transform = CGAffineTransformMakeTranslation(0,-deltaY)
+            self.sendView.transform = CGAffineTransform(translationX: 0,y: -deltaY)
         }
         
         if duration > 0 {
-            let options = UIViewAnimationOptions(rawValue: UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).integerValue << 16))
+            let options = UIViewAnimationOptions(rawValue: UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).intValue << 16))
             
-            UIView.animateWithDuration(duration, delay: 0, options:options, animations: animations, completion: nil)
+            UIView.animate(withDuration: duration, delay: 0, options:options, animations: animations, completion: nil)
             
             
         }else{
@@ -1116,7 +1127,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         
     }
     
-    func keyBoardWillHide(note:NSNotification)
+    func keyBoardWillHide(_ note:Notification)
     {
         
         let userInfo  = note.userInfo as! NSDictionary
@@ -1126,14 +1137,14 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         
         let animations:(() -> Void) = {
             
-            self.sendView.transform = CGAffineTransformIdentity
+            self.sendView.transform = CGAffineTransform.identity
             
         }
         
         if duration > 0 {
-            let options = UIViewAnimationOptions(rawValue: UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).integerValue << 16))
+            let options = UIViewAnimationOptions(rawValue: UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).intValue << 16))
             
-            UIView.animateWithDuration(duration, delay: 0, options:options, animations: animations, completion: nil)
+            UIView.animate(withDuration: duration, delay: 0, options:options, animations: animations, completion: nil)
             
             
         }else{
@@ -1146,9 +1157,9 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         
     }
     
-    func handleTouches(sender:UITapGestureRecognizer){
+    func handleTouches(_ sender:UITapGestureRecognizer){
         
-        if sender.locationInView(self.view).y < self.view.bounds.height - 250{
+        if sender.location(in: self.view).y < self.view.bounds.height - 250{
             txtMsg.resignFirstResponder()
             
             

@@ -30,13 +30,13 @@ class DiscuzzViewController: UIViewController,UINavigationControllerDelegate,UIT
     
     
     
-    @IBAction func toptouchdown(sender: UIControl) {
+    @IBAction func toptouchdown(_ sender: UIControl) {
         //self.successNotice("aaa")
         self.view.endEditing(true)
 
 
     }
-    @IBAction func controltouchdown(sender: UIControl) {
+    @IBAction func controltouchdown(_ sender: UIControl) {
         //self.successNotice("bbb")
         self.view.endEditing(true)
 
@@ -44,21 +44,21 @@ class DiscuzzViewController: UIViewController,UINavigationControllerDelegate,UIT
     }
     
     
-    func textViewShouldBeginEditing(textView: UITextView!) -> Bool {
+    func textViewShouldBeginEditing(_ textView: UITextView!) -> Bool {
         return true;
     }
     
-    func textViewShouldEndEditing(textView: UITextView!) -> Bool {
+    func textViewShouldEndEditing(_ textView: UITextView!) -> Bool {
         return true;
     }
     
-    func textViewDidBeginEditing(textView: UITextView!) {
+    func textViewDidBeginEditing(_ textView: UITextView!) {
     }
     
-    func textViewDidEndEditing(textView: UITextView!) {
+    func textViewDidEndEditing(_ textView: UITextView!) {
     }
     
-    func textView(textView: UITextView!, shouldChangeTextInRange range: NSRange, replacementText text: String!) -> Bool {
+    func textView(_ textView: UITextView!, shouldChangeTextIn range: NSRange, replacementText text: String!) -> Bool {
         if(text=="\n")
         {
             self.view.endEditing(true)
@@ -67,17 +67,17 @@ class DiscuzzViewController: UIViewController,UINavigationControllerDelegate,UIT
         return true;
     }
     
-    func textViewDidChange(textView: UITextView!) {
+    func textViewDidChange(_ textView: UITextView!) {
     }
     
-    func textViewDidChangeSelection(textView: UITextView!) {
+    func textViewDidChangeSelection(_ textView: UITextView!) {
     }
     
-    func textView(textView: UITextView!, shouldInteractWithURL URL: NSURL!, inRange characterRange: NSRange) -> Bool {
+    func textView(_ textView: UITextView!, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {
         return true;
     }
     
-    func textView(textView: UITextView!, shouldInteractWithTextAttachment textAttachment: NSTextAttachment!, inRange characterRange: NSRange) -> Bool {
+    func textView(_ textView: UITextView!, shouldInteractWith textAttachment: NSTextAttachment!, in characterRange: NSRange) -> Bool {
         return true;
     }
     
@@ -88,28 +88,28 @@ class DiscuzzViewController: UIViewController,UINavigationControllerDelegate,UIT
 //        discuzzbody.resignFirstResponder()
 //
 //    }
-    @IBAction func sendDiscuzz(sender: UIButton) {
+    @IBAction func sendDiscuzz(_ sender: UIButton) {
         let sender = discuzzbody
         
-        if(sender.text?.characters.count==0)
+        if(sender?.text?.characters.count==0)
         {
             self.successNotice("评论不能为空")
             return;
         }
-        let date = NSDate()
-        let timeFormatter = NSDateFormatter()
+        let date = Date()
+        let timeFormatter = DateFormatter()
         timeFormatter.dateFormat = "yyy-MM-dd HH:mm:ss"
-        let strNowTime = timeFormatter.stringFromDate(date) as String
+        let strNowTime = timeFormatter.string(from: date) as String
         
-        let defaults = NSUserDefaults.standardUserDefaults();
-        senduserid = defaults.objectForKey("userid") as! String;
-        senduser = defaults.objectForKey("nickname") as! String;
+        let defaults = UserDefaults.standard;
+        senduserid = defaults.object(forKey: "userid") as! String;
+        senduser = defaults.object(forKey: "nickname") as! String;
         
-        headface = defaults.objectForKey("headface") as! String;
-        let  dic:Dictionary<String,String> = ["_infoid" : infoid,"_sendtime" : strNowTime,"_puserid" : puserid,"_puser" : puser,"_touserid" : senduserid,"_touser" : senduser,"_message" : sender.text!]
+        headface = defaults.object(forKey: "headface") as! String;
+        let  dic:Dictionary<String,String> = ["_infoid" : infoid,"_sendtime" : strNowTime,"_puserid" : puserid,"_puser" : puser,"_touserid" : senduserid,"_touser" : senduser,"_message" : sender!.text!]
          activityIndicatorView.startAnimating()
         let url_str:String = "http://api.bbxiaoqu.com/discuzz.php";
-        Alamofire.request(.POST,url_str, parameters:dic)
+        Alamofire.request(url_str,method:HTTPMethod.post,parameters:dic)
             .responseString{ response in
                 if(response.result.isSuccess)
                 {
@@ -136,55 +136,56 @@ class DiscuzzViewController: UIViewController,UINavigationControllerDelegate,UIT
     override func viewDidLoad() {
         super.viewDidLoad()
         initnavbar("发布文字评论")
+        
         // Do any additional setup after loading the view.
         loadinfo("guid",id: guid)
          discuzzbody.delegate = self;
         //self.discuzzbody.returnKeyType=UIReturnKeyDone;
-        activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
+        activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.white)
         
-        activityIndicatorView.frame = CGRectMake(self.view.frame.size.width/2 - 50, 250, 100, 100)
+        activityIndicatorView.frame = CGRect(x: self.view.frame.size.width/2 - 50, y: 250, width: 100, height: 100)
         
         
         
         activityIndicatorView.hidesWhenStopped = true
         
-        activityIndicatorView.color = UIColor.blackColor()
+        activityIndicatorView.color = UIColor.black
         
         self.view.addSubview(activityIndicatorView)
     }
     
-    func initnavbar(titlestr:String)
+    func initnavbar(_ titlestr:String)
     {
         self.title=titlestr
-        var returnimg=UIImage(named: "xz_nav_return_icon")
+        let returnimg=UIImage(named: "xz_nav_return_icon")
         
-        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "backClick")
+        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(DiscuzzViewController.backClick))
         
-        item3.tintColor=UIColor.whiteColor()
+        item3.tintColor=UIColor.white
         
         self.navigationItem.leftBarButtonItem=item3
         
         
         
         
-        var searchimg=UIImage(named: "xz_nav_icon_search")
+        let searchimg=UIImage(named: "xz_nav_icon_search")
         
-        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "searchClick")
+        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(DiscuzzViewController.searchClick))
         
-        item4.tintColor=UIColor.whiteColor()
+        item4.tintColor=UIColor.white
         
         self.navigationItem.rightBarButtonItem=item4
     }
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
     
     func searchClick()
     {
-        var sb = UIStoryboard(name:"Main", bundle: nil)
-        var vc = sb.instantiateViewControllerWithIdentifier("souviewcontroller") as! SouViewController
+        let sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "souviewcontroller") as! SouViewController
         self.navigationController?.pushViewController(vc, animated: true)
         //var vc = SearchViewController()
         //self.navigationController?.pushViewController(vc, animated: true)
@@ -197,33 +198,47 @@ class DiscuzzViewController: UIViewController,UINavigationControllerDelegate,UIT
     
     
     var photo:String=""
-    func loadinfo(idtype:String,id:String)
+    func loadinfo(_ idtype:String,id:String)
     {
         var url_str:String = "";
         if(idtype == "guid")
         {
-            url_str = "http://api.bbxiaoqu.com/getinfo_v1.php?idtype=guid&guid=".stringByAppendingString(id)
+            url_str = "http://api.bbxiaoqu.com/getinfo_v1.php?idtype=guid&guid=" + id
             
         }else
         {
-            url_str = "http://api.bbxiaoqu.com/getinfo_v1.php?idtype=infoid&guid=".stringByAppendingString(id)
+            url_str = "http://api.bbxiaoqu.com/getinfo_v1.php?idtype=infoid&guid=" + id
         }
-        Alamofire.request(.GET,url_str, parameters:nil)
+        Alamofire.request(url_str)
             .responseJSON {response in
                 if(response.result.isSuccess)
                 {
                     print(response.result.value)
                     if let JSON = response.result.value {
-                            self.infoid = JSON[0].objectForKey("id") as! String;
-                            self.title = JSON[0].objectForKey("title") as? String;
-                            self.headface = JSON[0].objectForKey("headface") as! String
-                            self.puserid = JSON[0].objectForKey("senduser") as! String;
-                            self.puser = JSON[0].objectForKey("username") as! String;
-                            let contentstr:String = JSON[0].objectForKey("content") as! String;
-                            let sendtimestr:String = JSON[0].objectForKey("sendtime") as! String;
-                            let sendaddress = JSON[0].objectForKey("address") as! String
-                            let status = JSON[0].objectForKey("status") as! String
-                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        
+                        let array:NSArray = JSON as! NSArray;
+                        let data:NSDictionary = array[0] as! NSDictionary;
+
+                        
+                            self.infoid = data.object(forKey: "id") as! String;
+                            self.title = data.object(forKey: "title") as? String;
+                            self.headface = data.object(forKey: "headface") as! String
+                            self.puserid = data.object(forKey: "senduser") as! String;
+                            self.puser = data.object(forKey: "username") as! String;
+                            let contentstr:String = data.object(forKey: "content") as! String;
+                            let sendtimestr:String = data.object(forKey: "sendtime") as! String;
+                            let sendaddress = data.object(forKey: "address") as! String
+                            let status = data.object(forKey: "status") as! String
+                            DispatchQueue.main.async(execute: { () -> Void in
+                                
+                                let options:NSStringDrawingOptions = .usesLineFragmentOrigin
+                                let boundingRect = contentstr.boundingRect(with: CGSize(width: self.view.frame.width, height: 0), options: options, attributes:[NSFontAttributeName:self.content_lbl.font], context: nil)
+                                
+                                self.content_lbl.frame = CGRect(x: self.content_lbl.frame.origin.x, y: self.content_lbl.frame.origin.y, width: self.view.frame.width, height: boundingRect.height)
+                                
+                                
+                                
+                                
                                 self.username_lbl.text = self.puser
                                 self.address_lbl.text = sendaddress
                                 self.time_lbl.text = sendtimestr;
@@ -237,7 +252,7 @@ class DiscuzzViewController: UIViewController,UINavigationControllerDelegate,UIT
                                 }
                                 if(self.headface.characters.count>0)
                                 {
-                                    let myhead:String="http://api.bbxiaoqu.com/uploads/".stringByAppendingString(self.headface)
+                                    let myhead:String="http://api.bbxiaoqu.com/uploads/" + self.headface
                                     Util.loadheadface(self.headface_img, url: myhead)
                                     self.headface_img.layer.cornerRadius = (self.headface_img.frame.width) / 2
                                     self.headface_img.layer.masksToBounds = true
@@ -262,13 +277,13 @@ class DiscuzzViewController: UIViewController,UINavigationControllerDelegate,UIT
     
     func AddInfoHelpUserThread()
     {
-        let defaults = NSUserDefaults.standardUserDefaults();
-        var senduseridstr = defaults.objectForKey("userid") as! String;
+        let defaults = UserDefaults.standard;
+        let senduseridstr = defaults.object(forKey: "userid") as! String;
         
         let  dics:Dictionary<String,String> = ["_userid" : self.puserid,"_senduserid" : senduseridstr,"_infoid" : self.infoid,"_guid" : self.guid,"_type" : "pl","_content" : discuzzbody.text,"_action" : "add"]
         
-        var url_str:String = "http://api.bbxiaoqu.com/addinfohelpuser_v1.php";
-        Alamofire.request(.POST,url_str, parameters:dics)
+        let url_str:String = "http://api.bbxiaoqu.com/addinfohelpuser_v1.php";
+        Alamofire.request(url_str,method:HTTPMethod.post, parameters:dics)
             .responseString{ response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -279,7 +294,7 @@ class DiscuzzViewController: UIViewController,UINavigationControllerDelegate,UIT
                 {
                     self.activityIndicatorView.stopAnimating()
                     //self.navigationController?.popViewControllerAnimated(true)
-                    var vc = ListViewController()
+                    let vc = ListViewController()
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
         }

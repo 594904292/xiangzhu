@@ -10,33 +10,33 @@ import UIKit
 
 class CHWMarqueeView: UIView {
     
-    private var marqueeTitle:String?
-    private var mark1:CGRect!
-    private var mark2:CGRect!
+    fileprivate var marqueeTitle:String?
+    fileprivate var mark1:CGRect!
+    fileprivate var mark2:CGRect!
 //    var bgColor: UIColor?
 //    var textColor: UIColor?
-    private var labArr = [UILabel]()
-    private var isStop = false
-    private var timeInterval1: NSTimeInterval!
+    fileprivate var labArr = [UILabel]()
+    fileprivate var isStop = false
+    fileprivate var timeInterval1: TimeInterval!
     
     convenience init(frame: CGRect, title: String) {
         
         self.init(frame: frame)
         marqueeTitle = " \(title) "
-        self.backgroundColor = UIColor.blackColor()
+        self.backgroundColor = UIColor.black
         self.clipsToBounds = true
-        timeInterval1 = NSTimeInterval((marqueeTitle?.characters.count)!/5)
+        timeInterval1 = TimeInterval((marqueeTitle?.characters.count)!/5)
         
         let lab = UILabel()
-        lab.frame = CGRectZero
-        lab.textColor = UIColor.redColor()
-        lab.font = UIFont.boldSystemFontOfSize(14.0)
+        lab.frame = CGRect.zero
+        lab.textColor = UIColor.red
+        lab.font = UIFont.boldSystemFont(ofSize: 14.0)
         lab.text = marqueeTitle
         
         //计算textLab的大小
-        let sizeOfText = lab.sizeThatFits(CGSizeZero)
-        mark1 = CGRectMake(0, 0, sizeOfText.width, self.bounds.size.height)
-        mark2 = CGRectMake(mark1.origin.x+mark1.size.width, 0, sizeOfText.width, self.bounds.size.height)
+        let sizeOfText = lab.sizeThatFits(CGSize.zero)
+        mark1 = CGRect(x: 0, y: 0, width: sizeOfText.width, height: self.bounds.size.height)
+        mark2 = CGRect(x: mark1.origin.x+mark1.size.width, y: 0, width: sizeOfText.width, height: self.bounds.size.height)
         lab.frame = mark1
         self.addSubview(lab)
         labArr.append(lab)
@@ -46,8 +46,8 @@ class CHWMarqueeView: UIView {
         if useReserve == true {
             
             let reserveTextLb = UILabel(frame: mark2)
-            reserveTextLb.textColor = UIColor.redColor()
-            reserveTextLb.font = UIFont.boldSystemFontOfSize(14.0)
+            reserveTextLb.textColor = UIColor.red
+            reserveTextLb.font = UIFont.boldSystemFont(ofSize: 14.0)
             reserveTextLb.text = marqueeTitle;
             self.addSubview(reserveTextLb)
             
@@ -65,10 +65,10 @@ class CHWMarqueeView: UIView {
            let lbindex0 = labArr[0]
            let lbindex1 = labArr[1]
 
-            UIView.transitionWithView(self, duration: timeInterval1, options: UIViewAnimationOptions.CurveLinear, animations: {
+            UIView.transition(with: self, duration: timeInterval1, options: UIViewAnimationOptions.curveLinear, animations: {
                 
-                lbindex0.frame = CGRectMake(-self.mark1.size.width, 0, self.mark1.size.width, self.mark1.size.height)
-                lbindex1.frame = CGRectMake(lbindex0.frame.origin.x+lbindex0.frame.size.width, 0, lbindex1.frame.size.width, lbindex1.frame.size.height)
+                lbindex0.frame = CGRect(x: -self.mark1.size.width, y: 0, width: self.mark1.size.width, height: self.mark1.size.height)
+                lbindex1.frame = CGRect(x: lbindex0.frame.origin.x+lbindex0.frame.size.width, y: 0, width: lbindex1.frame.size.width, height: lbindex1.frame.size.height)
                 
                 }, completion: { finished in
                     lbindex0.frame = self.mark2

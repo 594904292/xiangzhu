@@ -17,18 +17,18 @@ class PicViewController: UIViewController,UIScrollViewDelegate,UINavigationContr
     
     @IBOutlet weak var pic: UIImageView!
     
-    var timer:NSTimer!
+    var timer:Timer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         self.navigationItem.title="图片"
-        var returnimg=UIImage(named: "xz_nav_return_icon")
+        let returnimg=UIImage(named: "xz_nav_return_icon")
         
-        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "backClick")
+        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(PicViewController.backClick))
         
-        item3.tintColor=UIColor.whiteColor()
+        item3.tintColor=UIColor.white
         
         self.navigationItem.leftBarButtonItem=item3
 
@@ -43,23 +43,23 @@ class PicViewController: UIViewController,UIScrollViewDelegate,UINavigationContr
         //image width
         let imageW:CGFloat = self.galleryScrollView.frame.size.width;//获取ScrollView的宽作为图片的宽；
         let imageH:CGFloat = self.galleryScrollView.frame.size.height;//获取ScrollView的高作为图片的高；
-        var imageY:CGFloat = 0;//图片的Y坐标就在ScrollView的顶端；
-        var totalCount:NSInteger = self.pics.count;//轮播的图片数量；
+        let imageY:CGFloat = 0;//图片的Y坐标就在ScrollView的顶端；
+        let totalCount:NSInteger = self.pics.count;//轮播的图片数量；
         for index in 0..<totalCount{
-            var imageView:UIImageView = UIImageView();
+            let imageView:UIImageView = UIImageView();
             let imageX:CGFloat = CGFloat(index) * imageW;
-            imageView.frame = CGRectMake(imageX, imageY, imageW, imageH);//设置图片的大小，注意Image和ScrollView的关系，其实几张图片是按顺序从左向右依次放置在ScrollView中的，但是ScrollView在界面中显示的只是一张图片的大小，效果类似与画廊；
+            imageView.frame = CGRect(x: imageX, y: imageY, width: imageW, height: imageH);//设置图片的大小，注意Image和ScrollView的关系，其实几张图片是按顺序从左向右依次放置在ScrollView中的，但是ScrollView在界面中显示的只是一张图片的大小，效果类似与画廊；
             
             //图片添加阴影
             imageView.layer.shadowOpacity = 0.8
-            imageView.layer.shadowColor = UIColor.whiteColor().CGColor
+            imageView.layer.shadowColor = UIColor.white.cgColor
             imageView.layer.shadowOffset = CGSize(width: 1, height: 1)
             imageView.tag=index;
-            imageView.contentMode=UIViewContentMode.ScaleAspectFit
+            imageView.contentMode=UIViewContentMode.scaleAspectFit
             Util.loadpic(imageView, url: self.pics[index])
             
-            imageView.userInteractionEnabled = true
-            let tapGR = UITapGestureRecognizer(target: self, action: "tapHandler:")
+            imageView.isUserInteractionEnabled = true
+            let tapGR = UITapGestureRecognizer(target: self, action: #selector(PicViewController.tapHandler(_:)))
             imageView.addGestureRecognizer(tapGR)
 
 //
@@ -68,14 +68,14 @@ class PicViewController: UIViewController,UIScrollViewDelegate,UINavigationContr
         }         
         //需要非常注意的是：ScrollView控件一定要设置contentSize;包括长和宽；
         let contentW:CGFloat = imageW * CGFloat(totalCount);//这里的宽度就是所有的图片宽度之和；
-        self.galleryScrollView.contentSize = CGSizeMake(contentW, 0);
-        self.galleryScrollView.pagingEnabled = true;
+        self.galleryScrollView.contentSize = CGSize(width: contentW, height: 0);
+        self.galleryScrollView.isPagingEnabled = true;
         self.galleryScrollView.delegate = self;
         self.galleryPageControl.numberOfPages = totalCount;//下面的页码提示器；
         //self.addTimer()
         
     }
-    func tapHandler(sender:UITapGestureRecognizer) {
+    func tapHandler(_ sender:UITapGestureRecognizer) {
         ///////todo....
         let labelView:UIView = sender.view!;
         let tapTag:NSInteger = labelView.tag;
@@ -84,19 +84,19 @@ class PicViewController: UIViewController,UIScrollViewDelegate,UINavigationContr
     }
 
     
-    func nextImage(sender:AnyObject!){//图片轮播；
+    func nextImage(_ sender:AnyObject!){//图片轮播；
         var page:Int = self.galleryPageControl.currentPage;
         if(page == 4){   //循环；
             page = 0;
         }else{
-            page++;
+            page += 1;
         }
         let x:CGFloat = CGFloat(page) * self.galleryScrollView.frame.size.width;
-        self.galleryScrollView.contentOffset = CGPointMake(x, 0);//注意：contentOffset就是设置ScrollView的偏移；
+        self.galleryScrollView.contentOffset = CGPoint(x: x, y: 0);//注意：contentOffset就是设置ScrollView的偏移；
     }
     
     
-    func scrollViewDidScroll(scrollView: UIScrollView) {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
         //这里的代码是在ScrollView滚动后执行的操作，并不是执行ScrollView的代码；
         //这里只是为了设置下面的页码提示器；该操作是在图片滚动之后操作的；
         let scrollviewW:CGFloat = self.galleryScrollView.frame.size.width;
@@ -128,7 +128,7 @@ class PicViewController: UIViewController,UIScrollViewDelegate,UINavigationContr
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
         
     }
 }

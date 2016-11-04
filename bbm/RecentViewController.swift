@@ -12,7 +12,7 @@ class RecentViewController: UIViewController,UINavigationControllerDelegate,UITa
 
     @IBOutlet weak var _tableview: UITableView!
     var dataSource = NSMutableArray()
-    var currentIndexPath: NSIndexPath?
+    var currentIndexPath: IndexPath?
     var items:[itemRecent]=[]
     var db: SQLiteDB!
 
@@ -23,7 +23,7 @@ class RecentViewController: UIViewController,UINavigationControllerDelegate,UITa
 //    }
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.edgesForExtendedLayout = UIRectEdge.None
+        self.edgesForExtendedLayout = UIRectEdge()
         self.automaticallyAdjustsScrollViewInsets=false
         _tableview.delegate=self
         _tableview.dataSource=self
@@ -33,21 +33,21 @@ class RecentViewController: UIViewController,UINavigationControllerDelegate,UITa
         
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        db = SQLiteDB.sharedInstance()
+        db = SQLiteDB.sharedInstance
         querydata()
         
         //self.view.contentInset=UIEdgeInsetsMake(0, 0, 150, 0)
         //self.view.frame=CGRectMake(0,200,self.view.frame.size.width,self.view.frame.size.height-200)
-        let customView2 = UIView(frame: CGRectMake(0, 0, self.view.frame.width, 45))
+        let customView2 = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 45))
         
-        var head_label:UILabel = UILabel(frame:CGRectMake(10, 8, self.view.frame.width, 30))
+        let head_label:UILabel = UILabel(frame:CGRect(x: 10, y: 8, width: self.view.frame.width, height: 30))
         head_label.text = "最近联系"
-        head_label.textColor = UIColor.blackColor()
-        head_label.textAlignment = NSTextAlignment.Left
+        head_label.textColor = UIColor.black
+        head_label.textAlignment = NSTextAlignment.left
         //tel2_label.font = UIFont(name: "Bobz Type", size: 10)
-        head_label.font = UIFont.systemFontOfSize(15)
+        head_label.font = UIFont.systemFont(ofSize: 15)
         
-        let lineview = UIView(frame: CGRectMake(0, 44, self.view.frame.width, 1))
+        let lineview = UIView(frame: CGRect(x: 0, y: 44, width: self.view.frame.width, height: 1))
         lineview.backgroundColor=UIColor(colorLiteralRed: 212/255.0, green: 212/255.0, blue: 212/255.0, alpha: 1)
         
         
@@ -67,13 +67,13 @@ class RecentViewController: UIViewController,UINavigationControllerDelegate,UITa
 
     //获取总代理
     func zdl() -> AppDelegate {
-        return UIApplication.sharedApplication().delegate as! AppDelegate
+        return UIApplication.shared.delegate as! AppDelegate
     }
     
     
     //收到消息
-    func newRecentMsg(aMsg: WXMessage) {
-        db = SQLiteDB.sharedInstance()
+    func newRecentMsg(_ aMsg: WXMessage) {
+        db = SQLiteDB.sharedInstance
         querydata()
         
         
@@ -85,7 +85,7 @@ class RecentViewController: UIViewController,UINavigationControllerDelegate,UITa
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
     
     override func didReceiveMemoryWarning() {
@@ -104,43 +104,45 @@ class RecentViewController: UIViewController,UINavigationControllerDelegate,UITa
         
         let sql="select * from friend order by lasttime desc";
         NSLog(sql)
-        let mess = db.query(sql)
+        let mess = db.query(sql: sql)
+        
+         NSLog("\(mess.count)")
         if mess.count > 0 {
             //获取最后一行数据显示
-            for i in 0...mess.count-1
+            for i in 0..<mess.count
             {
-                let item = mess[i] as SQLRow
-                let userid = item["userid"]!.asString()
+                let item = mess[i]
+                let userid = item["userid"] as! String
                 //let nickname = item["nickname"]!.asString()
                 //let usericon = item["usericon"]!.asString()
                 
                 let usericon = sqlitehelp.shareInstance().loadheadface(userid)
                 let nickname = sqlitehelp.shareInstance().loadusername(userid)
                 
-                let lastinfo = item["lastinfo"]!.asString()
-                var lasttime = item["lasttime"]!.asString()
+                let lastinfo = item["lastinfo"] as! String
+                var lasttime = item["lasttime"] as! String
                 
                 
-                var date:NSDate = NSDate()
-                var formatter:NSDateFormatter = NSDateFormatter()
+                let date:Date = Date()
+                let formatter:DateFormatter = DateFormatter()
                 formatter.dateFormat = "yyyy-MM-dd"
-                var dateString = formatter.stringFromDate(date)
+                let dateString = formatter.string(from: date)
                 
-                if(lasttime.containsString(dateString))
+                if(lasttime.contains(dateString))
                 {
-                    lasttime = lasttime.subStringFrom(11)
+                    lasttime = lasttime.subString(start: 11)
                     
                 }else
                 {
                     
-                    lasttime = (lasttime as NSString).substringWithRange(NSRange(location: 0,length: 10))
+                    lasttime = (lasttime as NSString).substring(with: NSRange(location: 0,length: 10))
                 }
                 
-                let messnum = item["messnum"]!.asString()
-                var lastnickname = item["lastuserid"]!.asString()
-                if(loadusername(item["lastuserid"]!.asString()).characters.count>0)
+                let messnum = item["messnum"] as! String
+                var lastnickname = item["lastuserid"] as! String
+                if(loadusername(item["lastuserid"] as! String).characters.count>0)
                 {
-                    lastnickname=loadusername(item["lastuserid"]!.asString())
+                    lastnickname=loadusername(item["lastuserid"] as! String)
                 }
                 let item_obj:itemRecent=itemRecent(userid: userid, username: nickname, usericon: usericon, lastinfo: lastinfo, lastchattimer: lasttime, messnum: messnum, lastnickname: lastnickname)
                 self.items.append(item_obj)
@@ -158,17 +160,17 @@ class RecentViewController: UIViewController,UINavigationControllerDelegate,UITa
     }
     
     
-    func loadusername(userid:String)->String
+    func loadusername(_ userid:String)->String
     {
-        var db: SQLiteDB! = SQLiteDB.sharedInstance()
+        let db: SQLiteDB! = SQLiteDB.sharedInstance
         let sql="select * from users where userid='"+userid+"'";
         NSLog(sql)
-        let mess = db.query(sql)
+        let mess = db.query(sql: sql)
         if( mess.count>0)
         {
             NSLog("ok")
-            let item = mess[0] as SQLRow
-            return item["nickname"]!.asString()
+            let item = mess[0]
+            return item["nickname"] as! String
         }
         else
         {
@@ -180,14 +182,14 @@ class RecentViewController: UIViewController,UINavigationControllerDelegate,UITa
     
     
     
-     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         return self.items.count;
     }
     
     
     
-     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
         
     {
         
@@ -197,36 +199,37 @@ class RecentViewController: UIViewController,UINavigationControllerDelegate,UITa
         
         //无需强制转换
         
-        var cell:RecentTableViewCell? = tableView.dequeueReusableCellWithIdentifier(cellId) as? RecentTableViewCell
+        var cell:RecentTableViewCell? = tableView.dequeueReusableCell(withIdentifier: cellId) as? RecentTableViewCell
         
         if(cell == nil)
             
         {
             
-            cell = RecentTableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: cellId)
+            cell = RecentTableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: cellId)
             
         }
         cell?.name!.text = (self.items[indexPath.row] as itemRecent).username
         
         
-        cell?.content!.text = (self.items[indexPath.row] as itemRecent).lastnickname.stringByAppendingString(":").stringByAppendingString((self.items[indexPath.row] as itemRecent).lastinfo)
+        cell?.content!.text = ((self.items[indexPath.row] as itemRecent).lastnickname + ":") + (self.items[indexPath.row] as itemRecent).lastinfo
         
         
         cell?.lasttime!.text = (self.items[indexPath.row] as itemRecent).lastchattimer
         
         
-        var avatar:String = (self.items[indexPath.row] as itemRecent).usericon
+        let avatar:String = (self.items[indexPath.row] as itemRecent).usericon
         
         if(avatar.characters.count>0)
         {
-            var head = "http://api.bbxiaoqu.com/uploads/".stringByAppendingString(avatar)
+            let head = "http://api.bbxiaoqu.com/uploads/" + avatar
             
-            Alamofire.request(.GET, head).response { (_, _, data, _) -> Void in
-                if let d = data as? NSData!
-                {
-                    cell?.lastuericon.image=UIImage(data: d)
-                }
-            }
+            cell?.lastuericon.af_setImage(withURL: URL(string:head)!)
+            //Alamofire.request(.GET, head).response { (_, _, data, _) -> Void in
+              //  if let d = data as? Data!
+              //  {
+             //       cell?.lastuericon.image=UIImage(data: d)
+             //   }
+            //}
         }else
         {
             cell?.lastuericon.image=UIImage(named: "logo")
@@ -239,16 +242,16 @@ class RecentViewController: UIViewController,UINavigationControllerDelegate,UITa
         
         
         //cell?.messnum.value=(self.items[indexPath.row] as itemRecent).messnum
-        var anum:String = (self.items[indexPath.row] as itemRecent).messnum
+        let anum:String = (self.items[indexPath.row] as itemRecent).messnum
         
-        var aanum:Int = Int(anum)!
+        let aanum:Int = Int(anum)!
         cell?.messnum.value=aanum
         if aanum>0
         {
-            cell?.messnum.hidden=false;
+            cell?.messnum.isHidden=false;
         }else
         {
-            cell?.messnum.hidden=true;
+            cell?.messnum.isHidden=true;
         }
         
         //messnum: BadgeView!
@@ -258,25 +261,25 @@ class RecentViewController: UIViewController,UINavigationControllerDelegate,UITa
         
     }
     
-     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         NSLog("select \(indexPath.row)")
         
-        let defaults = NSUserDefaults.standardUserDefaults();
-        let senduserid = defaults.objectForKey("userid") as! String;
-        var seluserid:String = (self.items[indexPath.row] as itemRecent).userid
+        let defaults = UserDefaults.standard;
+        let senduserid = defaults.object(forKey: "userid") as! String;
+        let seluserid:String = (self.items[indexPath.row] as itemRecent).userid
         
         let sql = "update friend set messnum=0 where userid='\(seluserid)'"
-        db.execute(sql)
+        db.execute(sql: sql)
         
         let sql1 = "update chat set readed=1 where senduserid='\(seluserid)' or touserid='\(seluserid)'"
-        db.execute(sql1)
+        db.execute(sql: sql1)
         
         (self.items[indexPath.row] as itemRecent).messnum = "0";
         self._tableview.reloadData()
         
         let sb = UIStoryboard(name:"Main", bundle: nil)
-        let vc = sb.instantiateViewControllerWithIdentifier("chatviewController") as! ChatViewController
+        let vc = sb.instantiateViewController(withIdentifier: "chatviewController") as! ChatViewController
         //创建导航控制器
         vc.from=(self.items[indexPath.row] as itemRecent).userid
         vc.myself=senduserid;

@@ -11,7 +11,7 @@ import Alamofire
 class SettingViewController: UIViewController,UINavigationControllerDelegate {
     
     
-    @IBAction func uicontroldown(sender: UIControl) {
+    @IBAction func uicontroldown(_ sender: UIControl) {
         self.content.resignFirstResponder()
         //sender.resignFirstResponder()
     }
@@ -26,26 +26,26 @@ class SettingViewController: UIViewController,UINavigationControllerDelegate {
 //        self.navigationItem.leftBarButtonItem=UIBarButtonItem(title: "返回", style: UIBarButtonItemStyle.Done, target: self, action: "backClick")
 //        
         self.navigationItem.title="建议"
-        var returnimg=UIImage(named: "xz_nav_return_icon")
+        let returnimg=UIImage(named: "xz_nav_return_icon")
         
-        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "backClick")
+        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(SettingViewController.backClick))
         
-        item3.tintColor=UIColor.whiteColor()
+        item3.tintColor=UIColor.white
         
         self.navigationItem.leftBarButtonItem=item3
         
         
-        var searchimg=UIImage(named: "xz_nav_icon_search")
+        let searchimg=UIImage(named: "xz_nav_icon_search")
         
-        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "searchClick")
+        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(SettingViewController.searchClick))
         
-        item4.tintColor=UIColor.whiteColor()
+        item4.tintColor=UIColor.white
         
         self.navigationItem.rightBarButtonItem=item4
 
         
-        var contentlayer:CALayer = content.layer
-        contentlayer.borderColor=UIColor.lightGrayColor().CGColor
+        let contentlayer:CALayer = content.layer
+        contentlayer.borderColor=UIColor.lightGray.cgColor
         contentlayer.opacity=0.3
         contentlayer.borderWidth = 1.0;
         
@@ -61,13 +61,13 @@ class SettingViewController: UIViewController,UINavigationControllerDelegate {
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
     
     func searchClick()
     {
-        var sb = UIStoryboard(name:"Main", bundle: nil)
-        var vc = sb.instantiateViewControllerWithIdentifier("souviewcontroller") as! SouViewController
+        let sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "souviewcontroller") as! SouViewController
         self.navigationController?.pushViewController(vc, animated: true)
         //var vc = SearchViewController()
         //self.navigationController?.pushViewController(vc, animated: true)
@@ -75,22 +75,22 @@ class SettingViewController: UIViewController,UINavigationControllerDelegate {
 
     
     @IBOutlet weak var content: UITextView!
-    @IBAction func submit(sender: UIButton) {
+    @IBAction func submit(_ sender: UIButton) {
         if(content.text?.characters.count==0)
         {
             self.alertView = UIAlertView()
             self.alertView!.title = "提示"
             self.alertView!.message = "建议为空"
-            self.alertView!.addButtonWithTitle("关闭")
-            NSTimer.scheduledTimerWithTimeInterval(1, target:self, selector:"dismiss:", userInfo:self.alertView!, repeats:false)
+            self.alertView!.addButton(withTitle: "关闭")
+            Timer.scheduledTimer(timeInterval: 1, target:self, selector:#selector(SettingViewController.dismiss(_:)), userInfo:self.alertView!, repeats:false)
             self.alertView!.show()
             return;
         }
-        var alertView = UIAlertView()
+        let alertView = UIAlertView()
         alertView.title = "系统提示"
         alertView.message = "您确定提交建议吗？"
-        alertView.addButtonWithTitle("取消")
-        alertView.addButtonWithTitle("确定")
+        alertView.addButton(withTitle: "取消")
+        alertView.addButton(withTitle: "确定")
         alertView.cancelButtonIndex=0
         alertView.delegate=self;
         alertView.show()
@@ -98,26 +98,26 @@ class SettingViewController: UIViewController,UINavigationControllerDelegate {
         
        
     }
-    func dismiss(timer:NSTimer){
-        alertView!.dismissWithClickedButtonIndex(0, animated:true)
+    func dismiss(_ timer:Timer){
+        alertView!.dismiss(withClickedButtonIndex: 0, animated:true)
     }
     
-    func alertView(alertView:UIAlertView, clickedButtonAtIndex buttonIndex: Int){
+    func alertView(_ alertView:UIAlertView, clickedButtonAtIndex buttonIndex: Int){
         if(buttonIndex==alertView.cancelButtonIndex){
             print("点击了取消")
         }
         else
         {
             NSLog("add")
-            let defaults = NSUserDefaults.standardUserDefaults();
-            let userid = defaults.objectForKey("userid") as! String;
-            var date = NSDate()
-            var timeFormatter = NSDateFormatter()
+            let defaults = UserDefaults.standard;
+            let userid = defaults.object(forKey: "userid") as! String;
+            let date = Date()
+            let timeFormatter = DateFormatter()
             timeFormatter.dateFormat = "yyy-MM-dd HH:mm:ss"
-            var strNowTime = timeFormatter.stringFromDate(date) as String
+            let strNowTime = timeFormatter.string(from: date) as String
             let mess:String = content.text!
-            var  dic:Dictionary<String,String> = ["content" : mess, "userid": userid, "addtime": strNowTime]
-            Alamofire.request(.POST, "http://api.bbxiaoqu.com/savesuggest.php", parameters: dic)
+            let  dic:Dictionary<String,String> = ["content" : mess, "userid": userid, "addtime": strNowTime]
+            Alamofire.request("http://api.bbxiaoqu.com/savesuggest.php",method:HTTPMethod.post, parameters: dic)
                 .responseJSON { response in
                     print(response.request)  // original URL request
                     print(response.response) // URL response

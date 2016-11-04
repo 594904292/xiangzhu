@@ -19,18 +19,18 @@ var items:[ItemNotice]=[]
         self.navigationItem.title="最新消息"
         var returnimg=UIImage(named: "xz_nav_return_icon")
         
-        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: #selector(NoticeTableViewController.backClick))
+        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(NoticeTableViewController.backClick))
         
-        item3.tintColor=UIColor.whiteColor()
+        item3.tintColor=UIColor.white
         
         self.navigationItem.leftBarButtonItem=item3
         
         
         var searchimg=UIImage(named: "xz_nav_icon_search")
         
-        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "searchClick")
+        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.plain, target: self,  action: "searchClick")
         
-        item4.tintColor=UIColor.whiteColor()
+        item4.tintColor=UIColor.white
         
         self.navigationItem.rightBarButtonItem=item4
 
@@ -45,13 +45,13 @@ var items:[ItemNotice]=[]
 func backClick()
 {
     NSLog("back");
-    self.navigationController?.popViewControllerAnimated(true)
+    self.navigationController?.popViewController(animated: true)
 }
 
 func searchClick()
 {
     var sb = UIStoryboard(name:"Main", bundle: nil)
-    var vc = sb.instantiateViewControllerWithIdentifier("souviewcontroller") as! SouViewController
+    var vc = sb.instantiateViewController(withIdentifier: "souviewcontroller") as! SouViewController
     self.navigationController?.pushViewController(vc, animated: true)
     //var vc = SearchViewController()
     //self.navigationController?.pushViewController(vc, animated: true)
@@ -61,25 +61,27 @@ func searchClick()
 
     func querydata()
     {
-        let defaults = NSUserDefaults.standardUserDefaults();
-        let userid = defaults.objectForKey("userid") as! NSString;
-        var url:String="http://api.bbxiaoqu.com/getnotices.php?userid=".stringByAppendingString(userid as String);
+        let defaults = UserDefaults.standard;
+        let userid = defaults.object(forKey: "userid") as! NSString;
+        var url:String="http://api.bbxiaoqu.com/getnotices.php?userid=" + (userid as String);
         print("url: \(url)")
-        Alamofire.request(.GET, url, parameters: nil)
+        Alamofire.request(url)
             .responseJSON { response in
                 if(response.result.isSuccess)
                 {
                     if let jsonItem = response.result.value as? NSArray{
-                        for data in jsonItem{
+                        for tempdata in jsonItem{
+                            let data:NSDictionary = tempdata as! NSDictionary;
+
                             print("data: \(data)")
-                            var catagory:String = data.objectForKey("catagory") as! String;
-                            var content:String = data.objectForKey("content") as! String;
-                            var notictime:String = data.objectForKey("notictime") as! String;
+                            var catagory:String = data.object(forKey: "catagory") as! String;
+                            var content:String = data.object(forKey: "content") as! String;
+                            var notictime:String = data.object(forKey: "notictime") as! String;
                             
-                            var senduser:String = data.objectForKey("senduser") as! String;
-                            var username:String = data.objectForKey("username") as! String;
-                            var relation:String = data.objectForKey("relation") as! String;
-                            var readed:String = data.objectForKey("readed") as! String;
+                            var senduser:String = data.object(forKey: "senduser") as! String;
+                            var username:String = data.object(forKey: "username") as! String;
+                            var relation:String = data.object(forKey: "relation") as! String;
+                            var readed:String = data.object(forKey: "readed") as! String;
                            
                            
                              let item_obj:ItemNotice = ItemNotice(catagory: catagory, content: content, time: notictime, senduser: senduser, username: username, relation: relation, readed: readed)
@@ -99,22 +101,22 @@ func searchClick()
         
     }
 
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
     {
         return 0.0001;
     }
     
-    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat
     {
         return 0.0001;
     }
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         
         return self.items.count;
@@ -122,12 +124,12 @@ func searchClick()
     }
     
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellId="noticecell"
-        var cell:NoticeTableViewCell? = tableView.dequeueReusableCellWithIdentifier(cellId) as! NoticeTableViewCell?
+        var cell:NoticeTableViewCell? = tableView.dequeueReusableCell(withIdentifier: cellId) as! NoticeTableViewCell?
         if(cell == nil)
         {
-            cell = NoticeTableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: cellId)
+            cell = NoticeTableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: cellId)
         }
         
         if((items[indexPath.row] as ItemNotice).catagory=="pl")
@@ -149,7 +151,7 @@ func searchClick()
     }
     
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         NSLog("select \(indexPath.row)")
         print("clicked at \(indexPath.row)")
@@ -157,7 +159,7 @@ func searchClick()
         if(aa.catagory=="pl")
         {
             let sb = UIStoryboard(name:"Main", bundle: nil)
-            let vc = sb.instantiateViewControllerWithIdentifier("contentviewController") as! ContentViewController
+            let vc = sb.instantiateViewController(withIdentifier: "contentviewController") as! ContentViewController
             //创建导航控制器
             //vc.message = aa.content;
             vc.infoid=aa.relation

@@ -16,7 +16,7 @@ class FirstTabViewController: UIViewController {
         // Do any additional setup after loading the view.
         self.title = "TabBarItem #1"
         
-        self.view.backgroundColor = UIColor.purpleColor()
+        self.view.backgroundColor = UIColor.purple
     }
 
     override func didReceiveMemoryWarning() {

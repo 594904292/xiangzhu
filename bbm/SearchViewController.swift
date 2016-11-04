@@ -30,26 +30,26 @@ class SearchViewController: UIViewController,UINavigationControllerDelegate, UIT
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor=UIColor.whiteColor()
+        self.view.backgroundColor=UIColor.white
         self.navigationItem.title="襄助"
         
-        var item3 = UIBarButtonItem(title: "返回", style: UIBarButtonItemStyle.Done, target: self, action: "backClick")
-        item3.tintColor=UIColor.whiteColor()
+        let item3 = UIBarButtonItem(title: "返回", style: UIBarButtonItemStyle.done, target: self, action: #selector(SearchViewController.backClick))
+        item3.tintColor=UIColor.white
         
         self.navigationItem.leftBarButtonItem=item3
     
     
-        var item4 = UIBarButtonItem(title: "搜索", style: UIBarButtonItemStyle.Done, target: self, action: "searchClick")
-        item4.tintColor=UIColor.whiteColor()
+        let item4 = UIBarButtonItem(title: "搜索", style: UIBarButtonItemStyle.done, target: self, action: #selector(SearchViewController.searchClick))
+        item4.tintColor=UIColor.white
         self.navigationItem.rightBarButtonItem=item4
     
         //创建表视图
-        self.tableView = UITableView(frame: UIScreen.mainScreen().applicationFrame,
-                                     style:UITableViewStyle.Plain)
+        self.tableView = UITableView(frame: UIScreen.main.applicationFrame,
+                                     style:UITableViewStyle.plain)
         self.tableView!.delegate = self
         self.tableView!.dataSource = self
         //创建一个重用的单元格
-        self.tableView!.registerClass(UITableViewCell.self,
+        self.tableView!.register(UITableViewCell.self,
                                       forCellReuseIdentifier: "MyCell")
         self.view.addSubview(self.tableView!)
         
@@ -59,7 +59,7 @@ class SearchViewController: UIViewController,UINavigationControllerDelegate, UIT
             controller.searchResultsUpdater = self
             controller.hidesNavigationBarDuringPresentation = false
             controller.dimsBackgroundDuringPresentation = false
-            controller.searchBar.searchBarStyle = .Minimal
+            controller.searchBar.searchBarStyle = .minimal
             controller.searchBar.sizeToFit()
             self.tableView.tableHeaderView = controller.searchBar
             
@@ -74,7 +74,7 @@ class SearchViewController: UIViewController,UINavigationControllerDelegate, UIT
         //var sb = UIStoryboard(name:"Main", bundle: nil)
         //var vc = sb.instantiateViewControllerWithIdentifier("tabone") as! OneViewController
         //self.navigationController?.pushViewController(vc, animated: true)
-        var vc = SearchViewController()
+        let vc = SearchViewController()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -83,15 +83,15 @@ class SearchViewController: UIViewController,UINavigationControllerDelegate, UIT
         NSLog("back");
         //self.navigationController?.popViewControllerAnimated(true)
         let sb = UIStoryboard(name:"Main", bundle: nil)
-        let vc = sb.instantiateViewControllerWithIdentifier("loginController") as! LoginViewController
+        let vc = sb.instantiateViewController(withIdentifier: "loginController") as! LoginViewController
         
-        self.presentViewController(vc, animated: true, completion: nil)
+        self.present(vc, animated: true, completion: nil)
         
     }
 
     
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         self.tableView.reloadData()
     }
@@ -101,9 +101,9 @@ class SearchViewController: UIViewController,UINavigationControllerDelegate, UIT
     }
     
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        if (self.countrySearchController.active)
+        if (self.countrySearchController.isActive)
         {
             return self.searchArray.count
         } else
@@ -112,16 +112,16 @@ class SearchViewController: UIViewController,UINavigationControllerDelegate, UIT
         }
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath)
         -> UITableViewCell
     {
         //为了提供表格显示性能，已创建完成的单元需重复使用
         let identify:String = "MyCell"
         //同一形式的单元格重复使用，在声明时已注册
-        let cell = tableView.dequeueReusableCellWithIdentifier(identify,
-                                                               forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: identify,
+                                                               for: indexPath)
         
-        if (self.countrySearchController.active)
+        if (self.countrySearchController.isActive)
         {
             cell.textLabel?.text = self.searchArray[indexPath.row]
             return cell
@@ -134,19 +134,19 @@ class SearchViewController: UIViewController,UINavigationControllerDelegate, UIT
         }
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    func updateSearchResultsForSearchController(searchController: UISearchController)
+    func updateSearchResults(for searchController: UISearchController)
     {
-        self.searchArray.removeAll(keepCapacity: false)
+        self.searchArray.removeAll(keepingCapacity: false)
         print(searchController.searchBar.text)
         let searchPredicate = NSPredicate(format: "SELF CONTAINS[c] %@",
                                           searchController.searchBar.text!)
         let array = (self.schoolArray as NSArray)
-            .filteredArrayUsingPredicate(searchPredicate)
+            .filtered(using: searchPredicate)
         self.searchArray = array as! [String]
     }
 

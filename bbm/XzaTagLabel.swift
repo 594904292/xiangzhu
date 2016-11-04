@@ -1,6 +1,19 @@
 
 
 import UIKit
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
 
 
 //protocol FaceDelegate:NSObjectProtocol{
@@ -8,7 +21,7 @@ import UIKit
 //}
 //
 protocol XzaTagLabelDelegate:NSObjectProtocol{
-    func xzatapedTagLabel(labTag:NSInteger , labelText:String , tapedView:UIView);
+    func xzatapedTagLabel(_ labTag:NSInteger , labelText:String , tapedView:UIView);
 }
 
 
@@ -50,9 +63,9 @@ class XzaTagLabel: UIView {
     
     
     
-    func setTags(tagsArray:NSArray){
+    func setTags(_ tagsArray:NSArray){
         textArray = tagsArray;
-        sizeFit = CGSizeZero;
+        sizeFit = CGSize.zero;
         self.display();
     }
     
@@ -69,21 +82,24 @@ class XzaTagLabel: UIView {
         
         totalHeight = 0;
         
-        var previousFrame:CGRect = CGRectZero;
+        var previousFrame:CGRect = CGRect.zero;
         var gotPreviousFrame:Bool = false;
         
         
-        for var index = 0; index < textArray?.count; index += 1 {
+        
+            
+        for index:Int in 0 ..< (textArray?.count)!
+        {
             print("index is \(index)")
             
             
-            var text:String = textArray?.objectAtIndex(index) as! String;
+            let text:String = textArray?.object(at: index) as! String;
             
-            var tagSize = CGSize(width: self.frame.size.width ,height: 10000.0);
+            let tagSize = CGSize(width: self.frame.size.width ,height: 10000.0);
             //根据文字获取其占用的尺寸
-            var font:UIFont  = UIFont.systemFontOfSize(12);
+            let font:UIFont  = UIFont.systemFont(ofSize: 12);
             
-            var textRect:CGRect = text.boundingRectWithSize(tagSize, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName:font], context: nil);
+            var textRect:CGRect = text.boundingRect(with: tagSize, options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [NSFontAttributeName:font], context: nil);
             
             
             textRect.size.width = CGFloat(textRect.size.width + XZA_HORIZONTAL_PADDING * 2);
@@ -92,21 +108,21 @@ class XzaTagLabel: UIView {
             var label:UILabel?;
             
             if(!gotPreviousFrame){
-                label = UILabel(frame: CGRectMake(0, 0, textRect.width, textRect.height));
+                label = UILabel(frame: CGRect(x: 0, y: 0, width: textRect.width, height: textRect.height));
                 totalHeight = textRect.height;
             }else{
-                var newRect:CGRect = CGRectZero;
+                var newRect:CGRect = CGRect.zero;
                 
-                var aa:Float = Float(previousFrame.origin.x)
+                let aa:Float = Float(previousFrame.origin.x)
                     + Float(previousFrame.size.width) +
                     Float(textRect.width) +
                     Float(XZA_LABEL_MARGIN)
                 
                 if(aa  > Float(self.frame.size.width)){
-                    newRect.origin = CGPointMake(0, CGFloat(previousFrame.origin.y + textRect.height + XZA_BOTTOM_MARGIN));
+                    newRect.origin = CGPoint(x: 0, y: CGFloat(previousFrame.origin.y + textRect.height + XZA_BOTTOM_MARGIN));
                     totalHeight = CGFloat(totalHeight! + textRect.size.height + XZA_BOTTOM_MARGIN);
                 }else{
-                    newRect.origin = CGPointMake(CGFloat(previousFrame.origin.x + previousFrame.size.width + XZA_LABEL_MARGIN), CGFloat(previousFrame.origin.y));
+                    newRect.origin = CGPoint(x: CGFloat(previousFrame.origin.x + previousFrame.size.width + XZA_LABEL_MARGIN), y: CGFloat(previousFrame.origin.y));
                 }
                 
                 newRect.size = textRect.size;
@@ -120,35 +136,35 @@ class XzaTagLabel: UIView {
             previousFrame = label!.frame;
             gotPreviousFrame = true;
             
-            label?.font = UIFont.systemFontOfSize(12);
+            label?.font = UIFont.systemFont(ofSize: 12);
             label?.backgroundColor = XZA_BACKGROUND_COLOR;
-            label?.textColor = UIColor.grayColor();
+            label?.textColor = UIColor.gray;
             
             label?.text = text;
-            label?.textAlignment = NSTextAlignment.Center;
+            label?.textAlignment = NSTextAlignment.center;
             label?.layer.masksToBounds = true;
             
             label?.layer.cornerRadius = 3.0;
-            label?.layer.borderColor = UIColor.lightGrayColor().CGColor;
+            label?.layer.borderColor = UIColor.lightGray.cgColor;
             label?.layer.borderWidth = 0.8;
             
             label?.numberOfLines = 0;
-            label?.lineBreakMode = NSLineBreakMode.ByCharWrapping;
+            label?.lineBreakMode = NSLineBreakMode.byCharWrapping;
             
             label?.tag = index;
-            label?.userInteractionEnabled = true;
+            label?.isUserInteractionEnabled = true;
             
-            var tap = UITapGestureRecognizer(target:self, action:"tapLabel:");
+            let tap = UITapGestureRecognizer(target:self, action:#selector(XzaTagLabel.tapLabel(_:)));
             label?.addGestureRecognizer(tap);
             
             
-            allLabelArray?.addObject(label!);
+            allLabelArray?.add(label!);
             
         }
         
-        sizeFit = CGSizeMake(self.frame.size.width, totalHeight!+1.0);
+        sizeFit = CGSize(width: self.frame.size.width, height: totalHeight!+1.0);
         
-        var selfFrame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, totalHeight!);
+        let selfFrame = CGRect(x: self.frame.origin.x, y: self.frame.origin.y, width: self.frame.size.width, height: totalHeight!);
         
         self.frame = selfFrame;
         
@@ -159,11 +175,11 @@ class XzaTagLabel: UIView {
         return sizeFit!;
     }
     
-    func tapLabel(recognizer:UITapGestureRecognizer){
+    func tapLabel(_ recognizer:UITapGestureRecognizer){
         let labelView:UIView = recognizer.view!;
         let tapTag:NSInteger = labelView.tag;
         
-        let labelString:String = textArray?.objectAtIndex(tapTag) as! String;
+        let labelString:String = textArray?.object(at: tapTag) as! String;
         
         if(delegate != nil){
             delegate.xzatapedTagLabel(tapTag, labelText:labelString, tapedView: labelView);

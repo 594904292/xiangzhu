@@ -18,28 +18,28 @@ class TabOneViewController: UIViewController {
     var tel3_label:UILabel = UILabel()
     override func viewDidLoad() {
         super.viewDidLoad()
-        var w:CGFloat = self.view.frame.width
-        var h1:CGFloat = self.view.frame.height/10;
+        let w:CGFloat = self.view.frame.width
+        let h1:CGFloat = self.view.frame.height/10;
         let customView = UIView(frame: CGRect(x: 0, y: 0, width: w, height: h1*4))
         let imageView=UIImageView(image:UIImage(named:"banner1"))
-        imageView.frame=CGRectMake(0,0,w,h1*4)
+        imageView.frame=CGRect(x: 0,y: 0,width: w,height: h1*4)
         customView.addSubview(imageView)
         self.view.addSubview(customView)
         ////////////////////////////////////
         
-        var perww  = w/2/5
+        let perww  = w/2/5
         let customView2 = UIView(frame: CGRect(x: 0, y: h1*4, width: w/2, height: h1*3))
          //let leftbtn = UIButton(frame:CGRectMake(x1-60, y1-60, 120, 120))
-        let leftbtn = UIButton(frame:CGRectMake(perww, perww, perww*3, perww*3))
-        leftbtn.frame = CGRectMake(perww, perww, perww*3, perww*3)
-        leftbtn.setBackgroundImage(UIImage(named:"xz_si_icon"),forState:.Normal)
-        leftbtn.addTarget(self, action: #selector(TabOneViewController.leftbtn(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        let leftbtn = UIButton(frame:CGRect(x: perww, y: perww, width: perww*3, height: perww*3))
+        leftbtn.frame = CGRect(x: perww, y: perww, width: perww*3, height: perww*3)
+        leftbtn.setBackgroundImage(UIImage(named:"xz_si_icon"),for:UIControlState())
+        leftbtn.addTarget(self, action: #selector(TabOneViewController.leftbtn(_:)), for: UIControlEvents.touchUpInside)
         
         
-        var label:UILabel = UILabel(frame:CGRectMake(0, perww*4, w/2, perww))
+        let label:UILabel = UILabel(frame:CGRect(x: 0, y: perww*4, width: w/2, height: perww))
         label.text = "求帮助"
-        label.textColor = UIColor.blackColor()
-        label.textAlignment = NSTextAlignment.Center
+        label.textColor = UIColor.black
+        label.textAlignment = NSTextAlignment.center
         label.font = UIFont(name: "Bobz Type", size: 30)
         customView2.addSubview(label)
         customView2.addSubview(leftbtn)
@@ -47,50 +47,50 @@ class TabOneViewController: UIViewController {
         
         let customView3 = UIView(frame: CGRect(x: w/2, y: h1*4, width: w/2, height: h1*3))
         // customView3.backgroundColor=UIColor.greenColor()
-        let rightbtn = UIButton(frame:CGRectMake(perww, perww,perww*3, perww*3))
-        rightbtn.setBackgroundImage(UIImage(named:"xz_yuan_icon"),forState:.Normal)
-        rightbtn.addTarget(self, action: #selector(TabOneViewController.rightbtn(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        let rightbtn = UIButton(frame:CGRect(x: perww, y: perww,width: perww*3, height: perww*3))
+        rightbtn.setBackgroundImage(UIImage(named:"xz_yuan_icon"),for:UIControlState())
+        rightbtn.addTarget(self, action: #selector(TabOneViewController.rightbtn(_:)), for: UIControlEvents.touchUpInside)
 
         customView3.addSubview(rightbtn)
-        var rightlabel:UILabel = UILabel(frame:CGRectMake(0, perww*4, w/2, perww))
+        let rightlabel:UILabel = UILabel(frame:CGRect(x: 0, y: perww*4, width: w/2, height: perww))
         rightlabel.text = "我能帮"
-        rightlabel.textColor = UIColor.blackColor()
-        rightlabel.textAlignment = NSTextAlignment.Center
+        rightlabel.textColor = UIColor.black
+        rightlabel.textAlignment = NSTextAlignment.center
         rightlabel.font = UIFont(name: "Bobz Type", size: 30)
         customView3.addSubview(rightlabel)
         self.view.addSubview(customView3)
         ////////////////////////////////////
         let customView4 = UIView(frame: CGRect(x: 0, y: h1*7, width: w, height: h1*3))
-        var w3 = w/6
+        let w3 = w/6
         var y3 = w/6
-        var totalh=h1*3;
-        var childh=totalh/7;
-        let tel1 = UIButton(frame:CGRectMake(w3-childh, childh, childh*2, childh*2))
-        tel1.setBackgroundImage(UIImage(named:"xz_da_icon"),forState:.Normal)
-         tel1.addTarget(self, action: "tel1btn:", forControlEvents: UIControlEvents.TouchUpInside)
+        let totalh=h1*3;
+        let childh=totalh/7;
+        let tel1 = UIButton(frame:CGRect(x: w3-childh, y: childh, width: childh*2, height: childh*2))
+        tel1.setBackgroundImage(UIImage(named:"xz_da_icon"),for:UIControlState())
+         tel1.addTarget(self, action: #selector(TabOneViewController.tel1btn(_:)), for: UIControlEvents.touchUpInside)
         customView4.addSubview(tel1)
-        var tel1_label:UILabel = UILabel(frame:CGRectMake(0, childh*3, w/3, childh))
+        let tel1_label:UILabel = UILabel(frame:CGRect(x: 0, y: childh*3, width: w/3, height: childh))
         tel1_label.text = "110报警"
-        tel1_label.textColor = UIColor.blackColor()
-        tel1_label.textAlignment = NSTextAlignment.Center
+        tel1_label.textColor = UIColor.black
+        tel1_label.textAlignment = NSTextAlignment.center
         //tel1_label.font = UIFont(name: "Bobz Type", size: 10)
-        tel1_label.font = UIFont.systemFontOfSize(14)
+        tel1_label.font = UIFont.systemFont(ofSize: 14)
 
         customView4.addSubview(tel1_label)
         
         
         
         
-        let tel2 = UIButton(frame:CGRectMake(3*w3-childh, childh, childh*2, childh*2))
-        tel2.setBackgroundImage(UIImage(named:"xz_ji_icon"),forState:.Normal)
-        tel2.addTarget(self, action: "tel2btn:", forControlEvents: UIControlEvents.TouchUpInside)
+        let tel2 = UIButton(frame:CGRect(x: 3*w3-childh, y: childh, width: childh*2, height: childh*2))
+        tel2.setBackgroundImage(UIImage(named:"xz_ji_icon"),for:UIControlState())
+        tel2.addTarget(self, action: #selector(TabOneViewController.tel2btn(_:)), for: UIControlEvents.touchUpInside)
         customView4.addSubview(tel2)
-        var tel2_label:UILabel = UILabel(frame:CGRectMake(2*w3, childh*3, w/3, childh))
+        let tel2_label:UILabel = UILabel(frame:CGRect(x: 2*w3, y: childh*3, width: w/3, height: childh))
         tel2_label.text = "120报警"
-        tel2_label.textColor = UIColor.blackColor()
-        tel2_label.textAlignment = NSTextAlignment.Center
+        tel2_label.textColor = UIColor.black
+        tel2_label.textAlignment = NSTextAlignment.center
         //tel2_label.font = UIFont(name: "Bobz Type", size: 10)
-        tel2_label.font = UIFont.systemFontOfSize(14)
+        tel2_label.font = UIFont.systemFont(ofSize: 14)
 
         customView4.addSubview(tel2_label)
         
@@ -98,21 +98,21 @@ class TabOneViewController: UIViewController {
 
         
         //tel3 = UIButton(frame:CGRectMake(5*w3-25, y3-25, 50, 50))
-        tel3.frame=CGRectMake(5*w3-childh, childh, childh*2, childh*2)
-        tel3.setBackgroundImage(UIImage(named:"xz_ren_icon"),forState:.Normal)
-        tel3.addTarget(self, action: "tel3btn:", forControlEvents: UIControlEvents.TouchUpInside)
+        tel3.frame=CGRect(x: 5*w3-childh, y: childh, width: childh*2, height: childh*2)
+        tel3.setBackgroundImage(UIImage(named:"xz_ren_icon"),for:UIControlState())
+        tel3.addTarget(self, action: #selector(TabOneViewController.tel3btn(_:)), for: UIControlEvents.touchUpInside)
 
         customView4.addSubview(tel3)
 
         
         
         
-        tel3_label.frame=CGRectMake(4*w3, childh*3, w/3, childh)
+        tel3_label.frame=CGRect(x: 4*w3, y: childh*3, width: w/3, height: childh)
         tel3_label.text = "未设置"
         //tel3_label.attributedText = tel3strMutableString;
-        tel3_label.textColor = UIColor.blackColor()
-        tel3_label.textAlignment = NSTextAlignment.Center
-        tel3_label.font = UIFont.systemFontOfSize(14)
+        tel3_label.textColor = UIColor.black
+        tel3_label.textAlignment = NSTextAlignment.center
+        tel3_label.font = UIFont.systemFont(ofSize: 14)
         customView4.addSubview(tel3_label)
         
 
@@ -132,115 +132,141 @@ class TabOneViewController: UIViewController {
 
         self.view.addSubview(customView6)
         
-        let defaults = NSUserDefaults.standardUserDefaults();
-        let userid = defaults.objectForKey("userid") as! NSString;
+        let defaults = UserDefaults.standard;
+        let userid = defaults.object(forKey: "userid") as! NSString;
         loaduserinfo(userid as String);
+        loadgg();
     }
     
-    func leftbtn(sender:UIButton)
+    func leftbtn(_ sender:UIButton)
     {
         let sb = UIStoryboard(name:"Main", bundle: nil)
-        var vc = sb.instantiateViewControllerWithIdentifier("publishController") as! PublishViewController
+        let vc = sb.instantiateViewController(withIdentifier: "publishController") as! PublishViewController
         vc.cat=0;
         self.navigationController?.pushViewController(vc, animated: true)
 
     }
     
-    func rightbtn(sender:UIButton)
+    func rightbtn(_ sender:UIButton)
     {
-        var vc = ListViewController()
+        let vc = ListViewController()
         self.navigationController?.pushViewController(vc, animated: true)
     }
-    func tel1btn(sender:UIButton)
+    func tel1btn(_ sender:UIButton)
     {
-        UIApplication.sharedApplication().openURL(NSURL(string :"tel://110")!)
+        UIApplication.shared.openURL(URL(string :"tel://110")!)
     }
-    func tel2btn(sender:UIButton)
+    func tel2btn(_ sender:UIButton)
     {
         
-        UIApplication.sharedApplication().openURL(NSURL(string :"tel://120")!)
+        UIApplication.shared.openURL(URL(string :"tel://120")!)
     }
-    func tel3btn(sender:UIButton)
+    func tel3btn(_ sender:UIButton)
     {
         
-        UIApplication.sharedApplication().openURL(NSURL(string :"tel://"+"\(self.tel3_phonenum)")!)
+        UIApplication.shared.openURL(URL(string :"tel://"+"\(self.tel3_phonenum)")!)
         
     }
     
-//    func loaduser() {
-//        let defaults = NSUserDefaults.standardUserDefaults();
-//         let _userid = defaults.objectForKey("userid") as! NSString;
-//        Alamofire.request(.POST, "http://api.bbxiaoqu.com/login.php", parameters:["_userid" : _userid])
-//            .responseJSON { response in
-//                if(response.result.isSuccess)
-//                {
-//                    if let JSON = response.result.value {
-//                        print("JSON1: \(JSON.count)")
-//                        if(JSON.count>0)
-//                        {
-//                            
-//                                let isrecvmess:String = JSON.objectForKey("isrecvmess") as! String;
-//                                let isopenvoice:String = JSON.objectForKey("isopenvoice") as! String;
-//                            
-//                                
-//                                defaults.setObject(isrecvmess, forKey: "openmessflag");
-//                                defaults.setObject(isopenvoice, forKey: "openvoiceflag");
-//                                defaults.synchronize();
-//                                
-//                            
-//                        }else
-//                        {
-//                            defaults.setObject("1", forKey: "openmessflag");
-//                            defaults.setObject("1", forKey: "openvoiceflag");
-//                            defaults.synchronize();
-//                        }
-//                    }
-//                }else
-//                {
-//                    self.successNotice("网络请求错误")
-//                    print("网络请求错误")
-//                }
-//        }
-//    }
-    
-    
-    func loaduserinfo(userid:String)
+    func loaduserinfo(_ userid:String)
         
     {
         
-        var url_str:String = "http://api.bbxiaoqu.com/getuserinfo.php?userid=".stringByAppendingString(userid)
-        Alamofire.request(.POST,url_str, parameters:nil)
+        let url_str:String = "http://api.bbxiaoqu.com/getuserinfo.php?userid=" + userid
+        Alamofire.request(url_str)
             .responseJSON { response in
                 print(response.result.value)
-                if let JSON = response.result.value {
+                if let JSON:NSArray = response.result.value as! NSArray {
                     print("JSON1: \(JSON.count)")
                     if(JSON.count>0)
                     {
+                         let data:NSDictionary = JSON[0] as! NSDictionary;
+                        
                         var emergency:String;
-                        if(JSON[0].objectForKey("emergencycontact")!.isKindOfClass(NSNull))
+                        if(data.object(forKey: "emergencycontact")==nil)
                         {
                             emergency="";
                         }else
                         {
-                            emergency = JSON[0].objectForKey("emergencycontact") as! String;
+                            emergency = data.object(forKey: "emergencycontact") as! String;
                         }
                         var emergencytelphone:String;
-                         if(JSON[0].objectForKey("emergencycontacttelphone")!.isKindOfClass(NSNull))
+                        if(data.object(forKey: "emergencycontacttelphone")==nil)
                         {
                             emergencytelphone="";
                         }else
                         {
-                            emergencytelphone = JSON[0].objectForKey("emergencycontacttelphone") as! String;
+                            emergencytelphone = data.object(forKey: "emergencycontacttelphone") as! String;
                         }
                         if(emergency.characters.count>0)
-                         {
-                            self.tel3_label.text=emergency
-                         }else
                         {
-                             self.tel3_label.text="未设置"
+                            self.tel3_label.text=emergency
+                        }else
+                        {
+                            self.tel3_label.text="未设置"
                         }
                         
                         self.tel3_phonenum=emergencytelphone;
+                    }
+                }
+        }
+    }
+
+    
+    func loadgg()
+        
+    {
+        
+        let url_str:String = "http://api.bbxiaoqu.com/gonggao.php"
+        Alamofire.request(url_str,method:HTTPMethod.post, parameters:nil)
+            .responseJSON { response in
+                print(response.result.value)
+                if let JSON:NSArray = response.result.value as! NSArray {
+                    //print("JSON1: \(JSON.count)")
+                    
+                    if(JSON.count>0)
+                    {
+                        let data:NSDictionary=JSON[0] as! NSDictionary
+                        var id:String;
+                        if(data.object(forKey: "id")==nil)
+                        {
+                            id="";
+                        }else
+                        {
+                            id = data.object(forKey: "id") as! String;
+                        }
+                        var title:String;
+                         if(data.object(forKey: "title")==nil)
+                        {
+                            title="";
+                        }else
+                        {
+                            title = data.object(forKey: "title") as! String;
+                        }
+                        var content:String;
+                        if(data.object(forKey: "content")==nil)
+                        {
+                            content="";
+                        }else
+                        {
+                            content = data.object(forKey: "content") as! String;
+                        }
+                        var publishdate:String;
+                        if(data.object(forKey: "publishdate")==nil)
+                        {
+                            publishdate="";
+                        }else
+                        {
+                            publishdate = data.object(forKey: "publishdate") as! String;
+                        }
+                        
+                        
+                        let defaults = UserDefaults.standard;
+                        defaults.set(id, forKey: "ggid");
+                        defaults.set(title, forKey: "ggtitle");
+                        defaults.set(publishdate, forKey: "ggdate");
+                        defaults.synchronize();
+
                     }
                 }
         }
@@ -254,12 +280,12 @@ class TabOneViewController: UIViewController {
 //    }
 //    
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         print("-2");
     }
 
     
-   override  func viewDidDisappear(animated: Bool)
+   override  func viewDidDisappear(_ animated: Bool)
    {
         print("-1");
     }
@@ -268,7 +294,7 @@ class TabOneViewController: UIViewController {
 
     //获取总代理
     func zdl() -> AppDelegate {
-        return UIApplication.sharedApplication().delegate as! AppDelegate
+        return UIApplication.shared.delegate as! AppDelegate
     }
     
     
@@ -276,13 +302,13 @@ class TabOneViewController: UIViewController {
 
   
     
-    func newMainMsg(aMsg: WXMessage) {
+    func newMainMsg(_ aMsg: WXMessage) {
         
-        let defaults = NSUserDefaults.standardUserDefaults();
+        let defaults = UserDefaults.standard;
         var openmessflag:String=""
-        if(defaults.boolForKey("openmessflag"))
+        if(defaults.bool(forKey: "openmessflag"))
         {
-             openmessflag = defaults.objectForKey("openmessflag") as! String;
+             openmessflag = defaults.object(forKey: "openmessflag") as! String;
         }else
         {
             openmessflag="0"
@@ -290,9 +316,9 @@ class TabOneViewController: UIViewController {
         //var openmessflag:Bool = defaults.objectForKey("openmessflag") as! Bool;
        // var openvoiceflag:Bool = defaults.objectForKey("openvoiceflag") as! Bool;
         var openvoiceflag:String=""
-        if(defaults.boolForKey("openvoiceflag"))
+        if(defaults.bool(forKey: "openvoiceflag"))
         {
-            openvoiceflag = defaults.objectForKey("openvoiceflag") as! String;
+            openvoiceflag = defaults.object(forKey: "openvoiceflag") as! String;
         }else
         {
             openvoiceflag="0"
@@ -316,7 +342,7 @@ class TabOneViewController: UIViewController {
                 if openvoiceflag=="1"
                 {
                     
-                    var o:Notice=Notice();
+                    let o:Notice=Notice();
                     o.systemSound()
                     
                 }
@@ -326,25 +352,25 @@ class TabOneViewController: UIViewController {
 
        
 
-    @IBAction func cansos(sender: UIButton) {
-        var sb = UIStoryboard(name:"Main", bundle: nil)
-        var vc = sb.instantiateViewControllerWithIdentifier("tabone") as! OneViewController
+    @IBAction func cansos(_ sender: UIButton) {
+        let sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "tabone") as! OneViewController
         self.navigationController?.pushViewController(vc, animated: true)
         
     }
     
-    @IBAction func sos(sender: UIButton) {
-        var sb = UIStoryboard(name:"Main", bundle: nil)
-        var vc = sb.instantiateViewControllerWithIdentifier("publishController") as! PublishViewController
+    @IBAction func sos(_ sender: UIButton) {
+        let sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "publishController") as! PublishViewController
         vc.cat=0;
         self.navigationController?.pushViewController(vc, animated: true)
         
     }
 
     
-    @IBAction func top(sender: UIButton) {
-        var sb = UIStoryboard(name:"Main", bundle: nil)
-        var vc = sb.instantiateViewControllerWithIdentifier("topviewController") as! TopViewController
+    @IBAction func top(_ sender: UIButton) {
+        let sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "topviewController") as! TopViewController
        
         self.navigationController?.pushViewController(vc, animated: true)
         
@@ -352,14 +378,14 @@ class TabOneViewController: UIViewController {
     
 
     //处理方向变更信息
-    func didUpdateUserHeading(userLocation: BMKUserLocation!) {
+    func didUpdateUserHeading(_ userLocation: BMKUserLocation!) {
         if(userLocation.location != nil)
         {
             print("经度: \(userLocation.location.coordinate.latitude)")
             print("纬度: \(userLocation.location.coordinate.longitude)")
-            let defaults = NSUserDefaults.standardUserDefaults();
-            defaults.setObject(String(userLocation.location.coordinate.latitude), forKey: "lat");
-            defaults.setObject(String(userLocation.location.coordinate.longitude), forKey: "lng");
+            let defaults = UserDefaults.standard;
+            defaults.set(String(userLocation.location.coordinate.latitude), forKey: "lat");
+            defaults.set(String(userLocation.location.coordinate.longitude), forKey: "lng");
             defaults.synchronize();
             
             
@@ -372,15 +398,15 @@ class TabOneViewController: UIViewController {
     
     
     //处理位置坐标更新
-    func didUpdateBMKUserLocation(userLocation: BMKUserLocation!) {
+    func didUpdateBMKUserLocation(_ userLocation: BMKUserLocation!) {
          if(userLocation.location != nil)
          {
             print("经度: \(userLocation.location.coordinate.latitude)")
             print("纬度: \(userLocation.location.coordinate.longitude)")
             
-            var defaults = NSUserDefaults.standardUserDefaults();
-            defaults.setObject(String(userLocation.location.coordinate.latitude), forKey: "lat");
-            defaults.setObject(String(userLocation.location.coordinate.longitude), forKey: "lng");
+            let defaults = UserDefaults.standard;
+            defaults.set(String(userLocation.location.coordinate.latitude), forKey: "lat");
+            defaults.set(String(userLocation.location.coordinate.longitude), forKey: "lng");
             
 //            defaults.setNilValueForKey("province");//省直辖市
 //            defaults.setNilValueForKey("city");//城市
@@ -394,14 +420,14 @@ class TabOneViewController: UIViewController {
             
             let pt:CLLocationCoordinate2D=CLLocationCoordinate2D(latitude: userLocation.location.coordinate.latitude, longitude: userLocation.location.coordinate.longitude)
             
-            var option:BMKReverseGeoCodeOption=BMKReverseGeoCodeOption();
+            let option:BMKReverseGeoCodeOption=BMKReverseGeoCodeOption();
             option.reverseGeoPoint=pt;
             //_search.reverseGeoCode(option)
             
-            let _userid = defaults.objectForKey("userid") as! NSString;
-            let _token = defaults.objectForKey("token") as! NSString;
+            let _userid = defaults.object(forKey: "userid") as! NSString;
+            let _token = defaults.object(forKey: "token") as! NSString;
             
-            Alamofire.request(.POST, "http://api.bbxiaoqu.com/updatechannelid.php", parameters:["_userId" : _userid,"_channelId":_token])
+            Alamofire.request("http://api.bbxiaoqu.com/updatechannelid.php",method:HTTPMethod.post, parameters:["_userId" : _userid,"_channelId":_token])
                                 .responseJSON { response in
                                      print(response.result.value)
             }
@@ -409,7 +435,7 @@ class TabOneViewController: UIViewController {
 
             
             
-            Alamofire.request(.POST, "http://api.bbxiaoqu.com/updatelocation.php", parameters:["_userId" : _userid,"_lat":String(userLocation.location.coordinate.latitude),"_lng":String(userLocation.location.coordinate.longitude),"_os":"ios"])
+            Alamofire.request("http://api.bbxiaoqu.com/updatelocation.php", method:HTTPMethod.post, parameters:["_userId" : _userid,"_lat":String(userLocation.location.coordinate.latitude),"_lng":String(userLocation.location.coordinate.longitude),"_os":"ios"])
                                 .responseJSON { response in
                                     print(response.result.value)
                                     
@@ -420,7 +446,7 @@ class TabOneViewController: UIViewController {
     }
     
     
-    func onGetReverseGeoCodeResult(searcher:BMKGeoCodeSearch, result:BMKReverseGeoCodeResult,  errorCode:BMKSearchErrorCode)
+    func onGetReverseGeoCodeResult(_ searcher:BMKGeoCodeSearch, result:BMKReverseGeoCodeResult,  errorCode:BMKSearchErrorCode)
     {
         if(errorCode.rawValue==0)
         {
@@ -434,30 +460,30 @@ class TabOneViewController: UIViewController {
 
             
             print("address: \(result.address)")
-            let defaults = NSUserDefaults.standardUserDefaults();
-            defaults.setObject(result.addressDetail.province, forKey: "province");//省直辖市
-            defaults.setObject(result.addressDetail.city , forKey: "city");//城市
-            defaults.setObject(result.addressDetail.district , forKey: "sublocality");//区县
-            defaults.setObject(result.addressDetail.streetName, forKey: "thoroughfare");//街道
-            defaults.setObject(result.address  , forKey: "address");
+            let defaults = UserDefaults.standard;
+            defaults.set(result.addressDetail.province, forKey: "province");//省直辖市
+            defaults.set(result.addressDetail.city , forKey: "city");//城市
+            defaults.set(result.addressDetail.district , forKey: "sublocality");//区县
+            defaults.set(result.addressDetail.streetName, forKey: "thoroughfare");//街道
+            defaults.set(result.address  , forKey: "address");
             defaults.synchronize();
 
         }else
         {
-            let defaults = NSUserDefaults.standardUserDefaults();
+            let defaults = UserDefaults.standard;
             let a:String = "";
-            defaults.setObject("", forKey: "province");//省直辖市
-            defaults.setObject(a, forKey: "city");//城市
-            defaults.setObject(a, forKey: "sublocality");//区县
-            defaults.setObject(a, forKey: "thoroughfare");//街道
-            defaults.setObject(a, forKey: "address");
+            defaults.set("", forKey: "province");//省直辖市
+            defaults.set(a, forKey: "city");//城市
+            defaults.set(a, forKey: "sublocality");//区县
+            defaults.set(a, forKey: "thoroughfare");//街道
+            defaults.set(a, forKey: "address");
             defaults.synchronize();
 
         }
     }
     
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
            // locService.delegate = self
     }
     
@@ -468,47 +494,6 @@ class TabOneViewController: UIViewController {
   
   
     
-
-    func SetClick()
-    {
-        NSLog("SetClick")
-        var sb = UIStoryboard(name:"Main", bundle: nil)
-        var vc = sb.instantiateViewControllerWithIdentifier("tabfour") as! FourViewController
-        self.navigationController?.pushViewController(vc, animated: true)
-    }
-    
-    func exitClick()
-    {
-        NSLog("exitClick")
-        //exit(0)
-        var alertView = UIAlertView()
-        alertView.title = "系统提示"
-        alertView.message = "您确定要退出吗？"
-        alertView.addButtonWithTitle("取消")
-        alertView.addButtonWithTitle("确定")
-        alertView.cancelButtonIndex=0
-        alertView.delegate=self;
-        alertView.show()
-        
-       
-    }
-    
-    
-    func alertView(alertView:UIAlertView, clickedButtonAtIndex buttonIndex: Int){
-        if(buttonIndex==alertView.cancelButtonIndex){
-            
-        }
-        else
-        {
-            let sb = UIStoryboard(name:"Main", bundle: nil)
-            let vc = sb.instantiateViewControllerWithIdentifier("loginController") as! LoginViewController
-            //创建导航控制器
-            let nvc=UINavigationController(rootViewController:vc);
-            //设置根视图
-            self.view.window!.rootViewController=nvc;
-
-        }
-    }
 
 
     override func didReceiveMemoryWarning() {

@@ -17,7 +17,7 @@ class SecondTabViewController: UIViewController {
         
         self.title = "TabBarItem#2"
         
-        self.view.backgroundColor = UIColor.yellowColor()
+        self.view.backgroundColor = UIColor.yellow
     }
 
     override func didReceiveMemoryWarning() {

@@ -8,6 +8,30 @@
 
 import UIKit
 import Alamofire
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,BMKLocationServiceDelegate,BMKGeoCodeSearchDelegate{
     var cat=0;
@@ -28,18 +52,18 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
     var locService:BMKLocationService!
     var _search:BMKGeoCodeSearch!
     
-    @IBAction func contentexit(sender: UITextField) {
+    @IBAction func contentexit(_ sender: UITextField) {
         sender.resignFirstResponder()
     }
     
-    @IBAction func controlTouchDown(sender: UIControl) {
+    @IBAction func controlTouchDown(_ sender: UIControl) {
         content.resignFirstResponder()
     }
     override func viewDidLayoutSubviews() {
-        var w:CGFloat = UIScreen.mainScreen().bounds.width
-        var h1:CGFloat = self.view.frame.height/10
-        var ypos1 = CGFloat(0);
-        var ypos2 = h1*CGFloat(2);
+        let w:CGFloat = UIScreen.main.bounds.width
+        let h1:CGFloat = self.view.frame.height/10
+        let ypos1 = CGFloat(0);
+        let ypos2 = h1*CGFloat(2);
         var ypos3 = h1*CGFloat(3);
         
         print(content.frame)
@@ -47,14 +71,14 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
         print(content.frame)
         
         
-        var contentlayer:CALayer = content.layer
-        contentlayer.borderColor=UIColor.lightGrayColor().CGColor
+        let contentlayer:CALayer = content.layer
+        contentlayer.borderColor=UIColor.lightGray.cgColor
         contentlayer.opacity=0.3
         contentlayer.borderWidth = 1.0;
 
         
         
-        contenttip.frame=CGRectMake(0+5,ypos2+60,w-10,h1*1)
+        contenttip.frame=CGRect(x: 0+5,y: ypos2+60,width: w-10,height: h1*1)
         content.layer.layoutIfNeeded()
        
         
@@ -63,76 +87,76 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor=UIColor.whiteColor()
+        self.view.backgroundColor=UIColor.white
         
         //self.navigationItem.title="襄助"
         
-        var returnimg=UIImage(named: "xz_nav_return_icon")
-        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "backClick")
-        item3.tintColor=UIColor.whiteColor()
+        let returnimg=UIImage(named: "xz_nav_return_icon")
+        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(PublishViewController.backClick))
+        item3.tintColor=UIColor.white
         self.navigationItem.leftBarButtonItem=item3
 
-        var itemadd=UIBarButtonItem(title: "发送", style: UIBarButtonItemStyle.Done, target: self, action: "addClick")
-        itemadd.tintColor=UIColor.whiteColor()
+        let itemadd=UIBarButtonItem(title: "发送", style: UIBarButtonItemStyle.done, target: self, action: #selector(PublishViewController.addClick))
+        itemadd.tintColor=UIColor.white
         self.navigationItem.rightBarButtonItem=itemadd
         
         self.navigationItem.title="求帮助"
-        var w:CGFloat = UIScreen.mainScreen().bounds.width
-       var h1:CGFloat = self.view.frame.height/10
+        var w:CGFloat = UIScreen.main.bounds.width
+       let h1:CGFloat = self.view.frame.height/10
         var ypos1 = CGFloat(0);
-        var ypos2 = h1*CGFloat(3);
+        let ypos2 = h1*CGFloat(3);
         var ypos3 = h1*CGFloat(3)+90;
 
 
-        let bw:CGFloat = UIScreen.mainScreen().bounds.width
+        let bw:CGFloat = UIScreen.main.bounds.width
         var index=0
         let count = 4;
-             for(var j:Int=0;j<4;j++)
+             //for(j:Int, in 0 ..< 4)
+            for j:Int in 0 ..< 4
             {
                 let imageView:UIImageView = UIImageView();
                 let sw=bw/4;
-                var x:CGFloat = sw * CGFloat(j);
-                imageView.frame=CGRectMake(x+5, ypos2+50, sw-10, sw-10);
+                let x:CGFloat = sw * CGFloat(j);
+                imageView.frame = CGRect.init(x: x+5, y: ypos2+50, width: sw-10, height: sw-10);
                 imageView.tag = index
                 
                 /////设置允许交互属性
-                imageView.userInteractionEnabled = true;
+                imageView.isUserInteractionEnabled = true;
                 /////添加tapGuestureRecognizer手势
-                let tapGR = UITapGestureRecognizer(target: self, action: "goImagesel:")
+                let tapGR = UITapGestureRecognizer(target: self, action: #selector(PublishViewController.goImagesel(_:)))
                 imageView.addGestureRecognizer(tapGR)
 
                 //添加边框
-                var layer:CALayer = imageView.layer
-                layer.borderColor=UIColor.lightGrayColor().CGColor
+                let layer:CALayer = imageView.layer
+                layer.borderColor=UIColor.lightGray.cgColor
                 layer.opacity=1
                 layer.borderWidth = 1.0;
-                imageView.hidden=true
+                imageView.isHidden=true
                 arr.append(imageView)
                 self.view.addSubview(imageView);
                 
                 
                 let closeimageView:UIImageView = UIImageView();
-                var x1:CGFloat = sw * CGFloat(j+1);
-                closeimageView.frame=CGRectMake(x1-20, ypos2+50, 20, 20);
-                closeimageView.tag=index
+                let x1:CGFloat = sw * CGFloat(j+1);
+                closeimageView.frame=CGRect.init(x: x1-20, y: ypos2+50, width: 20, height: 20);                closeimageView.tag=index
                 closeimageView.image=UIImage(named: "xz_quxiao_icon")
-                closeimageView.hidden=true
+                closeimageView.isHidden=true
                 /////设置允许交互属性
-                closeimageView.userInteractionEnabled = true
+                closeimageView.isUserInteractionEnabled = true
                 /////添加tapGuestureRecognizer手势
-                let closetapGR = UITapGestureRecognizer(target: self, action: "goImageCancel:")
+                let closetapGR = UITapGestureRecognizer(target: self, action: #selector(PublishViewController.goImageCancel(_:)))
                 closeimageView.addGestureRecognizer(closetapGR)
 
                 closearr.append(closeimageView)
                 self.view.addSubview(closeimageView);
                 
-                index++
+                index += 1
         }
         
         let btn:UIImageView = arr[mCurrent] as UIImageView;
         btn.image=UIImage(named: "xz_jiji_icon")
-        btn.userInteractionEnabled = true
-        btn.hidden=false
+        btn.isUserInteractionEnabled = true
+        btn.isHidden=false
 
         
         // 设置定位精确度，默认：kCLLocationAccuracyBest
@@ -152,7 +176,7 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
         
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         
         _search.delegate=nil
         locService.delegate=self
@@ -162,30 +186,30 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
     
 
     //处理位置坐标更新
-    func didUpdateBMKUserLocation(userLocation: BMKUserLocation!) {
+    func didUpdate(_ userLocation: BMKUserLocation!) {
         if(userLocation.location != nil)
         {
             print("经度: \(userLocation.location.coordinate.latitude)")
             print("纬度: \(userLocation.location.coordinate.longitude)")
             
-            var defaults = NSUserDefaults.standardUserDefaults();
-            defaults.setObject(String(userLocation.location.coordinate.latitude), forKey: "lat");
-            defaults.setObject(String(userLocation.location.coordinate.longitude), forKey: "lng");
+            let defaults = UserDefaults.standard;
+            defaults.set(String(userLocation.location.coordinate.latitude), forKey: "lat");
+            defaults.set(String(userLocation.location.coordinate.longitude), forKey: "lng");
             defaults.synchronize();
             
             
             let pt:CLLocationCoordinate2D=CLLocationCoordinate2D(latitude: userLocation.location.coordinate.latitude, longitude: userLocation.location.coordinate.longitude)
             
-            var option:BMKReverseGeoCodeOption=BMKReverseGeoCodeOption();
+            let option:BMKReverseGeoCodeOption=BMKReverseGeoCodeOption();
             option.reverseGeoPoint=pt;
             _search.reverseGeoCode(option)
             locService.stopUserLocationService()
-            let _userid = defaults.objectForKey("userid") as! NSString;
-            if(defaults.objectForKey("token") != nil)
+            let _userid = defaults.object(forKey: "userid") as! NSString;
+            if(defaults.object(forKey: "token") != nil)
             {
-                let _token = defaults.objectForKey("token") as! NSString;
+                let _token = defaults.object(forKey: "token") as! NSString;
                 
-                Alamofire.request(.POST, "http://api.bbxiaoqu.com/updatechannelid.php", parameters:["_userId" : _userid,"_channelId":_token])
+                Alamofire.request("http://api.bbxiaoqu.com/updatechannelid.php", method:HTTPMethod.post, parameters:["_userId" : _userid,"_channelId":_token])
                     .responseJSON { response in
                         print(response.request)  // original URL request
                         print(response.response) // URL response
@@ -194,7 +218,7 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
                         print(response.result.value)
                 }
  
-                Alamofire.request(.POST, "http://api.bbxiaoqu.com/updatelocation.php", parameters:["_userId" : _userid,"_lat":String(userLocation.location.coordinate.latitude),"_lng":String(userLocation.location.coordinate.longitude),"_os":"ios"])
+                Alamofire.request("http://api.bbxiaoqu.com/updatelocation.php", method:HTTPMethod.post, parameters:["_userId" : _userid,"_lat":String(userLocation.location.coordinate.latitude),"_lng":String(userLocation.location.coordinate.longitude),"_os":"ios"])
                     .responseJSON { response in
                         print(response.request)  // original URL request
                         print(response.response) // URL response
@@ -210,7 +234,7 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
     }
     
     
-    func onGetReverseGeoCodeResult(searcher:BMKGeoCodeSearch, result:BMKReverseGeoCodeResult,  errorCode:BMKSearchErrorCode)
+    func onGetReverseGeoCodeResult(_ searcher:BMKGeoCodeSearch, result:BMKReverseGeoCodeResult,  errorCode:BMKSearchErrorCode)
     {
         if(errorCode.rawValue==0)
         {
@@ -224,23 +248,23 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
             
             
             print("address: \(result.address)")
-            let defaults = NSUserDefaults.standardUserDefaults();
-            defaults.setObject(result.addressDetail.province, forKey: "province");//省直辖市
-            defaults.setObject(result.addressDetail.city , forKey: "city");//城市
-            defaults.setObject(result.addressDetail.district , forKey: "sublocality");//区县
-            defaults.setObject(result.addressDetail.streetName, forKey: "thoroughfare");//街道
-            defaults.setObject(result.address  , forKey: "address");
+            let defaults = UserDefaults.standard;
+            defaults.set(result.addressDetail.province, forKey: "province");//省直辖市
+            defaults.set(result.addressDetail.city , forKey: "city");//城市
+            defaults.set(result.addressDetail.district , forKey: "sublocality");//区县
+            defaults.set(result.addressDetail.streetName, forKey: "thoroughfare");//街道
+            defaults.set(result.address  , forKey: "address");
             defaults.synchronize();
             
         }else
         {
-            let defaults = NSUserDefaults.standardUserDefaults();
+            let defaults = UserDefaults.standard;
             let a:String = "";
-            defaults.setObject("", forKey: "province");//省直辖市
-            defaults.setObject(a, forKey: "city");//城市
-            defaults.setObject(a, forKey: "sublocality");//区县
-            defaults.setObject(a, forKey: "thoroughfare");//街道
-            defaults.setObject(a, forKey: "address");
+            defaults.set("", forKey: "province");//省直辖市
+            defaults.set(a, forKey: "city");//城市
+            defaults.set(a, forKey: "sublocality");//区县
+            defaults.set(a, forKey: "thoroughfare");//街道
+            defaults.set(a, forKey: "address");
             defaults.synchronize();
             
         }
@@ -255,27 +279,27 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
 
     }
     
     
   
-    func uploadImg(image: String,filename: String){
+    func uploadImg(_ image: String,filename: String){
         //设定路径
-        var furl: NSURL = NSURL(fileURLWithPath: image)
+        let furl: URL = URL(fileURLWithPath: image)
         /** 把UIImage转化成NSData */
-        let imageData = NSData(contentsOfURL: furl)
+        let imageData = try? Data(contentsOf: furl)
         if (imageData != nil) {
         
         /** 设置上传图片的URL和参数 */
-        let defaults = NSUserDefaults.standardUserDefaults();
-        let user_id = defaults.stringForKey("userid")
+        let defaults = UserDefaults.standard;
+        let user_id = defaults.string(forKey: "userid")
         let url = "http://api.bbxiaoqu.com/upload.php?user=\(user_id!)"
-        let request = NSMutableURLRequest(URL: NSURL(string:url)!)
+        let request = NSMutableURLRequest(url: URL(string:url)!)
         
         /** 设定上传方法为Post */
-        request.HTTPMethod = "POST"
+        request.httpMethod = "POST"
         let boundary = NSString(format: "---------------------------14737809831466499882746641449")
         
         /** 上传文件必须设置 */
@@ -284,23 +308,23 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
         
         /** 设置上传Image图片属性 */
         let body = NSMutableData()
-        body.appendData(NSString(format: "\r\n--%@\r\n", boundary).dataUsingEncoding(NSUTF8StringEncoding)!)
+        body.append(NSString(format: "\r\n--%@\r\n", boundary).data(using: String.Encoding.utf8.rawValue)!)
         
-        body.appendData(NSString(format:"Content-Disposition: form-data; name=\"uploadfile\"; filename=\"%@\"\r\n",filename).dataUsingEncoding(NSUTF8StringEncoding)!)
+        body.append(NSString(format:"Content-Disposition: form-data; name=\"uploadfile\"; filename=\"%@\"\r\n",filename).data(using: String.Encoding.utf8.rawValue)!)
         
-        body.appendData(NSString(format: "Content-Type: application/octet-stream\r\n\r\n").dataUsingEncoding(NSUTF8StringEncoding)!)
-        body.appendData(imageData! as! NSData)
+        body.append(NSString(format: "Content-Type: application/octet-stream\r\n\r\n").data(using: String.Encoding.utf8.rawValue)!)
+        body.append(imageData! )
         
-        body.appendData(NSString(format: "\r\n--%@\r\n", boundary).dataUsingEncoding(NSUTF8StringEncoding)!)
-        request.HTTPBody = body
+        body.append(NSString(format: "\r\n--%@\r\n", boundary).data(using: String.Encoding.utf8.rawValue)!)
+        request.httpBody = body as Data
         
-        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) -> Void in
+        NSURLConnection.sendAsynchronousRequest(request as URLRequest, queue: OperationQueue.main, completionHandler: { (response, data, error) -> Void in
         
-        if (error == nil && data?.length > 0) {
+        if (error == nil && data?.count > 0) {
         
         /** 设置解码方式 */
-        let returnString = NSString(data: data!, encoding: NSUTF8StringEncoding)
-        let returnData = returnString?.dataUsingEncoding(NSUTF8StringEncoding)
+        let returnString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
+        let returnData = returnString?.data(using: String.Encoding.utf8.rawValue)
        
             print("returnString----\(returnString)")
         }
@@ -316,26 +340,26 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
             self.alertView = UIAlertView()
             self.alertView!.title = "提示"
             self.alertView!.message = "消息为空"
-            self.alertView!.addButtonWithTitle("关闭")
-            NSTimer.scheduledTimerWithTimeInterval(1, target:self, selector:"dismiss:", userInfo:self.alertView!, repeats:false)
+            self.alertView!.addButton(withTitle: "关闭")
+            Timer.scheduledTimer(timeInterval: 1, target:self, selector:#selector(PublishViewController.dismiss(_:)), userInfo:self.alertView!, repeats:false)
             self.alertView!.show()
             return;
         }
-        var alertView = UIAlertView()
+        let alertView = UIAlertView()
         alertView.title = "系统提示"
         alertView.message = "您确定发布信息吗？"
-        alertView.addButtonWithTitle("取消")
-        alertView.addButtonWithTitle("确定")
+        alertView.addButton(withTitle: "取消")
+        alertView.addButton(withTitle: "确定")
         alertView.cancelButtonIndex=0
         alertView.delegate=self;
         alertView.show()
     }
     
-    func dismiss(timer:NSTimer){
-        alertView!.dismissWithClickedButtonIndex(0, animated:true)
+    func dismiss(_ timer:Timer){
+        alertView!.dismiss(withClickedButtonIndex: 0, animated:true)
     }
     
-    func alertView(alertView:UIAlertView, clickedButtonAtIndex buttonIndex: Int){
+    func alertView(_ alertView:UIAlertView, clickedButtonAtIndex buttonIndex: Int){
         if(buttonIndex==alertView.cancelButtonIndex){
             print("点击了取消")
         }
@@ -344,7 +368,7 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
             NSLog("add")
             
             let mess:String = content.text!
-            Alamofire.request(.POST, "http://api.bbxiaoqu.com/words/isbadword.php", parameters:["mess" : mess])
+            Alamofire.request( "http://api.bbxiaoqu.com/words/isbadword.php",method:HTTPMethod.post, parameters:["mess" : mess])
                 .responseJSON { response in
                     if(response.result.isSuccess)
                     {
@@ -359,8 +383,8 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
                                     wwwstr=wwwstr+(data as! String)+","
                                     
                                 }
-                                self.contenttip.text="内容不能包含:".stringByAppendingString(wwwstr).stringByAppendingString("等敏感词信息")
-                                self.contenttip.textColor=UIColor.redColor()
+                                self.contenttip.text=("内容不能包含:" + wwwstr) + "等敏感词信息"
+                                self.contenttip.textColor=UIColor.red
                                 self.errorNotice("有敏感词")
                             }
                         }
@@ -376,34 +400,37 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
     func savedb()
     {
         NSLog("add")
-        var uuid:CFUUIDRef
+        var uuid:CFUUID
         var guid:String
         uuid = CFUUIDCreate(nil)
         guid = CFUUIDCreateString(nil, uuid) as String;
-        let defaults = NSUserDefaults.standardUserDefaults();
-        let userid = defaults.objectForKey("userid") as! String;
-        let lat = defaults.objectForKey("lat") as! String;
-        let lng = defaults.objectForKey("lng") as! String;
+        let defaults = UserDefaults.standard;
+        let userid = defaults.object(forKey: "userid") as! String;
+        let lat = defaults.object(forKey: "lat") as! String;
+        let lng = defaults.object(forKey: "lng") as! String;
         
         var photo:String = "";
         print(self.imgarr.count)
 
-        for(var i:Int = 0;i<self.imgarr.count;i++ )
+        //for(i:Int, in 0 ..< self.imgarr.count )
+        for i:Int in 0 ..< self.imgarr.count
         {
              NSLog("for")
             
-            var path:String = self.imgarr[i] as String
+            let path:String = self.imgarr[i] as String
             
-            var date = NSDate()
-            var timeFormatter = NSDateFormatter()
+            let date = Date()
+            let timeFormatter = DateFormatter()
             timeFormatter.dateFormat = "yyyMMddHHmmss"
-            var strNowTime = timeFormatter.stringFromDate(date) as String
+            let strNowTime = timeFormatter.string(from: date) as String
             
-            var spath:String = userid.stringByAppendingString("/").stringByAppendingString(strNowTime).stringByAppendingString("_").stringByAppendingString(String(i)).stringByAppendingString(".jpg")
+           // let spath:String = userid.stringByAppendingString("/").stringByAppendingString(strNowTime).stringByAppendingString("_").stringByAppendingString(String(i)).stringByAppendingString(".jpg")
             
-            var fname:String = strNowTime.stringByAppendingString("_").stringByAppendingString(String(i)).stringByAppendingString(".jpg")
+            let spath:String = userid.appending("/").appending(strNowTime).appending("_").appending(String(i)).appending(".jpg")
             
-            photo = photo.stringByAppendingString(spath)
+            let fname:String = ((strNowTime + "_") + String(i)) + ".jpg"
+            
+            photo = photo + spath
             if(i<imgarr.count-1)
             {
                 photo = photo+","
@@ -411,14 +438,14 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
             uploadImg(path,filename: fname)
         }
         
-        var date = NSDate()
-        var timeFormatter = NSDateFormatter()
+        let date = Date()
+        let timeFormatter = DateFormatter()
         timeFormatter.dateFormat = "yyy-MM-dd HH:mm:ss"
-        var strNowTime = timeFormatter.stringFromDate(date) as String
+        let strNowTime = timeFormatter.string(from: date) as String
         
         
         let mess:String = content.text!
-        var country:String = "";
+        let country:String = "";
 //        
 //        if(defaults.objectIsForcedForKey("country"))
 //        {
@@ -429,30 +456,30 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
 //        }
         
         var province:String = "";
-        if(defaults.objectForKey("province") != nil)
+        if(defaults.object(forKey: "province") != nil)
         {
-            province = (defaults.objectForKey("province") as? String)!;
+            province = (defaults.object(forKey: "province") as? String)!;
         }
         
         var city:String = "";
-         if(defaults.objectForKey("city") != nil)
+         if(defaults.object(forKey: "city") != nil)
          {
-                 city = (defaults.objectForKey("city") as? String)!;
+                 city = (defaults.object(forKey: "city") as? String)!;
         }
         
          var sublocality:String = "";
-        if(defaults.objectForKey("sublocality") != nil)
+        if(defaults.object(forKey: "sublocality") != nil)
         {
-             sublocality = (defaults.objectForKey("sublocality") as? String)!;
+             sublocality = (defaults.object(forKey: "sublocality") as? String)!;
         }
        
         var thoroughfare:String = "";
-        if(defaults.objectForKey("thoroughfare") != nil)
+        if(defaults.object(forKey: "thoroughfare") != nil)
         {
-             thoroughfare = (defaults.objectForKey("thoroughfare") as? String)!;
+             thoroughfare = (defaults.object(forKey: "thoroughfare") as? String)!;
         }
         
-        let address:String = (defaults.objectForKey("address") as? String)!;
+        let address:String = (defaults.object(forKey: "address") as? String)!;
 
         
         var  dic:Dictionary<String,String> = ["content" : mess, "guid": guid]
@@ -484,7 +511,7 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
         dic["radius"] = "-1";
         dic["speed"] = "-1";
         
-        Alamofire.request(.POST, "http://api.bbxiaoqu.com/send_test.php", parameters: dic)
+        Alamofire.request("http://api.bbxiaoqu.com/send_test.php",method:HTTPMethod.post, parameters: dic)
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -496,59 +523,60 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
                 //                }
                 
                 self.successNotice("发布成功")
-                self.navigationController?.popViewControllerAnimated(true)
+                self.navigationController?.popViewController(animated: true)
         }
     }
     
-    func goImageCancel(recognizer:UITapGestureRecognizer){
+    func goImageCancel(_ recognizer:UITapGestureRecognizer){
         let labelView:UIView = recognizer.view!;
         let rpos:NSInteger = labelView.tag;
         //var arr = [UIImageView]()
         //var closearr = [UIImageView]()
         print(rpos)
-        for(var i:Int=0;i<4;i++)
+       // for(i:Int, in 0 ..< 4)
+        for i:Int in 0 ..< 4
         {
             if(i>=rpos)
             {
                 if(i==rpos)
                 {
-                    var imgview:UIImageView=arr[i]
+                    let imgview:UIImageView=arr[i]
                     imgview.image=UIImage(named: "xz_jiji_icon")
-                    imgview.userInteractionEnabled = true
-                    imgview.hidden=false
+                    imgview.isUserInteractionEnabled = true
+                    imgview.isHidden=false
                 }else
                 {
-                    var imgview:UIImageView=arr[i]
+                    let imgview:UIImageView=arr[i]
                     imgview.image=UIImage(named: "xz_jiji_icon")
-                    imgview.hidden=true
+                    imgview.isHidden=true
 
                 }
             }
         }
         
-        for(var i:Int=0;i<4;i++)
+        for i:Int in 0 ..< 4
         {
-            var perspos=rpos-1
+            let perspos=rpos-1
             if(perspos==i)
             {
-                var imgview:UIImageView=closearr[i]
-                imgview.hidden=false
+                let imgview:UIImageView=closearr[i]
+                imgview.isHidden=false
 
             }else
             {
-                var imgview:UIImageView=closearr[i]
-                imgview.hidden=true
+                let imgview:UIImageView=closearr[i]
+                imgview.isHidden=true
             }
         }
         mCurrent=mCurrent-1
-        imgarr.removeAtIndex(mCurrent)
+        imgarr.remove(at: mCurrent)
         print("------");
         print("------");
         
     }
 
     
-    func goImagesel(recognizer:UITapGestureRecognizer)
+    func goImagesel(_ recognizer:UITapGestureRecognizer)
     {
         let labelView:UIView = recognizer.view!;
         let tapTag:NSInteger = labelView.tag;
@@ -557,10 +585,10 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
         print("------");
         print("------");
         let actionSheet = UIActionSheet(title: "图片来源", delegate: self, cancelButtonTitle: "照片", destructiveButtonTitle: "相机")
-        actionSheet.showInView(self.view)
+        actionSheet.show(in: self.view)
     }
     
-    func actionSheet(actionSheet: UIActionSheet, clickedButtonAtIndex buttonIndex: Int) {
+    func actionSheet(_ actionSheet: UIActionSheet, clickedButtonAt buttonIndex: Int) {
         if(buttonIndex==0)
         {
             goCamera()
@@ -572,65 +600,65 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
     //打开相机
     func goCamera(){
         //先设定sourceType为相机，然后判断相机是否可用（ipod）没相机，不可用将sourceType设定为相片库
-        var sourceType = UIImagePickerControllerSourceType.Camera
-        if !UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera){
-            sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+        var sourceType = UIImagePickerControllerSourceType.camera
+        if !UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera){
+            sourceType = UIImagePickerControllerSourceType.photoLibrary
         }
         let picker = UIImagePickerController()
         picker.delegate = self
         picker.allowsEditing = true//设置可编辑
         picker.sourceType = sourceType
         
-        self.presentViewController(picker, animated: true, completion: nil)//进入照相界面
+        self.present(picker, animated: true, completion: nil)//进入照相界面
     }
     
     
     //打开相册
     func goImage(){
         let pickerImage = UIImagePickerController()
-        if !UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.PhotoLibrary){
-            pickerImage.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
-            pickerImage.mediaTypes = UIImagePickerController.availableMediaTypesForSourceType(pickerImage.sourceType)!
+        if !UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.photoLibrary){
+            pickerImage.sourceType = UIImagePickerControllerSourceType.photoLibrary
+            pickerImage.mediaTypes = UIImagePickerController.availableMediaTypes(for: pickerImage.sourceType)!
         }
         pickerImage.delegate = self
         pickerImage.allowsEditing = true
-        self.presentViewController(pickerImage, animated: true, completion: nil)
+        self.present(pickerImage, animated: true, completion: nil)
         
     }
     
     
     //选择好照片后choose后执行的方法
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject])
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any])
     {
         //获取照片的原图
         img = info[UIImagePickerControllerEditedImage] as! UIImage
         let btn:UIImageView = arr[mCurrent] as UIImageView;
         /////设置允许交互属性
-        btn.userInteractionEnabled = false
+        btn.isUserInteractionEnabled = false
         //btn.setImage(img, forState:UIControlState.Normal)
         //btn.enabled=false;
         btn.image=img
-        btn.hidden=false;
+        btn.isHidden=false;
         let pos:String = String(mCurrent)
-        var iconImageFileName=pos.stringByAppendingString(".jpg")
+        let iconImageFileName=pos + ".jpg"
         //保存图片至沙盒
         //self.saveImage(img, newSize: CGSize(width: 256, height: 256), percent: 0.5, imageName: imgname)
         if(img.size.width>600)
         {
-            var rate = 600/img.size.width;
-            var ww:CGFloat = CGFloat(600);
-            var hh = img.size.height*rate;
+            let rate = 600/img.size.width;
+            let ww:CGFloat = CGFloat(600);
+            let hh = img.size.height*rate;
             self.saveImage(img, newSize: CGSize(width: ww, height: hh), percent: 0.7,imageName: iconImageFileName)
         }else
         {
-            var ww = img.size.width;
-            var hh = img.size.height;
+            let ww = img.size.width;
+            let hh = img.size.height;
              self.saveImage(img, newSize: CGSize(width: ww, height: hh), percent: 0.7,imageName: iconImageFileName)
         }
        
         
         //let fullPath: String = NSHomeDirectory().stringByAppendingString("/").stringByAppendingString("Documents").stringByAppendingString("/").stringByAppendingString(pos).stringByAppendingString(".png")
-       let fullPath = ((NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents") as NSString).stringByAppendingPathComponent(iconImageFileName)
+       let fullPath = ((NSHomeDirectory() as NSString).appendingPathComponent("Documents") as NSString).appendingPathComponent(iconImageFileName)
         
         print("fullPath=\(fullPath)")
         imgarr.append(fullPath);
@@ -641,15 +669,15 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
         
         if(mCurrent<3)
         {
-            var nextmCurrent=mCurrent+1;
+            let nextmCurrent=mCurrent+1;
             let addbtn:UIImageView = arr[nextmCurrent] as UIImageView;
            // addbtn.setTitle("添加", forState:UIControlState.Normal)
             //addbtn.enabled=true
             //addbtn.setImage(UIImage(named:"ic_add_picture"), forState:UIControlState.Normal)
             addbtn.image=UIImage(named: "xz_jiji_icon")
             /////设置允许交互属性
-            addbtn.userInteractionEnabled = true
-            addbtn.hidden=false
+            addbtn.isUserInteractionEnabled = true
+            addbtn.isHidden=false
             
         }
         for index in 0...3 {
@@ -657,43 +685,43 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
             if(index==mCurrent)
             {
                 let close:UIImageView = closearr[index] as UIImageView;
-                close.hidden=false
+                close.isHidden=false
 
             }else
             {
                 let close:UIImageView = closearr[index] as UIImageView;
-                close.hidden=true
+                close.isHidden=true
             }
         }
         mCurrent=mCurrent+1;
-        picker.dismissViewControllerAnimated(true, completion: nil)
+        picker.dismiss(animated: true, completion: nil)
 
     }
     
     
     
     //MARK: - 保存图片至沙盒
-    func saveImage(currentImage:UIImage,newSize: CGSize, percent: CGFloat,imageName:String){
+    func saveImage(_ currentImage:UIImage,newSize: CGSize, percent: CGFloat,imageName:String){
         
         UIGraphicsBeginImageContext(newSize)
-         currentImage.drawInRect(CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
-         let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+         currentImage.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+         let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
           UIGraphicsEndImageContext()
-        let imageData: NSData = UIImageJPEGRepresentation(newImage, percent)!
+        let imageData: Data = UIImageJPEGRepresentation(newImage, percent)!
 
         
         //var imageData = NSData()
         //imageData = UIImageJPEGRepresentation(currentImage, 0.5)!
         // 获取沙盒目录
-        let fullPath = ((NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents") as NSString).stringByAppendingPathComponent(imageName)
+        let fullPath = ((NSHomeDirectory() as NSString).appendingPathComponent("Documents") as NSString).appendingPathComponent(imageName)
         // 将图片写入文件
-        imageData.writeToFile(fullPath, atomically: false)
+        try? imageData.write(to: URL(fileURLWithPath: fullPath), options: [])
     }
 
     //cancel后执行的方法
-    func imagePickerControllerDidCancel(picker: UIImagePickerController){
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController){
         //println("cancel--------->>")
-        picker.dismissViewControllerAnimated(true, completion: nil)
+        picker.dismiss(animated: true, completion: nil)
         
     }
 

@@ -11,7 +11,7 @@ import UIKit
 // MARK: BadgeView
 
 @IBDesignable class BadgeView: UIView {
-    @IBInspectable var fontColor: UIColor = UIColor.whiteColor() {
+    @IBInspectable var fontColor: UIColor = UIColor.white {
         didSet {
             invalidateIntrinsicContentSize()
             setNeedsDisplay()
@@ -31,16 +31,16 @@ import UIKit
                 text = nil
             } else if value == 0 {
                 text = ""
-                state = .Flag
+                state = .flag
             } else if value < 10 {
                 text = "\(value)"
-                state = .NumericRound
+                state = .numericRound
             } else if value < 100 {
                 text = "\(value)"
-                state = .NumericSquare
+                state = .numericSquare
             } else {
                 text = "99+"
-                state = .NumericSquare
+                state = .numericSquare
             }
             
             invalidateIntrinsicContentSize()
@@ -57,64 +57,64 @@ import UIKit
     
     @IBInspectable var flagSize: CGSize = CGSize(width: 7.0, height: 7.0)
     
-    private var text: String? {
+    fileprivate var text: String? {
         didSet {
             if text == nil {
-                hidden = true
+                isHidden = true
             } else {
-                hidden = false
+                isHidden = false
             }
         }
     }
     
-    private let edgeInsets = UIEdgeInsets(top: 2.0, left: 10.0, bottom: 2.0, right: 10.0)
+    fileprivate let edgeInsets = UIEdgeInsets(top: 2.0, left: 10.0, bottom: 2.0, right: 10.0)
     
-    private enum State {
-        case NumericRound
-        case NumericSquare
-        case Flag
+    fileprivate enum State {
+        case numericRound
+        case numericSquare
+        case flag
     }
-    private var state: State = .Flag
+    fileprivate var state: State = .flag
     
-    private var textSize: CGSize {
-        return (text ?? "" as NSString).sizeWithAttributes(textAttributes)
+    fileprivate var textSize: CGSize {
+        return (text ?? ("" as NSString) as String).size(attributes: textAttributes)
     }
     
-    private var textAttributes: [String : AnyObject]? {
+    fileprivate var textAttributes: [String : AnyObject]? {
         return  [
-            NSFontAttributeName: UIFont.systemFontOfSize(fontSize),
+            NSFontAttributeName: UIFont.systemFont(ofSize: fontSize),
             NSForegroundColorAttributeName: fontColor
         ]
     }
     
-    override func drawRect(rect: CGRect) {
-        super.drawRect(rect)
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
         
         // Set corner radius
         switch state {
-        case .Flag:
+        case .flag:
             layer.cornerRadius = rect.height / 2.0
             return
-        case .NumericRound:
+        case .numericRound:
             layer.cornerRadius = rect.height / 2.0
-        case .NumericSquare:
+        case .numericSquare:
             layer.cornerRadius = cornerRadius
         }
         clipsToBounds = true
         
         // Draw text
         let textFrame = CGRect(origin: CGPoint(x: (rect.width - textSize.width) / 2.0, y: (rect.height - textSize.height) / 2.0), size: textSize)
-        (text ?? "" as NSString).drawInRect(textFrame, withAttributes: textAttributes)
+        (text ?? ("" as NSString) as String).draw(in: textFrame, withAttributes: textAttributes)
     }
     
-    override func intrinsicContentSize() -> CGSize {
+    override var intrinsicContentSize : CGSize {
         switch state {
-        case .Flag:
+        case .flag:
             return flagSize
-        case .NumericRound:
+        case .numericRound:
             let dimension = max(textSize.width + edgeInsets.right + edgeInsets.left, textSize.height + edgeInsets.top + edgeInsets.top + edgeInsets.bottom)
             return CGSize(width: dimension, height: dimension)
-        case .NumericSquare:
+        case .numericSquare:
             return CGSize(width: textSize.width + edgeInsets.right + edgeInsets.left, height: textSize.height + edgeInsets.top + edgeInsets.top + edgeInsets.bottom)
         }
     }

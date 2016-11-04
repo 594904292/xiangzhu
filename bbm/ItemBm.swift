@@ -18,13 +18,13 @@ class ItemBm: NSObject {
     var sex:String = ""
     var guid:String = ""
     var infoid:String = ""
-    var type:String = ""
+    var typestr:String = ""
     var content:String = ""
     var contentid:String = ""
     var status:String = ""
     
     
-    init(id:String,userid:String,senduserid:String,username:String,telphone:String,headface:String,sex:String,guid:String,infoid:String,type:String,content:String,contentid:String,status:String)
+    init(id:String,userid:String,senduserid:String,username:String,telphone:String,headface:String,sex:String,guid:String,infoid:String,typestr:String,content:String,contentid:String,status:String)
     {
          self.id = id
          self.userid = userid
@@ -35,7 +35,7 @@ class ItemBm: NSObject {
          self.sex = sex
          self.guid = guid
          self.infoid = infoid
-         self.type = type
+         self.typestr = typestr
          self.content = content
          self.contentid = contentid
          self.status = status

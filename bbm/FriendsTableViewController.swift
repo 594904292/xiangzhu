@@ -11,7 +11,7 @@ import Alamofire
 class FriendsTableViewController: UITableViewController {
 
     var dataSource = NSMutableArray()
-    var currentIndexPath: NSIndexPath?
+    var currentIndexPath: IndexPath?
     var items:[Friends]=[]
 
     override func viewDidLoad() {
@@ -29,7 +29,7 @@ class FriendsTableViewController: UITableViewController {
     }
     
     
-    func initnavbar(titlestr:String)
+    func initnavbar(_ titlestr:String)
     {
         self.title=titlestr
 //        var item1 = UIBarButtonItem(title: "返回", style: UIBarButtonItemStyle.Done, target: self, action: "backClick")
@@ -40,22 +40,22 @@ class FriendsTableViewController: UITableViewController {
 //        self.navigationItem.rightBarButtonItem = itemsearch
         
         
-        var returnimg=UIImage(named: "xz_nav_return_icon")
+        let returnimg=UIImage(named: "xz_nav_return_icon")
         
-        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "backClick")
+        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(FriendsTableViewController.backClick))
         
-        item3.tintColor=UIColor.whiteColor()
+        item3.tintColor=UIColor.white
         
         self.navigationItem.leftBarButtonItem=item3
         
         
         
         
-        var searchimg=UIImage(named: "xz_nav_icon_search")
+        let searchimg=UIImage(named: "xz_nav_icon_search")
         
-        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "searchClick")
+        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(FriendsTableViewController.searchClick))
         
-        item4.tintColor=UIColor.whiteColor()
+        item4.tintColor=UIColor.white
         
         self.navigationItem.rightBarButtonItem=item4
         
@@ -65,13 +65,13 @@ class FriendsTableViewController: UITableViewController {
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
     
     func searchClick()
     {
-        var sb = UIStoryboard(name:"Main", bundle: nil)
-        var vc = sb.instantiateViewControllerWithIdentifier("souviewcontroller") as! SouViewController
+        let sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "souviewcontroller") as! SouViewController
         self.navigationController?.pushViewController(vc, animated: true)
         //var vc = SearchViewController()
         //self.navigationController?.pushViewController(vc, animated: true)
@@ -87,12 +87,11 @@ class FriendsTableViewController: UITableViewController {
     func querydata()
     {
         
-        let defaults = NSUserDefaults.standardUserDefaults();
-        let userid = defaults.objectForKey("userid") as! String;
-        let url:String="http://api.bbxiaoqu.com/getfriends.php?mid1=".stringByAppendingString(userid);
+        let defaults = UserDefaults.standard;
+        let userid = defaults.object(forKey: "userid") as! String;
+        let url:String="http://api.bbxiaoqu.com/getfriends.php?mid1=" + userid;
         print("url: \(url)")
-        Alamofire.request(.GET, url, parameters: nil)
-            .responseJSON { response in
+        Alamofire.request(url).responseJSON { response in
                 if(response.result.isSuccess)
                 {
 
@@ -103,19 +102,19 @@ class FriendsTableViewController: UITableViewController {
                             print("好友列表为空")
                             return;
                     }
-                    for data in jsonItem{
-                        print("data: \(data)")
+                    for tempdata in jsonItem{
+                        print("data: \(tempdata)")
                         
-                       
-                        let userid:String = data.objectForKey("userid") as! String;
-                        let username:String = data.objectForKey("username") as! String;
-                        let headface:String = data.objectForKey("headface") as! String;
+                        let data:NSDictionary = tempdata as! NSDictionary
+                        let userid:String = data.object(forKey: "userid") as! String;
+                        let username:String = data.object(forKey: "username") as! String;
+                        let headface:String = data.object(forKey: "headface") as! String;
                         
                         let item_obj:Friends = Friends(userid: userid, name: username, logo: headface)
                         self.items.append(item_obj)
                         
                     }
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    DispatchQueue.main.async(execute: { () -> Void in
                         self.tableView.reloadData();
                         
                     })
@@ -131,38 +130,39 @@ class FriendsTableViewController: UITableViewController {
     
     
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         return self.items.count;
     }
     
     
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cellId = "friendscell"
         //无需强制转换
-         var cell:FriendsTableViewCell? = tableView.dequeueReusableCellWithIdentifier(cellId) as? FriendsTableViewCell!
+         var cell:FriendsTableViewCell? = tableView.dequeueReusableCell(withIdentifier: cellId) as? FriendsTableViewCell!
          if(cell == nil)
         {
-            cell = FriendsTableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: cellId)
+            cell = FriendsTableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: cellId)
 
         }
         cell?.names.text=(self.items[indexPath.row] as Friends).username
         
-        var avatar:String = (self.items[indexPath.row] as Friends).avatar;
+        let avatar:String = (self.items[indexPath.row] as Friends).avatar;
         
         if(avatar.characters.count>0)
         {
-        var head = "http://api.bbxiaoqu.com/uploads/".stringByAppendingString(avatar)
-         Alamofire.request(.GET, head).response {
-                 (_, _, data, _) -> Void in
-                if let d = data as? NSData!
-                {
-                    cell?.headface.image=UIImage(data: d)
-                }
-            
-            }
+            let head = "http://api.bbxiaoqu.com/uploads/" + avatar
+            cell?.headface.af_setImage(withURL: URL(string:head)!)
+//         Alamofire.request(.GET, head).response {
+//                 (_, _, data, _) -> Void in
+//                if let d = data as? Data!
+//                {
+//                    cell?.headface.image=UIImage(data: d)
+//                }
+//            
+//            }
         }else
         {
             cell?.headface.image=UIImage(named: "logo")
@@ -175,14 +175,14 @@ class FriendsTableViewController: UITableViewController {
          return cell!
     }
 
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         NSLog("select \(indexPath.row)")
         
-        let defaults = NSUserDefaults.standardUserDefaults();
-        var senduserid = defaults.objectForKey("userid") as! String;
+        let defaults = UserDefaults.standard;
+        let senduserid = defaults.object(forKey: "userid") as! String;
         let sb = UIStoryboard(name:"Main", bundle: nil)
-        let vc = sb.instantiateViewControllerWithIdentifier("chatviewController") as! ChatViewController
+        let vc = sb.instantiateViewController(withIdentifier: "chatviewController") as! ChatViewController
         //创建导航控制器
         vc.from=(self.items[indexPath.row] as Friends).userid
         vc.myself=senduserid;

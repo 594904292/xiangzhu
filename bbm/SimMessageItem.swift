@@ -4,8 +4,8 @@ import UIKit
 //消息类型，我的还是别人的
 enum SimChatType
 {
-    case Mine
-    case Someone
+    case mine
+    case someone
 }
 
 class SimMessageItem
@@ -52,34 +52,34 @@ class SimMessageItem
     //构造文本消息体
     convenience init(body:NSString, logo:String, date:String, mtype:SimChatType)
     {
-        var font =  UIFont.boldSystemFontOfSize(12)
+        let font =  UIFont.boldSystemFont(ofSize: 12)
         
         var width =  225, height = 10000.0
         
-        var atts =  NSMutableDictionary()
-        atts.setObject(font,forKey:NSFontAttributeName)
+        let atts =  NSMutableDictionary()
+        atts.setObject(font,forKey:NSFontAttributeName as NSCopying)
         
-        var size =  body.boundingRectWithSize(CGSizeMake(CGFloat(width), CGFloat(height)),
-            options:NSStringDrawingOptions.UsesLineFragmentOrigin, attributes:nil, context:nil)
+        let size =  body.boundingRect(with: CGSize(width: CGFloat(width), height: CGFloat(height)),
+            options:NSStringDrawingOptions.usesLineFragmentOrigin, attributes:nil, context:nil)
         
-        var label =  UILabel(frame:CGRectMake(0, 0, size.size.width, size.size.height))
+        let label =  UILabel(frame:CGRect(x: 0, y: 0, width: size.size.width, height: size.size.height))
         
         label.numberOfLines = 0
-        label.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        label.lineBreakMode = NSLineBreakMode.byWordWrapping
         label.text = (body.length != 0 ? body as String : "")
         label.font = font
-        label.backgroundColor = UIColor.clearColor()
+        label.backgroundColor = UIColor.clear
         
         
         
-        var datelabel =  UILabel(frame:CGRectMake(0, 30, size.size.width, size.size.height))
+        let datelabel =  UILabel(frame:CGRect(x: 0, y: 30, width: size.size.width, height: size.size.height))
         
         datelabel.numberOfLines = 0
-        datelabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        datelabel.lineBreakMode = NSLineBreakMode.byWordWrapping
         datelabel.text = date
         datelabel.font = font
         
-        var insets:UIEdgeInsets =  (mtype == SimChatType.Mine ?
+        let insets:UIEdgeInsets =  (mtype == SimChatType.mine ?
             SimMessageItem.getTextInsetsMine() : SimMessageItem.getTextInsetsSomeone())
         
         self.init(logo:logo, date:date, mtype:mtype, view:label, dateview:datelabel,insets:insets)

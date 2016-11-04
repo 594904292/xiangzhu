@@ -20,32 +20,32 @@ class AboutViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         self.navigationItem.title="关于"
-        var returnimg=UIImage(named: "xz_nav_return_icon")
+        let returnimg=UIImage(named: "xz_nav_return_icon")
         
-        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "backClick")
+        let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(AboutViewController.backClick))
         
-        item3.tintColor=UIColor.whiteColor()
+        item3.tintColor=UIColor.white
         
         self.navigationItem.leftBarButtonItem=item3
         
         
-        var searchimg=UIImage(named: "xz_nav_icon_search")
+        let searchimg=UIImage(named: "xz_nav_icon_search")
         
-        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "searchClick")
+        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(AboutViewController.searchClick))
         
-        item4.tintColor=UIColor.whiteColor()
+        item4.tintColor=UIColor.white
         
         self.navigationItem.rightBarButtonItem=item4
         
-        let infoDictionary = NSBundle .mainBundle ().infoDictionary
+        let infoDictionary = Bundle.main.infoDictionary
         
-        let appDisplayName: AnyObject? = infoDictionary![ "CFBundleDisplayName"]
+        //let appDisplayName: AnyObject? = infoDictionary![ "CFBundleDisplayName"] as AnyObject?
         
         let majorVersion : String = infoDictionary! [ "CFBundleShortVersionString"] as! String
         
         let minorVersion : String = infoDictionary! [ "CFBundleVersion"] as! String
         
-        about.text="襄助(".stringByAppendingString(majorVersion).stringByAppendingString(".").stringByAppendingString(minorVersion).stringByAppendingString(")是基于位置的是传播正能量的联网互助平台。让附近的人互相帮忙，我们希望把大众的力量组织起来，有一技之长的人可以通过“襄助”为附近的人提供帮助；普通大众可以通过“襄助” 快速寻求帮助。 “涓滴之水成海洋，颗颗爱心变希望”。")
+        about.text=((("襄助(" + majorVersion) + ".") + minorVersion) + ")是基于位置的是传播正能量的联网互助平台。让附近的人互相帮忙，我们希望把大众的力量组织起来，有一技之长的人可以通过“襄助”为附近的人提供帮助；普通大众可以通过“襄助” 快速寻求帮助。 “涓滴之水成海洋，颗颗爱心变希望”。"
         
         
         Util.loadpic(self.downimg, url: downurl)
@@ -58,19 +58,19 @@ class AboutViewController: UIViewController {
     func AddImgClick()
     {
         
-        downimg.userInteractionEnabled = true
+        downimg.isUserInteractionEnabled = true
         
-        var singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "goimg")
+        let singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(AboutViewController.goimg))
         downimg .addGestureRecognizer(singleTap)
         
     }
     
     func goimg()
     {
-        var sb = UIStoryboard(name:"Main", bundle: nil)
-        let vc = sb.instantiateViewControllerWithIdentifier("bigpicviewcontroller") as!BigPicViewController
+        let sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "bigpicviewcontroller") as!BigPicViewController
         
-        let nsd = NSData(contentsOfURL:NSURL(string: downurl)!)
+        let nsd = try? Data(contentsOf: URL(string: downurl)!)
         let image:UIImage = UIImage(data: nsd!)!
         
         vc.showimage = image;
@@ -89,13 +89,13 @@ class AboutViewController: UIViewController {
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController!.popViewController(animated: true)
     }
     
     func searchClick()
     {
-        var sb = UIStoryboard(name:"Main", bundle: nil)
-        var vc = sb.instantiateViewControllerWithIdentifier("souviewcontroller") as! SouViewController
+        let sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "souviewcontroller") as! SouViewController
         self.navigationController?.pushViewController(vc, animated: true)
         //var vc = SearchViewController()
         //self.navigationController?.pushViewController(vc, animated: true)

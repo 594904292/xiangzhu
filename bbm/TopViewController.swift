@@ -37,14 +37,14 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
     
     
     override func viewDidLayoutSubviews() {
-        let w:CGFloat = UIScreen.mainScreen().bounds.width
+        let w:CGFloat = UIScreen.main.bounds.width
         var h1:CGFloat = self.view.frame.height/10
-        var namestr:String=myusername.text!
-        let options:NSStringDrawingOptions = .UsesLineFragmentOrigin
-        let boundingRect = namestr.boundingRectWithSize(CGSizeMake(w, 0), options: options, attributes:[NSFontAttributeName:myusername.font], context: nil)
+        let namestr:String=myusername.text!
+        let options:NSStringDrawingOptions = .usesLineFragmentOrigin
+        let boundingRect = namestr.boundingRect(with: CGSize(width: w, height: 0), options: options, attributes:[NSFontAttributeName:myusername.font], context: nil)
     
-        var pox=boundingRect.size.width+56+10
-        mysex.frame = CGRectMake(pox, 20, 10, 15)
+        let pox=boundingRect.size.width+56+10
+        mysex.frame = CGRect(x: pox, y: 20, width: 10, height: 15)
         
         
         self.myheadface.layer.cornerRadius = myheadface.frame.width / 2
@@ -61,7 +61,7 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
 
               // Do any additional setup after loading the view.
         self.navigationItem.title="排行榜"
-        self.navigationItem.leftBarButtonItem=UIBarButtonItem(title: "返回", style: UIBarButtonItemStyle.Done, target: self, action: "backClick")
+        self.navigationItem.leftBarButtonItem=UIBarButtonItem(title: "返回", style: UIBarButtonItemStyle.done, target: self, action: #selector(TopViewController.backClick))
         self.automaticallyAdjustsScrollViewInsets=false
         
         
@@ -71,35 +71,35 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
         loadrate();
         // 定义一个 activityIndicatorView
         
-        activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
-        activityIndicatorView.frame = CGRectMake(self.view.frame.size.width/2 - 50, 250, 100, 100)
+        activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.white)
+        activityIndicatorView.frame = CGRect(x: self.view.frame.size.width/2 - 50, y: 250, width: 100, height: 100)
         
         activityIndicatorView.hidesWhenStopped = true
-        activityIndicatorView.color = UIColor.blackColor()
+        activityIndicatorView.color = UIColor.black
         self.view.addSubview(activityIndicatorView)
         
         
         
         
-        let bw:CGFloat = UIScreen.mainScreen().bounds.width
-        var pox=bw/3
-        headscoretxt.frame=CGRectMake(pox, 13, 34, 21)
+        let bw:CGFloat = UIScreen.main.bounds.width
+        let pox=bw/3
+        headscoretxt.frame=CGRect(x: pox, y: 13, width: 34, height: 21)
         
-        headnumtxt.frame=CGRectMake(pox*2, 13, 34, 21)
+        headnumtxt.frame=CGRect(x: pox*2, y: 13, width: 34, height: 21)
         
         
         headnumtxt.textColor=UIColor(red: 204/255, green: 0, blue: 0, alpha: 1)
         
 
-        headscoretxt.userInteractionEnabled=true
+        headscoretxt.isUserInteractionEnabled=true
         //点击事件
-        let tap = UITapGestureRecognizer.init(target: self, action: Selector.init("tapscoreLabel"))
+        let tap = UITapGestureRecognizer.init(target: self, action: #selector(TopViewController.tapscoreLabel))
         //绑定tap
         headscoretxt.addGestureRecognizer(tap)
         
-        headnumtxt.userInteractionEnabled=true
+        headnumtxt.isUserInteractionEnabled=true
 
-        let tapnum = UITapGestureRecognizer.init(target: self, action: Selector.init("tapnumLabel"))
+        let tapnum = UITapGestureRecognizer.init(target: self, action: #selector(TopViewController.tapnumLabel))
         //绑定tap
         headnumtxt.addGestureRecognizer(tapnum)
          querydata();
@@ -111,7 +111,7 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
     func tapscoreLabel(){
         
         headscoretxt.textColor=UIColor(red: 204/255, green: 0, blue: 0, alpha: 1)
-        headnumtxt.textColor=UIColor.grayColor()
+        headnumtxt.textColor=UIColor.gray
         ordermethon=0
         querydata();
 
@@ -121,7 +121,7 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
     func tapnumLabel(){
         
         headnumtxt.textColor=UIColor(red: 204/255, green: 0, blue: 0, alpha: 1)
-        headscoretxt.textColor=UIColor.grayColor()
+        headscoretxt.textColor=UIColor.gray
         ordermethon=1
         querydata();
 
@@ -137,37 +137,37 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
         
     }
     func loadrate()
     {
-        let defaults = NSUserDefaults.standardUserDefaults();
-        let userid = defaults.objectForKey("userid") as! String;
-        var url:String="http://api.bbxiaoqu.com/myrank_v1.php?userid=".stringByAppendingString(userid);
+        let defaults = UserDefaults.standard;
+        let userid = defaults.object(forKey: "userid") as! String;
+        let url:String="http://api.bbxiaoqu.com/myrank_v1.php?userid=" + userid;
         print("url: \(url)")
-        Alamofire.request(.GET, url, parameters: nil)
+        Alamofire.request(url)
             .responseJSON { response in
             if(response.result.isSuccess)
             {
                 if let data = response.result.value as? NSDictionary{
                      print("data: \(data)")
-                    var userid:String = data.valueForKey("userid") as! String;
-                    var username:String = data.valueForKey("username") as! String;
+                    var userid:String = data.value(forKey: "userid") as! String;
+                    let username:String = data.value(forKey: "username") as! String;
                     self.myusername.text = username;
                     
                     
-                    var head = "http://api.bbxiaoqu.com/uploads/".stringByAppendingString(data.valueForKey("headface") as! String)
-                    
-                    Alamofire.request(.GET, head).response { (_, _, data, _) -> Void in
-                        if let d = data as? NSData!
-                        {
-                            self.myheadface.image=UIImage(data: d)
-                        }
-                    }
+                    let head = "http://api.bbxiaoqu.com/uploads/" + (data.value(forKey: "headface") as! String)
+                    self.myheadface.af_setImage(withURL: URL(string:head)!)
+                    //Alamofire.request(.GET, head).response { (_, _, data, _) -> Void in
+                     //   if let d = data as? Data!
+                     //   {
+                     //       self.myheadface.image=UIImage(data: d)
+                     //   }
+                    //}
 
                     
-                    var sex:String = data.valueForKey("sex") as! String;
+                    let sex:String = data.value(forKey: "sex") as! String;
 
                    if sex=="0"
                    {
@@ -177,9 +177,9 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
                         self.mysex.image=UIImage(named: "xz_nv_icon");
                     }
                     
-                    var pos:NSNumber = data.valueForKey("pos") as! NSNumber;
+                    let pos:NSNumber = data.value(forKey: "pos") as! NSNumber;
                     self.order.text = pos.stringValue
-                    self.txt_order_desc.text="你排名第".stringByAppendingString(pos.stringValue).stringByAppendingString("位")
+                    self.txt_order_desc.text=("你排名第" + pos.stringValue) + "位"
                 }
                 
             }else
@@ -205,28 +205,26 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
          url="http://api.bbxiaoqu.com/rank_v1.php?order=score";
         }
         print("url: \(url)")
-         activityIndicatorView.startAnimating()
+        activityIndicatorView.startAnimating()
         self.items.removeAll()
-        Alamofire.request(.GET, url, parameters: nil)
+        Alamofire.request( url)
             .responseJSON { response in
                 if(response.result.isSuccess)
                 {
                     if let jsonItem = response.result.value as? NSArray{
-                        for data in jsonItem{
-                            print("data: \(data)")
-                            let order:String = data.objectForKey("order") as! String;
-                            let userid:String = data.objectForKey("username") as! String;
-                            let nickname:String = data.objectForKey("nickname") as! String;
+                        for tempdata in jsonItem{
+                            print("data: \(tempdata)")
+                            let data:NSDictionary = tempdata as! NSDictionary;
 
-                            let score:String = data.objectForKey("score") as! String;
-                            let nums:String = data.objectForKey("nums") as! String;
-                             let headface:String = data.objectForKey("headface") as! String;
-                             let sex:String = data.objectForKey("sex") as! String;
+                            let order:String = data.object(forKey: "order") as! String;
+                            let userid:String = data.object(forKey: "username") as! String;
+                            let nickname:String = data.object(forKey: "nickname") as! String;
+
+                            let score:String = data.object(forKey: "score") as! String;
+                            let nums:String = data.object(forKey: "nums") as! String;
+                            let headface:String = data.object(forKey: "headface") as! String;
+                            let sex:String = data.object(forKey: "sex") as! String;
                             self.loaduserinfo(userid);
-//                            let usericon = sqlitehelp.shareInstance().loadheadface(userid)
-//                            let nickname = sqlitehelp.shareInstance().loadusername(userid)
-                            
-                            //let item_obj:itemTop = itemTop(order: order, userid: userid, score: score, nums: nums)
                             let item_obj:itemTop = itemTop(order: order, userid: userid, username: nickname, sex: sex, headface: headface, score: score, nums: nums)
                             self.items.append(item_obj)
                             
@@ -248,20 +246,18 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
 
     
     
-    func loaduserinfo(userid:String)
-        
+    func loaduserinfo(_ userid:String)
     {
-        
-        Alamofire.request(.GET, "http://api.bbxiaoqu.com/getuserinfo.php?userid="+userid, parameters: nil)
+        Alamofire.request( "http://api.bbxiaoqu.com/getuserinfo.php?userid="+userid)
             .responseJSON { response in
                 if(response.result.isSuccess)
                 {
                     if let jsonItem = response.result.value as? NSArray{
-                        for data in jsonItem{
-                            //print("data: \(data)")
-                            
-                            var name:String = data.objectForKey("username") as! String;
-                            var headface:String = data.objectForKey("headface") as! String;
+                        for tempdata in jsonItem{
+                            let data:NSDictionary = tempdata as! NSDictionary;
+
+                            let name:String = data.object(forKey: "username") as! String;
+                            let headface:String = data.object(forKey: "headface") as! String;
                             
                             if(!sqlitehelp.shareInstance().isexituser(userid))
                             {//缓存用户数据
@@ -291,35 +287,33 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
     */
     
     
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
     {
         return 0.0001;
     }
     
-    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat
     {
         return 0.0001;
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        
         return self.items.count;
-        
     }
 
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             let cellId="topcell"
-            var cell:TopTableViewCell? = tableView.dequeueReusableCellWithIdentifier(cellId) as! TopTableViewCell?
+            var cell:TopTableViewCell? = tableView.dequeueReusableCell(withIdentifier: cellId) as! TopTableViewCell?
             if(cell == nil)
             {
-                cell = TopTableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: cellId)
+                cell = TopTableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: cellId)
             }
-            cell?.order.text="第".stringByAppendingString((items[indexPath.row] as itemTop).order).stringByAppendingString("名")
+            cell?.order.text=("第" + (items[indexPath.row] as itemTop).order) + "名"
             cell?.username.text=(items[indexPath.row] as itemTop).username
             cell?.nums.text=(items[indexPath.row] as itemTop).nums
-            var sex:String=(items[indexPath.row] as itemTop).sex
+            let sex:String=(items[indexPath.row] as itemTop).sex
             if sex=="0"
             {
                 cell?.seximg.image=UIImage(named: "xz_nan_icon");
@@ -327,58 +321,45 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
             {
                 cell?.seximg.image=UIImage(named: "xz_nv_icon");
             }
-        
-        
-        
-        
-        
-            var f  =  CGFloat ( ( (items[indexPath.row] as itemTop).score as NSString).floatValue)
+            let f  =  CGFloat ( ( (items[indexPath.row] as itemTop).score as NSString).floatValue)
             cell?.score.rating = f
             cell?.score.isIndicator=true
-        
-            let bw:CGFloat = UIScreen.mainScreen().bounds.width
-            var pox=bw/3
-            cell?.score.frame=CGRectMake(pox, 20, pox, 21)
-        
-        
-        
-            var avatar:String = (self.items[indexPath.row] as itemTop).headface
+            let bw:CGFloat = UIScreen.main.bounds.width
+            let pox=bw/3
+            cell?.score.frame=CGRect(x: pox, y: 20, width: pox, height: 21)
+            let avatar:String = (self.items[indexPath.row] as itemTop).headface
             if(avatar.characters.count>0)
             {
-                var head = "http://api.bbxiaoqu.com/uploads/".stringByAppendingString(avatar)
+                let head = "http://api.bbxiaoqu.com/uploads/" + avatar
                 
-                Alamofire.request(.GET, head).response { (_, _, data, _) -> Void in
-                    if let d = data as? NSData!
-                    {
-                        cell?.headface.image=UIImage(data: d)
-                    }
-                }
+                //Alamofire.request(.GET, head).response { (_, _, data, _) -> Void in
+                 //   if let d = data as? Data!
+                 //   {
+                        //cell?.headface.image=UIImage(data: d)
+                cell?.headface.af_setImage(withURL: URL(string:head)!)
+                 //   }
+                //}
             }else
             {
                 cell?.headface.image=UIImage(named: "logo")
                 
             }
-        
             cell?.headface.layer.cornerRadius = (cell?.headface.frame.width)! / 2
             cell?.headface.layer.masksToBounds = true
             return cell!
     }
     
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         NSLog("select \(indexPath.row)")
-        //NSLog("select \(items[indexPath.row])")
-        let sb = UIStoryboard(name:"Main", bundle: nil)
-
-        let vc = sb.instantiateViewControllerWithIdentifier("userinfoviewcontroller") as! UserInfoViewController
-        //创建导航控制器
-        vc.userid=(items[indexPath.row] as itemTop).userid
-        self.navigationController?.pushViewController(vc, animated: true)
-        
-        
-        
-        
+        if(items.count>0)
+        {
+            let sb = UIStoryboard(name:"Main", bundle: nil)
+            let vc = sb.instantiateViewController(withIdentifier: "userinfoviewcontroller") as! UserInfoViewController
+            vc.userid=(items[indexPath.row] as itemTop).userid
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
     }
 
     

@@ -30,15 +30,15 @@ class TabBarViewController: UITabBarController {
         {
             super.viewDidLoad()
             
-            var screenFrame = UIScreen.mainScreen().bounds
+            let screenFrame = UIScreen.main.bounds
             screenWidth = screenFrame.width
             screenHeight = screenFrame.height
             
             print(screenWidth)
             
-            self.view.backgroundColor = UIColor.whiteColor()
+            self.view.backgroundColor = UIColor.white
             
-            self.tabBar.hidden = true
+            self.tabBar.isHidden = true
             
             initControllers()
             
@@ -51,23 +51,23 @@ class TabBarViewController: UITabBarController {
             let tabBarOffsetX = screenWidth!/3
             let tabBarX = tabBarOffsetX/2 - tabBarWidth/2
             let tabBarY = tabBarViewHeight/2 - tabBarHeight/2
-            var tabBarView = UIView(frame: CGRectMake(0, tabBarViewHeight+100, screenWidth!, tabBarViewHeight))
-            tabBarView.backgroundColor = UIColor.blackColor()
+            let tabBarView = UIView(frame: CGRect(x: 0, y: tabBarViewHeight+100, width: screenWidth!, height: tabBarViewHeight))
+            tabBarView.backgroundColor = UIColor.black
             self.view.addSubview(tabBarView)
             
             for index in 0..<imgArr.count
             {
-                var tabBar_X = (CGFloat)(index) * tabBarOffsetX
-                var btn = UIButton(frame: CGRectMake((CGFloat)(tabBarX + tabBar_X), (CGFloat)(tabBarY), tabBarWidth, tabBarHeight))
+                let tabBar_X = (CGFloat)(index) * tabBarOffsetX
+                let btn = UIButton(frame: CGRect(x: (CGFloat)(tabBarX + tabBar_X), y: (CGFloat)(tabBarY), width: tabBarWidth, height: tabBarHeight))
                 if(index == 0)
                 {
-                    btn.setBackgroundImage(UIImage(named: imgSelArr[index]), forState: UIControlState.Normal)
+                    btn.setBackgroundImage(UIImage(named: imgSelArr[index]), for: UIControlState())
                 }else{
-                    btn.setBackgroundImage(UIImage(named: imgArr[index]), forState: UIControlState.Normal)
+                    btn.setBackgroundImage(UIImage(named: imgArr[index]), for: UIControlState())
                 }
                 
                 btn.tag = index + 100
-                btn.addTarget(self, action: "tabAction:", forControlEvents: UIControlEvents.TouchUpInside)
+                btn.addTarget(self, action: #selector(TabBarViewController.tabAction(_:)), for: UIControlEvents.touchUpInside)
                 
                 tabBarView.addSubview(btn)
                 tabButtons.append(btn)
@@ -75,17 +75,17 @@ class TabBarViewController: UITabBarController {
             
         }
         
-        func tabAction(obj: UIButton) -> Void
+        func tabAction(_ obj: UIButton) -> Void
         {
-            var indexSel = obj.tag - 100
+            let indexSel = obj.tag - 100
             self.selectedIndex = indexSel
             for index in 0..<tabButtons.count
             {
                 if(index == indexSel)
                 {
-                    tabButtons[indexSel].setBackgroundImage(UIImage(named: imgSelArr[indexSel]), forState: UIControlState.Normal)
+                    tabButtons[indexSel].setBackgroundImage(UIImage(named: imgSelArr[indexSel]), for: UIControlState())
                 }else{
-                    tabButtons[index].setBackgroundImage(UIImage(named: imgArr[index]), forState: UIControlState.Normal)
+                    tabButtons[index].setBackgroundImage(UIImage(named: imgArr[index]), for: UIControlState())
                 }
             }
         }
@@ -104,7 +104,7 @@ class TabBarViewController: UITabBarController {
             {
                 if(index != 2)
                 {
-                    var navController = UINavigationController(rootViewController: viewArr[index])
+                    let navController = UINavigationController(rootViewController: viewArr[index])
                     viewCtlArr.append(navController)  
                 }else{  
                     viewCtlArr.append(viewArr[index])  
