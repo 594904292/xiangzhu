@@ -40,27 +40,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
     var xxrecentdl : XxRecentDL?
         
     //收到消息
-    func xmppStream(sender: XMPPStream!, didReceiveMessage message: XMPPMessage!) {
+    func xmppStream(_ sender: XMPPStream!, didReceive message: XMPPMessage!) {
         //如果消息是聊天消息
         if message.isChatMessage() {
             var msg = WXMessage()
             
             //对方正在输入
-            if message.elementForName("composing") != nil {
+            if message.forName("composing") != nil {
                 msg.isComposing = true
             }
             
             //离线
-            if message.elementForName("delay") != nil {
+            if message.forName("delay") != nil {
                 msg.isDelay = true
             }
             
             //消息正文
-            if let body = message.elementForName("body") {
+            if let body = message.forName("body") {
                 msg.body = body.stringValue()
             }
-            var from = message.from().user ;
-            var to = message.to().user;
+            let from = message.from().user ;
+            let to = message.to().user;
             var guid =  message.elementID()
             //完整用户名
             msg.from = message.from().user + "@" + message.from().domain
@@ -68,21 +68,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
             var touserid:String=message.to().user;
             
             
-            var date = NSDate()
-            var timeFormatter = NSDateFormatter()
+            let date = Date()
+            let timeFormatter = DateFormatter()
             timeFormatter.dateFormat = "yyy-MM-dd HH:mm:ss" //(格式可俺按自己需求修整)
-            var strNowTime = timeFormatter.stringFromDate(date) as String
+            let strNowTime = timeFormatter.string(from: date) as String
             //cleanchat()
             
             
-            var sqlitehelpInstance1=sqlitehelp.shareInstance()
+            let sqlitehelpInstance1=sqlitehelp.shareInstance()
             
             //写一条信息到聊天记录表
-            sqlitehelpInstance1.addchat(from, touserid: to, message: msg.body, guid: "", date: strNowTime, readed: "0")
+            sqlitehelpInstance1.addchat(from!, touserid: to!, message: msg.body, guid: "", date: strNowTime, readed: "0")
             //修改通知记录
-            if(sqlitehelpInstance1.unreadnoticenum(from, catagory: "私信")==0)
+            if(sqlitehelpInstance1.unreadnoticenum(from!, catagory: "私信")==0)
             {
-               sqlitehelpInstance1.addnotice(strNowTime, catagory: "私信", relativeid: from, content: from.stringByAppendingString("发送了一条私信"), readed: "０")
+               sqlitehelpInstance1.addnotice(strNowTime, catagory: "私信", relativeid: from!, content: from! + "发送了一条私信", readed: "０")
             }else
             {
 //                let unreadchatnum:String=self.unreadchatnum(from, to: to) as! String
@@ -90,13 +90,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
             }
             
             //添加朋友联系人
-            if(!sqlitehelpInstance1.isexitfriend(from))
+            if(!sqlitehelpInstance1.isexitfriend(from!))
             {
-               sqlitehelpInstance1.addfriend(from, nickname: "", usericon: "", lastuserid: from, lastnickname: "", lastinfo: msg.body, lasttime: strNowTime, messnum: 0)
+               sqlitehelpInstance1.addfriend(from!, nickname: "", usericon: "", lastuserid: from!, lastnickname: "", lastinfo: msg.body, lasttime: strNowTime, messnum: 0)
                 //更新头像和用户名
             
             }
-            sqlitehelpInstance1.updatefriendlastinfo(from, lastuserid: from, lastinfo: msg.body, lasttime: strNowTime)
+            sqlitehelpInstance1.updatefriendlastinfo(from!, lastuserid: from!, lastinfo: msg.body, lasttime: strNowTime)
             //添加到消息代理中
             xxdl?.newMsg(msg)
             xxmaindl?.newMainMsg(msg)
@@ -109,7 +109,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
     
     
     //收到状态
-    func xmppStream(sender: XMPPStream!, didReceivePresence presence: XMPPPresence!) {
+    func xmppStream(_ sender: XMPPStream!, didReceive presence: XMPPPresence!) {
         let myUser = sender.myJID.user
         //好友的用户名
         let user = presence.from().user
@@ -122,7 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
             //状态保存的结构
             var zt = Zhuangtai()
             //保存了状态的完整用户名
-            zt.name = user + "@" + domain
+            zt.name = user! + "@" + domain!
             //上线
             if pType == "available" {
                 zt.isOnline = true
@@ -134,12 +134,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
     }
     
     //连接成功
-    func xmppStreamDidConnect(sender: XMPPStream!) {
+    func xmppStreamDidConnect(_ sender: XMPPStream!) {
         isOpen = true
         // xs!.authenticateWithPassword(pwd, error: nil)
         do
         {
-            try xs!.authenticateWithPassword(pwd)
+            try xs!.authenticate(withPassword: pwd)
         }catch
         {
             
@@ -147,7 +147,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
     }
     
     //验证成功
-    func xmppStreamDidAuthenticate(sender: XMPPStream!) {
+    func xmppStreamDidAuthenticate(_ sender: XMPPStream!) {
         //上线
         goOnline()
     }
@@ -155,18 +155,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
     //建立通道
     func buildStream(){
         xs = XMPPStream()
-        xs?.addDelegate(self, delegateQueue: dispatch_get_main_queue())
+        xs?.addDelegate(self, delegateQueue: DispatchQueue.main)
     }
     
     //发生上线状态
     func goOnline(){
-        var p = XMPPPresence()
-        xs!.sendElement(p)
+        let p = XMPPPresence()
+        xs!.send(p)
     }
     //发生下线状态
     func goOffline(){
-        var p = XMPPPresence(type: "unavailabe")
-        xs!.sendElement(p)
+        let p = XMPPPresence(type: "unavailabe")
+        xs!.send(p)
     }
     
     
@@ -210,19 +210,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
         if xs!.isConnected(){
             return true
         }
-        let defaults = NSUserDefaults.standardUserDefaults();
-        let userid:String = defaults.objectForKey("userid") as! String;
-        let pass:String = defaults.objectForKey("password") as! String;
+        let defaults = UserDefaults.standard;
+        let userid:String = defaults.object(forKey: "userid") as! String;
+        let pass:String = defaults.object(forKey: "password") as! String;
         
         //获取系统中保存的用户名、密码、服务器地址
-        let user:String = userid.stringByAppendingString("@bbxiaoqu")
+        let user:String = userid + "@bbxiaoqu"
         let password:String = pass
         let hostName:String = xmpphost
         //let hostPort:UInt16 = xmppport
         
         // (user!= nil && password != nil) {
             //通道的用户名
-            xs!.myJID = XMPPJID.jidWithString(user)
+            xs!.myJID = XMPPJID.init(string: user)
+        
             xs!.hostName = "101.200.194.1"
 
             //xs!.hostPort = hostPort
@@ -230,7 +231,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
             pwd = password
         do
                {
-                    _  = try xs!.connectWithTimeout(5000)
+                    _  = try xs!.connect(withTimeout: 5000)
                }catch let error as NSError {
                   print(error.localizedDescription)
                   print("cannot connect \(hostName)")
@@ -253,10 +254,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
     }
     
 
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         //质量跟踪平台
-        Bugly.startWithAppId("900018226")
+        Bugly.start(withAppId: "900018226")
         
         mapManager = BMKMapManager() // 初始化 BMKMapManager
         // 如果要关注网络及授权验证事件，请设定generalDelegate参数
@@ -271,18 +272,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
         
         print("\(NSHomeDirectory())")
         
-        let str:NSString = UIDevice.currentDevice().systemVersion
+        let str:NSString = UIDevice.current.systemVersion as NSString
         let version:Float = str.floatValue
         if version >= 8.0 {
             //UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: UIUserNotificationType.Sound |..UIUserNotificationType.Alert | UIUserNotificationType.Badge, categories: nil))
             
             //public convenience init(forTypes types: UIUserNotificationType, categories: Set<UIUserNotificationCategory>?)
            
-            UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Badge, .Sound, .Alert], categories: nil))
+            UIApplication.shared.registerUserNotificationSettings(UIUserNotificationSettings(types: [.badge, .sound, .alert], categories: nil))
 
             
             
-            UIApplication.sharedApplication().registerForRemoteNotifications()
+            UIApplication.shared.registerForRemoteNotifications()
         } else {
             //UIApplication.sharedApplication().registerForRemoteNotificationTypes( UIRemoteNotificationType.Badge | UIRemoteNotificationType.Sound |UIRemoteNotificationType.Alert)
         }
@@ -290,42 +291,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
         return true
     }
 
-    func applicationWillResignActive(application: UIApplication) {
+    func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
     }
     
-    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-        let token:String = deviceToken.description.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: "<>"))
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let token:String = deviceToken.description.trimmingCharacters(in: CharacterSet(charactersIn: "<>"))
         print("token==\(token)")
         
-        let defaults = NSUserDefaults.standardUserDefaults();
-        defaults.setObject(token, forKey: "token");
+        let defaults = UserDefaults.standard;
+        defaults.set(token, forKey: "token");
         defaults.synchronize();
 
         //将token发送到服务器
     }
 
 
-    func applicationDidEnterBackground(application: UIApplication) {
+    func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     }
 
-    func applicationWillEnterForeground(application: UIApplication) {
+    func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     }
 
-    func applicationDidBecomeActive(application: UIApplication) {
+    func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     }
 
-    func applicationWillTerminate(application: UIApplication) {
+    func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     
     
-    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         let alert:UIAlertView = UIAlertView(title: "", message: error.localizedDescription, delegate: nil, cancelButtonTitle: "OK")
         alert.show()
     }
@@ -333,7 +334,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
     
     //代理成员变量
     var apnsdelegate:ApnsDelegate?
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
         print("userInfo==\(userInfo)")
         //调用代理函数，改变Label值
         self.apnsdelegate?.NewMessage("newmess")
@@ -347,6 +348,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
 
 protocol ApnsDelegate:NSObjectProtocol{
     //回调方法
-    func NewMessage(string:String)
+    func NewMessage(_ string:String)
 }
 

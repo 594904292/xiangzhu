@@ -17,7 +17,7 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
     var items:[itemMess]=[]
     var fwitems:[itemfwMess]=[]
      @IBOutlet weak var _tableView: UITableView!
-    func NewMessage(string:String){
+    func NewMessage(_ string:String){
         if(selectedSegmentval==0)
         {
             
@@ -45,12 +45,12 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title="我能帮"
-        let item1 = UIBarButtonItem(title: "返回", style: UIBarButtonItemStyle.Done, target: self, action: #selector(OneViewController.backClick))
-        item1.tintColor=UIColor.whiteColor()
+        let item1 = UIBarButtonItem(title: "返回", style: UIBarButtonItemStyle.done, target: self, action: #selector(OneViewController.backClick))
+        item1.tintColor=UIColor.white
         self.navigationItem.leftBarButtonItem=item1
         
-        var item2 = UIBarButtonItem(title: "添加", style: UIBarButtonItemStyle.Done, target: self, action: #selector(OneViewController.addClick))
-        item2.tintColor=UIColor.whiteColor()
+        let item2 = UIBarButtonItem(title: "添加", style: UIBarButtonItemStyle.done, target: self, action: #selector(OneViewController.addClick))
+        item2.tintColor=UIColor.white
         self.navigationItem.rightBarButtonItem=item2
 
         _tableView!.delegate=self
@@ -61,7 +61,7 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
 //        self._tableView.headerView?.endRefreshing()
 //        self._tableView.footerView = XWRefreshAutoNormalFooter(target: self, action: "downPlullLoadData")
         
-        self._tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: "headerRefresh")
+        self._tableView.mj_header = MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: #selector(OneViewController.headerRefresh))
         
         //普通带文字上拉加载的定义
         
@@ -69,13 +69,13 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
         
   
         
-        _tableView.frame=CGRectMake(0,44,self.view.frame.size.width,self.view.frame.size.height)
+        _tableView.frame=CGRect(x: 0,y: 44,width: self.view.frame.size.width,height: self.view.frame.size.height)
         addtabbar()
-        var w:CGFloat = UIScreen.mainScreen().bounds.width
-        var posx=w/CGFloat(3);
+        let w:CGFloat = UIScreen.main.bounds.width
+        let posx=w/CGFloat(3);
         addline(posx);
         addline(posx*2);
-        tabBar.selectedItem=tabBar.items![0] as! UITabBarItem
+        tabBar.selectedItem=tabBar.items![0] 
         selectedSegmentval=0
         querydata(0)
 
@@ -89,31 +89,31 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
     {
         //在底部创建Tab Bar
         tabBar = UITabBar(frame:
-            CGRectMake(0,60,CGRectGetWidth(self.view.bounds),30))
-        var tabItem1 = UITabBarItem(title: tabs[0], image: nil, tag: 0)
-        var tabItem2 = UITabBarItem(title: tabs[1], image: nil, tag: 1)
-        var tabItem3 = UITabBarItem(title: tabs[2], image: nil, tag: 2)
-        var attributes =  [NSForegroundColorAttributeName: UIColor(red: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 1.0),
+            CGRect(x: 0,y: 60,width: self.view.bounds.width,height: 30))
+        let tabItem1 = UITabBarItem(title: tabs[0], image: nil, tag: 0)
+        let tabItem2 = UITabBarItem(title: tabs[1], image: nil, tag: 1)
+        let tabItem3 = UITabBarItem(title: tabs[2], image: nil, tag: 2)
+        let attributes =  [NSForegroundColorAttributeName: UIColor(red: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 1.0),
                            NSFontAttributeName: UIFont(name: "Heiti SC", size: 18.0)!]
-        var selattributes =  [NSForegroundColorAttributeName: UIColor(red: 255/255.0, green: 0/255.0, blue: 0/255.0, alpha: 1.0),NSFontAttributeName: UIFont(name: "Heiti SC", size: 18.0)!]
+        let selattributes =  [NSForegroundColorAttributeName: UIColor(red: 255/255.0, green: 0/255.0, blue: 0/255.0, alpha: 1.0),NSFontAttributeName: UIFont(name: "Heiti SC", size: 18.0)!]
         
-        tabItem1.setTitleTextAttributes(attributes , forState: UIControlState.Selected)
-        tabItem1.setTitleTextAttributes(attributes , forState: UIControlState.Normal)
-        tabItem1.setTitleTextAttributes(selattributes , forState: UIControlState.Highlighted)
+        tabItem1.setTitleTextAttributes(attributes , for: UIControlState.selected)
+        tabItem1.setTitleTextAttributes(attributes , for: UIControlState())
+        tabItem1.setTitleTextAttributes(selattributes , for: UIControlState.highlighted)
         
-        tabItem2.setTitleTextAttributes(attributes , forState: UIControlState.Selected)
-        tabItem2.setTitleTextAttributes(attributes , forState: UIControlState.Normal)
-        tabItem2.setTitleTextAttributes(selattributes , forState: UIControlState.Highlighted)
+        tabItem2.setTitleTextAttributes(attributes , for: UIControlState.selected)
+        tabItem2.setTitleTextAttributes(attributes , for: UIControlState())
+        tabItem2.setTitleTextAttributes(selattributes , for: UIControlState.highlighted)
         
-        tabItem3.setTitleTextAttributes(attributes , forState: UIControlState.Selected)
-        tabItem3.setTitleTextAttributes(attributes , forState: UIControlState.Normal)
-        tabItem3.setTitleTextAttributes(selattributes , forState: UIControlState.Highlighted)
-        var items:[UITabBarItem] = [tabItem1,tabItem2,tabItem3]
-        tabBar.tintColor=UIColor.redColor()
+        tabItem3.setTitleTextAttributes(attributes , for: UIControlState.selected)
+        tabItem3.setTitleTextAttributes(attributes , for: UIControlState())
+        tabItem3.setTitleTextAttributes(selattributes , for: UIControlState.highlighted)
+        let items:[UITabBarItem] = [tabItem1,tabItem2,tabItem3]
+        tabBar.tintColor=UIColor.red
         
-        let image = UIImage(named: "xz_you_icon")!.resizableImageWithCapInsets(UIEdgeInsetsMake(0, 10, 0, 40), resizingMode: UIImageResizingMode.Stretch)
+        let image = UIImage(named: "xz_you_icon")!.resizableImage(withCapInsets: UIEdgeInsetsMake(0, 10, 0, 40), resizingMode: UIImageResizingMode.stretch)
          tabBar.selectionIndicatorImage=image
-         let meiimage1 = UIImage(named: "xz_mei_icon")!.resizableImageWithCapInsets(UIEdgeInsetsMake(0, 10, 0, 40), resizingMode: UIImageResizingMode.Stretch)
+         let meiimage1 = UIImage(named: "xz_mei_icon")!.resizableImage(withCapInsets: UIEdgeInsetsMake(0, 10, 0, 40), resizingMode: UIImageResizingMode.stretch)
         
         tabBar.backgroundImage=meiimage1
         //设置Tab Bar的标签页
@@ -127,19 +127,19 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
         self.view.addSubview(tabBar);
     }
     
-    func addline(posx:CGFloat)
+    func addline(_ posx:CGFloat)
     {
         
-        var posy=CGFloat(tabBar.frame.origin.y+15);
+        let posy=CGFloat(tabBar.frame.origin.y+15);
         let customView = UIView(frame: CGRect(x: posx, y: posy, width:1, height: tabBar.frame.size.height))
         let imageView=UIImageView(image:UIImage(named:"xz_xi_icon"))
-        imageView.frame=CGRectMake(0,0,1,30)
+        imageView.frame=CGRect(x: 0,y: 0,width: 1,height: 30)
         customView.addSubview(imageView)
         self.view.addSubview(customView)
     }
     
     // UITabBarDelegate协议的方法，在用户选择不同的标签页时调用
-    func tabBar(tabBar: UITabBar, didSelectItem item: UITabBarItem) {
+    func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         //通过tag查询到上方容器的label，并设置为当前选择的标签页的名称
         //print( item.title);
         self.items.removeAll()
@@ -195,7 +195,7 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
         
     }
     
@@ -203,8 +203,8 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
     func addClick()
     {
         NSLog("addClick");
-        var sb = UIStoryboard(name:"Main", bundle: nil)
-        var vc = sb.instantiateViewControllerWithIdentifier("publishController") as! PublishViewController
+        let sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "publishController") as! PublishViewController
         vc.cat=0
         self.navigationController?.pushViewController(vc, animated: true)
         
@@ -266,7 +266,7 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
     
     
     
-        func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
         {
             NSLog("indexPath is = %i",self.selectedSegmentval);
 
@@ -280,23 +280,23 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
             }
         }
     
-            func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+            func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             
                 //var ppp:String = (items[indexPath.row] as itemMess).photo;
             
                     let cellId="mycell1"
-                    var cell:InfopicTableViewCell? = tableView.dequeueReusableCellWithIdentifier(cellId) as! InfopicTableViewCell?
+                    var cell:InfopicTableViewCell? = tableView.dequeueReusableCell(withIdentifier: cellId) as! InfopicTableViewCell?
                     if(cell == nil)
                     {
-                        cell = InfopicTableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: cellId)
+                        cell = InfopicTableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: cellId)
                     }
                     
                     cell?.senduser.text=(items[indexPath.row] as itemMess).username
-                    var mess=(items[indexPath.row] as itemMess).content
+                    let mess=(items[indexPath.row] as itemMess).content
                     var messcontent:String;
                     if mess.characters.count>80
                     {
-                        messcontent=(mess as NSString).substringToIndex(80).stringByAppendingString("...")
+                        messcontent=(mess as NSString).substring(to: 80) + "..."
                     }else
                     {
                         messcontent=mess;
@@ -315,7 +315,7 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
 
     
     
-    func alertView(alertView:UIAlertView, clickedButtonAtIndex buttonIndex: Int){
+    func alertView(_ alertView:UIAlertView, clickedButtonAtIndex buttonIndex: Int){
 //        if(buttonIndex==alertView.cancelButtonIndex){
 //            
 //        }
@@ -327,7 +327,7 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
     }
 
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         NSLog("select \(indexPath.row)")
         //NSLog("select \(items[indexPath.row])")
@@ -336,7 +336,7 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
             
             let aa:itemMess=items[indexPath.row] as itemMess;
             let sb = UIStoryboard(name:"Main", bundle: nil)
-            let vc = sb.instantiateViewControllerWithIdentifier("contentviewController") as! ContentViewController
+            let vc = sb.instantiateViewController(withIdentifier: "contentviewController") as! ContentViewController
             //创建导航控制器
             //vc.message = aa.content;
             vc.guid=aa.guid
@@ -350,113 +350,110 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
     }
     
     
-    func querydata(Category:Int)
+    func querydata(_ Category:Int)
     {
         var url:String="";
-        let defaults = NSUserDefaults.standardUserDefaults();
-        let userid = defaults.objectForKey("userid") as! String;
+        let defaults = UserDefaults.standard;
+        let userid = defaults.object(forKey: "userid") as! String;
         //let lat = defaults.objectForKey("lat") as! String;
         //let lng = defaults.objectForKey("lng") as! String;
         let lat = String(39.974385);
         let lng = String(116.34777)
         if(Category==0)
         {
-            url="http://api.bbxiaoqu.com/getinfos.php?userid=".stringByAppendingString(userid).stringByAppendingString("&latitude=").stringByAppendingString(lat).stringByAppendingString("&longitude=").stringByAppendingString(lng).stringByAppendingString("&rang=xiaoqu&status=0&start=").stringByAppendingString(String(self.start)).stringByAppendingString("&limit=").stringByAppendingString(String(self.limit));
+            url=(((((((("http://api.bbxiaoqu.com/getinfos.php?userid=" + userid) + "&latitude=") + lat) + "&longitude=") + lng) + "&rang=xiaoqu&status=0&start=") + String(self.start)) + "&limit=") + String(self.limit);
 
         
         }else if(Category==1)
         {
-            url="http://api.bbxiaoqu.com/getinfos.php?userid=".stringByAppendingString(userid).stringByAppendingString("&latitude=").stringByAppendingString(lat).stringByAppendingString("&longitude=").stringByAppendingString(lng).stringByAppendingString("&rang=xiaoqu&status=1&start=").stringByAppendingString(String(self.start)).stringByAppendingString("&limit=").stringByAppendingString(String(self.limit));
+            url=(((((((("http://api.bbxiaoqu.com/getinfos.php?userid=" + userid) + "&latitude=") + lat) + "&longitude=") + lng) + "&rang=xiaoqu&status=1&start=") + String(self.start)) + "&limit=") + String(self.limit);
 
         }else if(Category==2)
         {
-            url="http://api.bbxiaoqu.com/getinfos.php?userid=".stringByAppendingString(userid).stringByAppendingString("&latitude=").stringByAppendingString(lat).stringByAppendingString("&longitude=").stringByAppendingString(lng).stringByAppendingString("&rang=self&status=1&start=").stringByAppendingString(String(self.start)).stringByAppendingString("&limit=").stringByAppendingString(String(self.limit));
+            url=(((((((("http://api.bbxiaoqu.com/getinfos.php?userid=" + userid) + "&latitude=") + lat) + "&longitude=") + lng) + "&rang=self&status=1&start=") + String(self.start)) + "&limit=") + String(self.limit);
 
         }
             print("url: \(url)")
-            Alamofire.request(.GET, url, parameters: nil)
+            Alamofire.request( url)
                 .responseJSON { response in
                     if(response.result.isSuccess)
                     {
                         
-                        
-   
-                        
                         if let jsonItem = response.result.value as? NSArray{
-                            for data in jsonItem{
+                            for tempdata in jsonItem{
                                 //print("data: \(data)")
-                            
-                            let content:String = data.objectForKey("content") as! String;
-                            let senduserid:String = data.objectForKey("senduser") as! String;
+                            var data = tempdata as!  NSDictionary
+                            let content:String = data.object(forKey: "content") as! String;
+                            let senduserid:String = data.object(forKey: "senduser") as! String;
                             
                             var sendnickname:String = "";
-                            if(data.objectForKey("username")!.isKindOfClass(NSNull))
+                            if(data.object(forKey: "username")==nil)
                             {
                                 sendnickname="";
                             }else
                             {
-                                sendnickname   = data.objectForKey("username") as! String;
+                                sendnickname   = data.object(forKey: "username") as! String;
                                 
                             }
-                            let guid:String = data.objectForKey("guid") as! String;
+                            let guid:String = data.object(forKey: "guid") as! String;
                             let sendtime:String;
-                            var temptime:String=data.objectForKey("sendtime") as! String;
-                            var date:NSDate = NSDate()
-                            var formatter:NSDateFormatter = NSDateFormatter()
+                            let temptime:String=data.object(forKey: "sendtime") as! String;
+                            let date:Date = Date()
+                            let formatter:DateFormatter = DateFormatter()
                             formatter.dateFormat = "yyyy-MM-dd"
-                            var dateString = formatter.stringFromDate(date)
+                            let dateString = formatter.string(from: date)
                                 
-                              if(temptime.containsString(dateString))
+                              if(temptime.contains(dateString))
                               {
-                                sendtime = temptime.subStringFrom(11)
+                                sendtime = temptime.subString(start: 11)
                               }else
                               {
-                                sendtime = (temptime as NSString).substringWithRange(NSRange(location: 0,length: 10))
+                                sendtime = (temptime as NSString).substring(with: NSRange(location: 0,length: 10))
                               }
-                            let lng:String = data.objectForKey("lng") as! String;
-                            let lat:String = data.objectForKey("lat") as! String;
-                            var lat_1=(lat as NSString).doubleValue;
-                            var lng_1=(lng as NSString).doubleValue;
-                            let defaults = NSUserDefaults.standardUserDefaults();
-                            let userid = defaults.objectForKey("userid") as! String;
-                            let mylat = defaults.objectForKey("lat") as! String;
-                            let mylng = defaults.objectForKey("lng") as! String;
-                            var lat_2=(mylat as NSString).doubleValue;
-                            var lng_2=(mylng as NSString).doubleValue;
+                            let lng:String = data.object(forKey: "lng") as! String;
+                            let lat:String = data.object(forKey: "lat") as! String;
+                            let lat_1=(lat as NSString).doubleValue;
+                            let lng_1=(lng as NSString).doubleValue;
+                            let defaults = UserDefaults.standard;
+                            let userid = defaults.object(forKey: "userid") as! String;
+                            let mylat = defaults.object(forKey: "lat") as! String;
+                            let mylng = defaults.object(forKey: "lng") as! String;
+                            let lat_2=(mylat as NSString).doubleValue;
+                            let lng_2=(mylng as NSString).doubleValue;
                             var address:String="";
      
                                 if(false)
                                 {
-                                    var currentLocation:CLLocation = CLLocation(latitude:lat_1,longitude:lng_1);
-                                    var targetLocation:CLLocation = CLLocation(latitude:lat_2,longitude:lng_2);
-                                     var distance:CLLocationDistance=currentLocation.distanceFromLocation(targetLocation);
+                                    let currentLocation:CLLocation = CLLocation(latitude:lat_1,longitude:lng_1);
+                                    let targetLocation:CLLocation = CLLocation(latitude:lat_2,longitude:lng_2);
+                                     let distance:CLLocationDistance=currentLocation.distance(from: targetLocation);
                                      address = ("\(distance)米");
                                 }else
                                 {
-                                    var p1:BMKMapPoint = BMKMapPointForCoordinate(CLLocationCoordinate2D(latitude: lat_1, longitude: lng_1))
-                                    var p2:BMKMapPoint = BMKMapPointForCoordinate(CLLocationCoordinate2D(latitude: lat_2, longitude: lng_2))
-                                     var distance:CLLocationDistance = BMKMetersBetweenMapPoints(p1, p2);
-                                    var one:UInt32 = UInt32(distance)
+                                    let p1:BMKMapPoint = BMKMapPointForCoordinate(CLLocationCoordinate2D(latitude: lat_1, longitude: lng_1))
+                                    let p2:BMKMapPoint = BMKMapPointForCoordinate(CLLocationCoordinate2D(latitude: lat_2, longitude: lng_2))
+                                     let distance:CLLocationDistance = BMKMetersBetweenMapPoints(p1, p2);
+                                    let one:UInt32 = UInt32(distance)
                                       address = ("\(one)米");
                                 }
-                            let city:String = data.objectForKey("city") as! String;
-                            let street:String = data.objectForKey("street") as! String;
-                            let photo:String = data.objectForKey("photo") as! String;
+                            let city:String = data.object(forKey: "city") as! String;
+                            let street:String = data.object(forKey: "street") as! String;
+                            let photo:String = data.object(forKey: "photo") as! String;
                             var community:String = ""
-                             if(data.objectForKey("community")!.isKindOfClass(NSNull))
+                            if(data.object(forKey: "community")==nil)
                             {
                                 community = "";
                             }else
                             {
-                                community = data.objectForKey("community") as! String;
+                                community = data.object(forKey: "community") as! String;
                                 
                             }
-                            let infocatagroy:String = data.objectForKey("infocatagroy") as! String;
-                            let status:String = data.objectForKey("status") as! String;
-                            let visit:String = data.objectForKey("visit") as! String;
-                            let plnum:String = data.objectForKey("plnum") as! String;
-                            let headface:String = data.objectForKey("headface") as! String;
-                            let sex:String = data.objectForKey("sex") as! String;
+                            let infocatagroy:String = data.object(forKey: "infocatagroy") as! String;
+                            let status:String = data.object(forKey: "status") as! String;
+                            let visit:String = data.object(forKey: "visit") as! String;
+                            let plnum:String = data.object(forKey: "plnum") as! String;
+                            let headface:String = data.object(forKey: "headface") as! String;
+                            let sex:String = data.object(forKey: "sex") as! String;
 
                                 let item_obj:itemMess = itemMess(userid: senduserid, headface:headface,sex:sex,vname: sendnickname, vtime: sendtime, city: city,street: street,vaddress: address, vcontent: content, vcommunity: community, vlng: lng, vlat: lat, vguid: guid, vinfocatagory: infocatagroy, vphoto: photo, status: status, visnum: visit, plnum: plnum)
                              self.items.append(item_obj)
@@ -474,13 +471,9 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
         
     }
     
-    func delay(delay:Double, closure:()->()) {
-        dispatch_after(
-            dispatch_time(
-                DISPATCH_TIME_NOW,
-                Int64(delay * Double(NSEC_PER_SEC))
-            ),
-            dispatch_get_main_queue(), closure)
+    func delay(_ delay:Double, closure:@escaping ()->()) {
+        DispatchQueue.main.asyncAfter(
+            deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: closure)
     }
     
     

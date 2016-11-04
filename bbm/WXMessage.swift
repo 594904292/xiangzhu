@@ -26,21 +26,21 @@ struct Zhuangtai {
 }
 
 protocol XxDL {
-    func newMsg(aMsg:WXMessage)
+    func newMsg(_ aMsg:WXMessage)
 }
 
 protocol XxMainDL {
-    func newMainMsg(aMsg:WXMessage)
+    func newMainMsg(_ aMsg:WXMessage)
 }
 
 protocol XxRecentDL {
-    func newRecentMsg(aMsg:WXMessage)
+    func newRecentMsg(_ aMsg:WXMessage)
 }
 
 //状态代理协议
 protocol ZtDL {
-    func isOn(zt:Zhuangtai)
-    func isOff(zt:Zhuangtai)
+    func isOn(_ zt:Zhuangtai)
+    func isOff(_ zt:Zhuangtai)
     func meOff()
 }
 

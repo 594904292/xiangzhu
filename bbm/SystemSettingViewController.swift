@@ -16,9 +16,9 @@ class SystemSettingViewController: UIViewController,XxDL {
     @IBOutlet weak var openmessswitch: UISwitch!
     @IBOutlet weak var openvoiceswitch: UISwitch!
     
-    @IBAction func openmess(sender: UISwitch) {
+    @IBAction func openmess(_ sender: UISwitch) {
         var open:String="0"
-        if sender.on == true
+        if sender.isOn == true
         {
             self.openmessflag=true
             open="1"
@@ -29,12 +29,12 @@ class SystemSettingViewController: UIViewController,XxDL {
 
         }
         
-        let defaults = NSUserDefaults.standardUserDefaults();
+        let defaults = UserDefaults.standard;
        
-        defaults.setObject(self.openmessflag, forKey: "openmessflag");
+        defaults.set(self.openmessflag, forKey: "openmessflag");
         defaults.synchronize();
         
-        Alamofire.request(.POST, "http://api.bbxiaoqu.com/resetuserfield.php", parameters:["userid" : self.userid,"field":"isrecvmess","fieldvalue":open])
+        Alamofire.request( "http://api.bbxiaoqu.com/resetuserfield.php", method:HTTPMethod.post,parameters:["userid" : self.userid,"field":"isrecvmess","fieldvalue":open])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -48,9 +48,9 @@ class SystemSettingViewController: UIViewController,XxDL {
 
     }
     
-    @IBAction func openvoice(sender: UISwitch) {
+    @IBAction func openvoice(_ sender: UISwitch) {
           var open:String="0"
-        if sender.on == true
+        if sender.isOn == true
         {
             self.openvoiceflag=true
             open="1"
@@ -62,11 +62,11 @@ class SystemSettingViewController: UIViewController,XxDL {
             
         }
         
-        let defaults = NSUserDefaults.standardUserDefaults();
+        let defaults = UserDefaults.standard;
 
-        defaults.setObject(self.openvoiceflag, forKey: "openvoiceflag");
+        defaults.set(self.openvoiceflag, forKey: "openvoiceflag");
         defaults.synchronize();
-        Alamofire.request(.POST, "http://api.bbxiaoqu.com/resetuserfield.php", parameters:["userid" : self.userid,"field":"isopenvoice","fieldvalue":open])
+        Alamofire.request( "http://api.bbxiaoqu.com/resetuserfield.php",method:HTTPMethod.post, parameters:["userid" : self.userid,"field":"isopenvoice","fieldvalue":open])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -78,19 +78,19 @@ class SystemSettingViewController: UIViewController,XxDL {
         }
     }
     
-    func newMsg(aMsg: WXMessage) {
+    func newMsg(_ aMsg: WXMessage) {
         //无需实现
     }
 
     
-    @IBAction func exit(sender: UIButton) {
+    @IBAction func exit(_ sender: UIButton) {
         NSLog("offlineClick")
         zdl().disConnect()
 
         let sb = UIStoryboard(name:"Main", bundle: nil)
-        let vc = sb.instantiateViewControllerWithIdentifier("loginController") as! LoginViewController
+        let vc = sb.instantiateViewController(withIdentifier: "loginController") as! LoginViewController
         vc.reloadInputViews();
-        self.presentViewController(vc, animated: true, completion: nil)
+        self.present(vc, animated: true, completion: nil)
     }
     var userid:String = "";
     var flag1:String = "";
@@ -105,28 +105,28 @@ class SystemSettingViewController: UIViewController,XxDL {
         //self.view.backgroundColor=UIColor.grayColor()
         // Do any additional setup after loading the view.
         self.navigationItem.title="系统设置"
-        self.navigationItem.leftBarButtonItem=UIBarButtonItem(title: "返回", style: UIBarButtonItemStyle.Done, target: self, action: "backClick")
+        self.navigationItem.leftBarButtonItem=UIBarButtonItem(title: "返回", style: UIBarButtonItemStyle.done, target: self, action: #selector(SystemSettingViewController.backClick))
         //self.appDelegate().connect()
         
-        let defaults = NSUserDefaults.standardUserDefaults();
-        userid = defaults.objectForKey("userid") as! String;
+        let defaults = UserDefaults.standard;
+        userid = defaults.object(forKey: "userid") as! String;
         
-        flag1 = defaults.objectForKey("openmessflag") as! String;
-        flag2 = defaults.objectForKey("openvoiceflag") as! String;
+        flag1 = defaults.object(forKey: "openmessflag") as! String;
+        flag2 = defaults.object(forKey: "openvoiceflag") as! String;
         
         if flag1=="1"
         {
-            openmessswitch.on=true
+            openmessswitch.isOn=true
         }else
         {
-            openmessswitch.on=false
+            openmessswitch.isOn=false
         }
         if flag2=="1"
         {
-            openvoiceswitch.on=true
+            openvoiceswitch.isOn=true
         }else
         {
-            openvoiceswitch.on=false
+            openvoiceswitch.isOn=false
         }
 
 //        defaults.setObject(isrecvmess, forKey: "openmessflag");
@@ -139,11 +139,11 @@ class SystemSettingViewController: UIViewController,XxDL {
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
     //获取总代理
     func zdl() -> AppDelegate {
-        return UIApplication.sharedApplication().delegate as! AppDelegate
+        return UIApplication.shared.delegate as! AppDelegate
     }
 
 

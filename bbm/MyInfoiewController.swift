@@ -8,6 +8,30 @@
 
 import UIKit
 import Alamofire
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UIScrollViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource,UIImagePickerControllerDelegate,UIActionSheetDelegate,UITextFieldDelegate,UITextViewDelegate{
     
@@ -33,21 +57,21 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
     @IBOutlet weak var weixin_textfield: UITextField!
     
     @IBOutlet var myview: UIControl!
-    @IBAction func calcage(sender: UIDatePicker) {
+    @IBAction func calcage(_ sender: UIDatePicker) {
         //需要转换的字符串
         //var dateString:NSString="2015-06-26";
         //设置转换格式
-        var formatter:NSDateFormatter = NSDateFormatter()
+        let formatter:DateFormatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         
         
-        brithday = formatter.stringFromDate(sender.date)
+        brithday = formatter.string(from: sender.date)
         
         NSLog("now:\(brithday)")
         
-        var todayDate: NSDate = NSDate()
+        let todayDate: Date = Date()
        // let second =todayDate.timeIntervalSinceDate(<#T##anotherDate: NSDate##NSDate#>)
-        let second = todayDate.timeIntervalSinceDate(sender.date)
+        let second = todayDate.timeIntervalSince(sender.date)
         let year=Int(second/(60*60*24*365))
         NSLog("second:\(second)")
         NSLog("year:\(year)")
@@ -57,7 +81,7 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
     }
     
     var img = UIImage()
-    @IBAction func controlTouchdown(sender: UIControl) {
+    @IBAction func controlTouchdown(_ sender: UIControl) {
         nickname.resignFirstResponder()
         //age.resignFirstResponder()
         //xiaoqu.resignFirstResponder()
@@ -67,23 +91,23 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
         weixin_textfield.resignFirstResponder()
     }
 
-    @IBAction func nicknameexit(sender: AnyObject) {
+    @IBAction func nicknameexit(_ sender: AnyObject) {
         sender.resignFirstResponder()
     }
     
-    @IBAction func ageexit(sender: AnyObject) {
+    @IBAction func ageexit(_ sender: AnyObject) {
         sender.resignFirstResponder()
     }
     
-    @IBAction func xiaoquexit(sender: UITextField) {
+    @IBAction func xiaoquexit(_ sender: UITextField) {
         sender.resignFirstResponder()
     }
     
-    @IBAction func telexit(sender: UITextField) {
+    @IBAction func telexit(_ sender: UITextField) {
         sender.resignFirstResponder()
     }
     
-    @IBAction func weixinexit(sender: UITextField) {
+    @IBAction func weixinexit(_ sender: UITextField) {
         sender.resignFirstResponder()
     }
     
@@ -97,23 +121,23 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
 //    }
     
     
-    @IBAction func savemyinfo(sender: UIButton) {
+    @IBAction func savemyinfo(_ sender: UIButton) {
        
         NSLog("add")
-        let defaults = NSUserDefaults.standardUserDefaults();
-        let userid = defaults.objectForKey("userid") as! String;
+        let defaults = UserDefaults.standard;
+        let userid = defaults.object(forKey: "userid") as! String;
         
          var  dica:Dictionary<String,String> = ["_userid" : userid]
         dica["_username"]=nickname.text;
         NSLog(String(dica.count))
-        Alamofire.request(.POST, "http://api.bbxiaoqu.com/isexitusername.php", parameters: dica) .response { request, response, data, error in
-            print(request)
-            print(response)
-            print(error)
-            print(data)
-            if(error==nil)
+        Alamofire.request("http://api.bbxiaoqu.com/isexitusername.php",method:HTTPMethod.post, parameters: dica).response { response in
+            print("Request: \(response.request)")
+            print("Response: \(response.response)")
+            print("Error: \(response.error)")
+
+            if(response.error==nil)
             {
-                let str:NSString = NSString(data: data!, encoding: NSUTF8StringEncoding)!
+                let str:NSString = NSString(data: response.data!, encoding: String.Encoding.utf8.rawValue)!
                 
                 print(str)
                 print(str)
@@ -133,15 +157,15 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
     func saveinfo() {
         NSLog("add")
         //
-        let defaults = NSUserDefaults.standardUserDefaults();
-        let userid = defaults.objectForKey("userid") as! String;
-        let lat = defaults.objectForKey("lat") as! String;
-        let lng = defaults.objectForKey("lng") as! String;
-        var date = NSDate()
-        var timeFormatter = NSDateFormatter()
+        let defaults = UserDefaults.standard;
+        let userid = defaults.object(forKey: "userid") as! String;
+        let lat = defaults.object(forKey: "lat") as! String;
+        let lng = defaults.object(forKey: "lng") as! String;
+        let date = Date()
+        let timeFormatter = DateFormatter()
         timeFormatter.dateFormat = "yyyMMddHHmmss"
-        var strNowTime = timeFormatter.stringFromDate(date) as String
-        var fname:String = userid.stringByAppendingString("_").stringByAppendingString(strNowTime).stringByAppendingString(".jpg")
+        let strNowTime = timeFormatter.string(from: date) as String
+        let fname:String = ((userid + "_") + strNowTime) + ".jpg"
         // NSLog(fullPath)
         
         print("savemyinfo fullPath=\(fullPath)")
@@ -174,7 +198,7 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
         dic["community_lng"] = xiaoqulng;
         dic["introduce"] = introduce.text;
         dic["weixin"] = weixin_textfield.text;
-        Alamofire.request(.POST, "http://api.bbxiaoqu.com/saveuserinfo.php", parameters: dic)
+        Alamofire.request("http://api.bbxiaoqu.com/saveuserinfo.php", method:HTTPMethod.post,parameters: dic)
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -192,27 +216,27 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
         super.viewDidLoad()
         arr = ["男","女"]
         self.navigationItem.title="个人资料"
-        self.navigationItem.leftBarButtonItem=UIBarButtonItem(title: "返回", style: UIBarButtonItemStyle.Done, target: self, action: "backClick")
+        self.navigationItem.leftBarButtonItem=UIBarButtonItem(title: "返回", style: UIBarButtonItemStyle.done, target: self, action: #selector(MyInfoViewController.backClick))
         // Do any additional setup after loading the view.
         sex.delegate = self
         sex.dataSource = self
-        headface.userInteractionEnabled = true
-        var singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "goImagesel")
+        headface.isUserInteractionEnabled = true
+        let singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MyInfoViewController.goImagesel))
         headface .addGestureRecognizer(singleTap)
         
         
-        var layer:CALayer = headface.layer
-        layer.borderColor=UIColor.lightGrayColor().CGColor
+        let layer:CALayer = headface.layer
+        layer.borderColor=UIColor.lightGray.cgColor
         layer.borderWidth = 1.0;
 
          //headface.addTarget(self, action: "goImagesel", forControlEvents: UIControlEvents.TouchUpInside)
-        var layer1:CALayer = introduce.layer
-        layer1.borderColor=UIColor.lightGrayColor().CGColor
+        let layer1:CALayer = introduce.layer
+        layer1.borderColor=UIColor.lightGray.cgColor
         layer1.borderWidth = 1.0;
 
         
-        let defaults = NSUserDefaults.standardUserDefaults();
-        let userid = defaults.objectForKey("userid") as! NSString;
+        let defaults = UserDefaults.standard;
+        let userid = defaults.object(forKey: "userid") as! NSString;
         loaduserinfo(userid as String)
       
         
@@ -222,25 +246,25 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
         
      }
     
-    func keyBoardWillShow(note:NSNotification)
+    func keyBoardWillShow(_ note:Notification)
         
     {
         
         let userInfo  = note.userInfo as! NSDictionary
         
-        var  keyBoardBounds = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
+        let  keyBoardBounds = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         
         let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
         
         
         
-        var keyBoardBoundsRect = self.view.convertRect(keyBoardBounds, toView:nil)
+        var keyBoardBoundsRect = self.view.convert(keyBoardBounds, to:nil)
         
         
         
         var keyBaoardViewFrame = myview.frame
         
-        var deltaY = keyBoardBounds.size.height
+        let deltaY = keyBoardBounds.size.height
         
         
         
@@ -248,7 +272,7 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
             
             
             
-            self.myview.transform = CGAffineTransformMakeTranslation(0,-deltaY)
+            self.myview.transform = CGAffineTransform(translationX: 0,y: -deltaY)
             
         }
         
@@ -256,11 +280,11 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
         
         if duration > 0 {
             
-            let options = UIViewAnimationOptions(rawValue: UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).integerValue << 16))
+            let options = UIViewAnimationOptions(rawValue: UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).intValue << 16))
             
             
             
-            UIView.animateWithDuration(duration, delay: 0, options:options, animations: animations, completion: nil)
+            UIView.animate(withDuration: duration, delay: 0, options:options, animations: animations, completion: nil)
             
             
             
@@ -282,7 +306,7 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
     
     
     
-    func keyBoardWillHide(note:NSNotification)
+    func keyBoardWillHide(_ note:Notification)
         
     {
         
@@ -302,7 +326,7 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
             
             
             
-            self.myview.transform = CGAffineTransformIdentity
+            self.myview.transform = CGAffineTransform.identity
             
             
             
@@ -312,11 +336,11 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
         
         if duration > 0 {
             
-            let options = UIViewAnimationOptions(rawValue: UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).integerValue << 16))
+            let options = UIViewAnimationOptions(rawValue: UInt((userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).intValue << 16))
             
             
             
-            UIView.animateWithDuration(duration, delay: 0, options:options, animations: animations, completion: nil)
+            UIView.animate(withDuration: duration, delay: 0, options:options, animations: animations, completion: nil)
             
             
             
@@ -350,7 +374,7 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
         
     }
     
@@ -365,17 +389,17 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
     */
     
     
-    func loaduserinfo(userid:String)
+    func loaduserinfo(_ userid:String)
     {
-         var url_str:String = "http://api.bbxiaoqu.com/getuserinfo.php?userid=".stringByAppendingString(userid)
-         Alamofire.request(.POST,url_str, parameters:nil)
+         let url_str:String = "http://api.bbxiaoqu.com/getuserinfo.php?userid=" + userid
+        Alamofire.request(url_str,method:HTTPMethod.post, parameters:nil)
             .responseJSON { response in
                 //                print(response.request)  // original URL request
                 //                print(response.response) // URL response
                 //                print(response.data)     // server data
                 //                print(response.result)   // result of response serialization
                                 print(response.result.value)
-                if let JSON = response.result.value {
+                if let JSON:NSArray = response.result.value as! NSArray {
                     print("JSON1: \(JSON.count)")
                     if(JSON.count==0)
                     {
@@ -384,36 +408,35 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
                         
                     }else
                     {
-                        //let userid:String = JSON.objectForKey("userid") as! String;
-                        //let pass:String = JSON.objectForKey("pass") as! String;
-                        let telphone:String = JSON[0].objectForKey("telphone") as! String;
-                        let headfaceurl:String = JSON[0].objectForKey("headface") as! String;
-                        let username:String = JSON[0].objectForKey("username") as! String;
+                        
+                        let telphone:String = (JSON[0] as! NSDictionary).object(forKey: "telphone") as! String;
+                        let headfaceurl:String = (JSON[0] as! NSDictionary).object(forKey: "headface") as! String;
+                        let username:String = (JSON[0] as! NSDictionary).object(forKey: "username") as! String;
                         var age:String;
-                        if(JSON[0].objectForKey("age")!.isKindOfClass(NSNull))
+                        if((JSON[0] as! NSDictionary).object(forKey: "age")==nil)
                         {
                             age="";
                         }else
                         {
-                            age = JSON[0].objectForKey("age") as! String;
+                            age = (JSON[0] as! NSDictionary).object(forKey: "age") as! String;
                         }
                         
                         var usersex:String;
-                        if(JSON[0].objectForKey("sex")!.isKindOfClass(NSNull))
+                        if((JSON[0] as! NSDictionary).object(forKey: "sex")==nil)
                         {
                             usersex="1";
                         }else
                         {
-                            usersex = JSON[0].objectForKey("sex") as! String;
+                            usersex = (JSON[0] as! NSDictionary).object(forKey: "sex") as! String;
                         }
                         
                         var weixin:String;
-                        if(JSON[0].objectForKey("weixin")!.isKindOfClass(NSNull))
+                        if((JSON[0] as! NSDictionary).object(forKey: "weixin")==nil)
                         {
                             weixin="";
                         }else
                         {
-                            weixin = JSON[0].objectForKey("weixin") as! String;
+                            weixin = (JSON[0] as! NSDictionary).object(forKey: "weixin") as! String;
                         }
 
                         
@@ -433,12 +456,6 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
                             self.sex.selectRow(1, inComponent: 0, animated: true)
                         }
                         
-                        
-//                        self.xiaoquid=community_id;
-//                        self.xiaoquname=community;
-//                        self.xiaoqulat=community_lat;
-//                        self.xiaoqulng=community_lng;
-                        
                         self.nickname.text=username;
                         self.tel.text=telphone;
                         //self.xiaoqu.text=community;
@@ -452,12 +469,12 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
                         {//女
                             self.sex.selectRow(1, inComponent: 0, animated: true)
                         }
-                        if(JSON[0].objectForKey("brithday")!.isKindOfClass(NSNull))
+                        if((JSON[0] as! NSDictionary).object(forKey: "brithday")==nil)
                         {
                             self.brithday="1970-01-01";
                         }else
                         {
-                            self.brithday = JSON[0].objectForKey("brithday") as! String;
+                            self.brithday = (JSON[0] as! NSDictionary).object(forKey: "brithday") as! String;
                             if(self.brithday.characters.count<10)
                             {
                             self.brithday="1970-01-01";
@@ -468,11 +485,11 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
                         //需要转换的字符串
                         //var dateString:NSString="2015-06-26";
                         //设置转换格式
-                        var formatter:NSDateFormatter = NSDateFormatter()
+                        let formatter:DateFormatter = DateFormatter()
                         formatter.dateFormat = "yyyy-MM-dd"
                         
-                        var now = NSDate()
-                        now = formatter.dateFromString(self.brithday as String)!
+                        var now = Date()
+                        now = formatter.date(from: self.brithday as String)!
                         
                         
                         self.brithdate.setDate(now, animated: true)
@@ -494,22 +511,22 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
     
     
     // 设置列数
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
    
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return arr.count
     }
     
     
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
        if(component == 0){
             return arr[row]
         }
         return nil
     }
-    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         //NSLog(arr[row])
         selsexpicker=arr[row];
     }
@@ -518,21 +535,21 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
     
     
     
-    func uploadImg(image: String,filename: String){
+    func uploadImg(_ image: String,filename: String){
         //设定路径
-        var furl: NSURL = NSURL(fileURLWithPath: image)
+        let furl: URL = URL(fileURLWithPath: image)
         /** 把UIImage转化成NSData */
-        let imageData = NSData(contentsOfURL: furl)
+        let imageData = try? Data(contentsOf: furl)
         if (imageData != nil) {
             
             /** 设置上传图片的URL和参数 */
-            let defaults = NSUserDefaults.standardUserDefaults();
-            let user_id = defaults.stringForKey("userid")
+            let defaults = UserDefaults.standard;
+            let user_id = defaults.string(forKey: "userid")
             let url = "http://api.bbxiaoqu.com/upload.php"
-            let request = NSMutableURLRequest(URL: NSURL(string:url)!)
+            let request = NSMutableURLRequest(url: URL(string:url)!)
             
             /** 设定上传方法为Post */
-            request.HTTPMethod = "POST"
+            request.httpMethod = "POST"
             let boundary = NSString(format: "---------------------------14737809831466499882746641449")
             
             /** 上传文件必须设置 */
@@ -541,23 +558,23 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
             
             /** 设置上传Image图片属性 */
             let body = NSMutableData()
-            body.appendData(NSString(format: "\r\n--%@\r\n", boundary).dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.append(NSString(format: "\r\n--%@\r\n", boundary).data(using: String.Encoding.utf8.rawValue)!)
             
-            body.appendData(NSString(format:"Content-Disposition: form-data; name=\"uploadfile\"; filename=\"%@\"\r\n",filename).dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.append(NSString(format:"Content-Disposition: form-data; name=\"uploadfile\"; filename=\"%@\"\r\n",filename).data(using: String.Encoding.utf8.rawValue)!)
             
-            body.appendData(NSString(format: "Content-Type: application/octet-stream\r\n\r\n").dataUsingEncoding(NSUTF8StringEncoding)!)
-            body.appendData(imageData! as! NSData)
+            body.append(NSString(format: "Content-Type: application/octet-stream\r\n\r\n").data(using: String.Encoding.utf8.rawValue)!)
+            body.append(imageData! )
             
-            body.appendData(NSString(format: "\r\n--%@\r\n", boundary).dataUsingEncoding(NSUTF8StringEncoding)!)
-            request.HTTPBody = body
+            body.append(NSString(format: "\r\n--%@\r\n", boundary).data(using: String.Encoding.utf8.rawValue)!)
+            request.httpBody = body as Data
             
-            NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response, data, error) -> Void in
+            NSURLConnection.sendAsynchronousRequest(request as URLRequest, queue: OperationQueue.main, completionHandler: { (response, data, error) -> Void in
                 
-                if (error == nil && data?.length > 0) {
+                if (error == nil && data?.count > 0) {
                     
                     /** 设置解码方式 */
-                    let returnString = NSString(data: data!, encoding: NSUTF8StringEncoding)
-                    let returnData = returnString?.dataUsingEncoding(NSUTF8StringEncoding)
+                    let returnString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
+                    let returnData = returnString?.data(using: String.Encoding.utf8.rawValue)
                     
                     print("returnString----\(returnString)")
                 }
@@ -568,10 +585,10 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
     func goImagesel()
     {
         let actionSheet = UIActionSheet(title: "图片来源", delegate: self, cancelButtonTitle: "照片", destructiveButtonTitle: "相机")
-        actionSheet.showInView(self.view)
+        actionSheet.show(in: self.view)
     }
     
-    func actionSheet(actionSheet: UIActionSheet, clickedButtonAtIndex buttonIndex: Int) {
+    func actionSheet(_ actionSheet: UIActionSheet, clickedButtonAt buttonIndex: Int) {
         if(buttonIndex==0)
         {
             goCamera()
@@ -583,28 +600,28 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
     //打开相机
     func goCamera(){
         //先设定sourceType为相机，然后判断相机是否可用（ipod）没相机，不可用将sourceType设定为相片库
-        var sourceType = UIImagePickerControllerSourceType.Camera
-        if !UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera){
-            sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+        var sourceType = UIImagePickerControllerSourceType.camera
+        if !UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera){
+            sourceType = UIImagePickerControllerSourceType.photoLibrary
         }
         let picker = UIImagePickerController()
         picker.delegate = self
         picker.allowsEditing = true//设置可编辑
         picker.sourceType = sourceType
-        self.presentViewController(picker, animated: true, completion: nil)//进入照相界面
+        self.present(picker, animated: true, completion: nil)//进入照相界面
     }
     
     
     //打开相册
     func goImage(){
         let pickerImage = UIImagePickerController()
-        if !UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.PhotoLibrary){
-            pickerImage.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
-            pickerImage.mediaTypes = UIImagePickerController.availableMediaTypesForSourceType(pickerImage.sourceType)!
+        if !UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.photoLibrary){
+            pickerImage.sourceType = UIImagePickerControllerSourceType.photoLibrary
+            pickerImage.mediaTypes = UIImagePickerController.availableMediaTypes(for: pickerImage.sourceType)!
         }
         pickerImage.delegate = self
         pickerImage.allowsEditing = true
-        self.presentViewController(pickerImage, animated: true, completion: nil)
+        self.present(pickerImage, animated: true, completion: nil)
         
     }
     
@@ -625,29 +642,29 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
     //    }
     
     //选择好照片后choose后执行的方法
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject])
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any])
     {
         //获取照片的原图
         img = info[UIImagePickerControllerEditedImage] as! UIImage
         headface.image=img
         
-        let defaults = NSUserDefaults.standardUserDefaults();
-        let userid = defaults.objectForKey("userid") as! NSString;
+        let defaults = UserDefaults.standard;
+        let userid = defaults.object(forKey: "userid") as! NSString;
         
         
-        var date = NSDate()
-        var timeFormatter = NSDateFormatter()
+        let date = Date()
+        let timeFormatter = DateFormatter()
         timeFormatter.dateFormat = "yyyMMddHHmmss"
-        var strNowTime = timeFormatter.stringFromDate(date) as String
+        let strNowTime = timeFormatter.string(from: date) as String
 
         
-       var iconImageFileName=userid.stringByAppendingString("_").stringByAppendingString(strNowTime).stringByAppendingString(".jpg")
+       let iconImageFileName=(userid.appending("_") + strNowTime) + ".jpg"
 //        //保存图片至沙盒
 //        //self.saveImage(img, newSize: CGSize(width: 256, height: 256), percent: 0.5, imageName: imgname)
         self.saveImage(img, newSize: CGSize(width: 256, height: 256), percent: 0.5,imageName: iconImageFileName)
 //        
 //        //let fullPath: String = NSHomeDirectory().stringByAppendingString("/").stringByAppendingString("Documents").stringByAppendingString("/").stringByAppendingString(pos).stringByAppendingString(".png")
-        fullPath = ((NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents") as NSString).stringByAppendingPathComponent(iconImageFileName)
+        fullPath = ((NSHomeDirectory() as NSString).appendingPathComponent("Documents") as NSString).appendingPathComponent(iconImageFileName)
 //        
         print("imagePickerController fullPath=\(fullPath)")
 //        imgarr.append(fullPath);
@@ -666,30 +683,30 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
 //            
 //        }
 //        
-        picker.dismissViewControllerAnimated(true, completion: nil)
+        picker.dismiss(animated: true, completion: nil)
         
     }
     
     
     
     //MARK: - 保存图片至沙盒
-    func saveImage(currentImage:UIImage,newSize: CGSize, percent: CGFloat,imageName:String){
+    func saveImage(_ currentImage:UIImage,newSize: CGSize, percent: CGFloat,imageName:String){
         
         UIGraphicsBeginImageContext(newSize)
-        currentImage.drawInRect(CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
-        let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        currentImage.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        let imageData: NSData = UIImageJPEGRepresentation(newImage, percent)!
+        let imageData: Data = UIImageJPEGRepresentation(newImage, percent)!
         
         
         //var imageData = NSData()
         //imageData = UIImageJPEGRepresentation(currentImage, 0.5)!
         // 获取沙盒目录
-        fullPath = ((NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents") as NSString).stringByAppendingPathComponent(imageName)
+        fullPath = ((NSHomeDirectory() as NSString).appendingPathComponent("Documents") as NSString).appendingPathComponent(imageName)
         print("saveImage fullPath=\(fullPath)")
 
         // 将图片写入文件
-        imageData.writeToFile(fullPath, atomically: false)
+        try? imageData.write(to: URL(fileURLWithPath: fullPath), options: [])
     }
     
     //    func saveImage(currentImage: UIImage, newSize: CGSize, percent: CGFloat, imageName: String){
@@ -710,9 +727,9 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
     
     
     //cancel后执行的方法
-    func imagePickerControllerDidCancel(picker: UIImagePickerController){
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController){
         //println("cancel--------->>")
-        picker.dismissViewControllerAnimated(true, completion: nil)
+        picker.dismiss(animated: true, completion: nil)
         
     }
 
@@ -722,13 +739,13 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
      
      :param: textView textView description
      */
-    func textViewDidBeginEditing(textView: UITextView) {
-        var frame:CGRect = textView.frame
-        var offset:CGFloat = frame.origin.y + 100 - (self.view.frame.size.height-330)
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        let frame:CGRect = textView.frame
+        let offset:CGFloat = frame.origin.y + 100 - (self.view.frame.size.height-330)
         
         if offset > 0  {
             
-            self.view.frame = CGRectMake(0.0, -offset, self.view.frame.size.width, self.view.frame.size.height)
+            self.view.frame = CGRect(x: 0.0, y: -offset, width: self.view.frame.size.width, height: self.view.frame.size.height)
         }
         
     }
@@ -739,8 +756,8 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
      
      :param: textView textView description
      */
-    func textViewDidEndEditing(textView: UITextView) {
-        self.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)
+    func textViewDidEndEditing(_ textView: UITextView) {
+        self.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height)
     }
     
     
@@ -749,14 +766,14 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
      解决textField遮挡键盘代码
      :param: textField textField description
      */
-    func textFieldDidBeginEditing(textField: UITextField) {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
         //
-        var frame:CGRect = textField.frame
-        var offset:CGFloat = frame.origin.y + 100 - (self.view.frame.size.height-216)
+        let frame:CGRect = textField.frame
+        let offset:CGFloat = frame.origin.y + 100 - (self.view.frame.size.height-216)
         
         if offset > 0  {
             
-            self.view.frame = CGRectMake(0.0, -offset, self.view.frame.size.width, self.view.frame.size.height)
+            self.view.frame = CGRect(x: 0.0, y: -offset, width: self.view.frame.size.width, height: self.view.frame.size.height)
         }
     }
     
@@ -765,9 +782,9 @@ class MyInfoViewController: UIViewController ,UINavigationControllerDelegate ,UI
      
      :param: textField textField description
      */
-    func textFieldDidEndEditing(textField: UITextField) {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         //
-        self.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)
+        self.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height)
         
     }
         

@@ -9,6 +9,10 @@
 import UIKit
 
 class XMPPManager: NSObject ,XMPPStreamDelegate {
+//    fileprivate static var __once: () = { () -> Void in
+//            StaticStruct.xmppManager = XMPPManager;
+//            StaticStruct.xmppManager?.manageStreamAndRoster();
+//        }()
     //定义通讯通道
     var stream:XMPPStream = XMPPStream()
     //定义花名册
@@ -16,30 +20,28 @@ class XMPPManager: NSObject ,XMPPStreamDelegate {
     var password:String?
     class func shareWithXMPPManager()->XMPPManager {
         struct StaticStruct{
-            static var predicate:dispatch_once_t = 0;
+            static var predicate:Int = 0;
             static var xmppManager:XMPPManager? = nil;
         }
-        dispatch_once(&StaticStruct.predicate, { () -> Void in
-            StaticStruct.xmppManager = XMPPManager();
-            StaticStruct.xmppManager?.manageStreamAndRoster();
-        });
+        //_ = XMPPManager.__once;
         
         return StaticStruct.xmppManager!;
     }
     func manageStreamAndRoster(){
         self.stream.hostName = "101.200.194.1";
         self.stream.hostPort = UInt16(5222);
-        self.stream.addDelegate(self, delegateQueue: dispatch_get_main_queue());
+        self.stream.addDelegate(self, delegateQueue: DispatchQueue.main);
         
-        var rosterStorage111:XMPPRosterCoreDataStorage = XMPPRosterCoreDataStorage.sharedInstance();
-        self.roster = XMPPRoster(rosterStorage: rosterStorage111, dispatchQueue: dispatch_get_main_queue());
-        self.roster!.addDelegate(self, delegateQueue: dispatch_get_main_queue());
+        let rosterStorage111:XMPPRosterCoreDataStorage = XMPPRosterCoreDataStorage.sharedInstance();
+        self.roster = XMPPRoster(rosterStorage: rosterStorage111, dispatchQueue: DispatchQueue.main);
+        self.roster!.addDelegate(self, delegateQueue: DispatchQueue.main);
     }
     //设置登录操作
-    func loginWithUserNameAndPassword(userName:String,password:String){
+    func loginWithUserNameAndPassword(_ userName:String,password:String){
         self.password = password;
        // var jid:XMPPJID = XMPPJID.jidWithUser(userName, domain: Domine, resource: Resource) as XMPPJID;
-        var jid:XMPPJID = XMPPJID.jidWithUser(userName as String, domain: "bbxiaoqu", resource: "ios") as XMPPJID;
+//        let jid:XMPPJID = XMPPJID.withUser(userName as String, domain: "bbxiaoqu", resource: "ios") as XMPPJID;
+        let jid:XMPPJID  = XMPPJID.init(user: userName, domain: "bbxiaoqu", resource: "ios")
         self.stream.myJID = jid;
         self.connectToServer();
     }
@@ -49,73 +51,73 @@ class XMPPManager: NSObject ,XMPPStreamDelegate {
             self.disconnectWithServer();
         }
         do {
-            try self.stream.connectWithTimeout(5000)
+            try self.stream.connect(withTimeout: 5000)
         } catch {
             
         }
     }
     //断开与服务器的连接
     func disconnectWithServer(){
-        var presence:XMPPPresence = XMPPPresence(type: "available");
-        self.stream.sendElement(presence);
+        let presence:XMPPPresence = XMPPPresence(type: "available");
+        self.stream.send(presence);
         self.stream.disconnect();
     }
     
-    func xmppStreamDidAuthenticate(sender: XMPPStream!) {
-        var haveLogin:NSNumber = NSUserDefaults.standardUserDefaults().objectForKey("haveLogin") as! NSNumber;
+    func xmppStreamDidAuthenticate(_ sender: XMPPStream!) {
+        let haveLogin:NSNumber = UserDefaults.standard.object(forKey: "haveLogin") as! NSNumber;
         if !haveLogin.boolValue{
             return;
         }
-        var presence:XMPPPresence = XMPPPresence(type: "available");
-        self.stream.sendElement(presence);
+        let presence:XMPPPresence = XMPPPresence(type: "available");
+        self.stream.send(presence);
     }
-    func xmppStreamDidConnect(sender: XMPPStream!) {
+    func xmppStreamDidConnect(_ sender: XMPPStream!) {
         do {
-            try self.stream.authenticateWithPassword(self.password)
+            try self.stream.authenticate(withPassword: self.password)
         } catch {
            
         }
     }
     
-    func xmppStream(sender: XMPPStream!, didNotAuthenticate error: DDXMLElement!) {
-        var alter:UIAlertView = UIAlertView(title: "提示", message: "密码验证失败!", delegate: nil, cancelButtonTitle: "取消");
+    func xmppStream(_ sender: XMPPStream!, didNotAuthenticate error: DDXMLElement!) {
+        let alter:UIAlertView = UIAlertView(title: "提示", message: "密码验证失败!", delegate: nil, cancelButtonTitle: "取消");
         alter.show();
     }
-    func xmppStreamConnectDidTimeout(sender: XMPPStream!) {
-        var alter:UIAlertView = UIAlertView(title: "对不起", message: "连接超时!", delegate: nil, cancelButtonTitle: "取消");
+    func xmppStreamConnectDidTimeout(_ sender: XMPPStream!) {
+        let alter:UIAlertView = UIAlertView(title: "对不起", message: "连接超时!", delegate: nil, cancelButtonTitle: "取消");
         alter.show();
     }
     
-    func unreadnum(userid:String,catagory:String)->Int
+    func unreadnum(_ userid:String,catagory:String)->Int
     {
-         var db: SQLiteDB! = SQLiteDB.sharedInstance()
+         let db: SQLiteDB! = SQLiteDB.sharedInstance
         let sql="select * from notice where relativeid='"+userid+"' and readed=0 and catagory='"+catagory+"'";
         NSLog(sql)
-        let mess = db.query(sql)
+        let mess = db.query(sql: sql)
         return mess.count
      }
     
-    func xmppStream(sender:XMPPStream ,didReceiveMessage message:XMPPMessage? ){
+    func xmppStream(_ sender:XMPPStream ,didReceive message:XMPPMessage? ){
                 if message != nil {
                     print(message)
                     
                     
-                    let defaults = NSUserDefaults.standardUserDefaults();
-                    let touserid = defaults.stringForKey("userid")
-                    let tonickname = defaults.objectForKey("nickname") as! String;
-                    let tousericon = defaults.objectForKey("headface") as! String;
+                    let defaults = UserDefaults.standard;
+                    let touserid = defaults.string(forKey: "userid")
+                    let tonickname = defaults.object(forKey: "nickname") as! String;
+                    let tousericon = defaults.object(forKey: "headface") as! String;
                     
-                    var cont:String = message!.elementForName("body").stringValue();
-                    var from:String = message!.attributeForName("from").stringValue();
+                    let cont:String = message!.forName("body").stringValue();
+                    let from:String = message!.attribute(forName: "from").stringValue();
         
-                    var date = NSDate()
-                    var timeFormatter = NSDateFormatter()
+                    let date = Date()
+                    let timeFormatter = DateFormatter()
                     timeFormatter.dateFormat = "yyy-MM-dd HH:mm:ss.SSS" //(格式可俺按自己需求修整)
-                    var strNowTime = timeFormatter.stringFromDate(date) as String
+                    let strNowTime = timeFormatter.string(from: date) as String
         
                     var msg:Message = Message(content:cont,sender:from,ctime:strNowTime)
                     var db: SQLiteDB!
-                    db = SQLiteDB.sharedInstance()
+                    db = SQLiteDB.sharedInstance
                     let sql = "insert into chat(message,guid,date,senduserid,sendnickname,sendusericon,touserid,tonickname,tousericon) values('\(cont)','','\(date)','\(from)','\(from)','\(from)','\(touserid)','\(tonickname)','\(tousericon)')";
                     //私信
                     

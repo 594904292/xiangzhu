@@ -20,14 +20,14 @@ class MyCanvas: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         //把背景色设为透明
-        self.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.clear
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         
         let bezierPath = UIBezierPath()
         

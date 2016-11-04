@@ -31,35 +31,35 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        self.view.backgroundColor=UIColor.whiteColor()
+        self.view.backgroundColor=UIColor.white
         self.navigationItem.title="襄助"
         self.creatSubViewControllers()
-        self.tabBar.tintColor=UIColor.redColor()
+        self.tabBar.tintColor=UIColor.red
         
         let navBar=UINavigationBar.appearance()
         navBar.barTintColor=UIColor(red: 204/255, green: 0, blue: 0, alpha: 1)
         var arrs=[String:AnyObject]();
-        arrs[NSForegroundColorAttributeName]=UIColor.whiteColor()
+        arrs[NSForegroundColorAttributeName]=UIColor.white
         navBar.titleTextAttributes=arrs
         //self.navigationController?.navigationBar.tintColor=UIColor.redColor()
         if(seltabIndex == 0)
         {
-            var img=UIImage(named: "xz_laba_icon")
-            let item3=UIBarButtonItem(image: img, style: UIBarButtonItemStyle.Plain, target: self,  action: "jumpchatlist")
-            item3.tintColor=UIColor.whiteColor()
+            let img=UIImage(named: "xz_laba_icon")
+            let item3=UIBarButtonItem(image: img, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(RootTabBarController.jumpchatlist))
+            item3.tintColor=UIColor.white
             self.navigationItem.leftBarButtonItem=item3
             
         }else
         {
-            var returnimg=UIImage(named: "xz_nav_return_icon")
-            let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "backClick")
-            item3.tintColor=UIColor.whiteColor()
+            let returnimg=UIImage(named: "xz_nav_return_icon")
+            let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(RootTabBarController.backClick))
+            item3.tintColor=UIColor.white
             self.navigationItem.leftBarButtonItem=item3
             
         }
-        var searchimg=UIImage(named: "xz_nav_icon_search")
-        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "searchClick")
-        item4.tintColor=UIColor.whiteColor()
+        let searchimg=UIImage(named: "xz_nav_icon_search")
+        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(RootTabBarController.searchClick))
+        item4.tintColor=UIColor.white
         self.navigationItem.rightBarButtonItem=item4
         
         // 设置定位精确度，默认：kCLLocationAccuracyBest
@@ -75,7 +75,7 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
         
         _search=BMKGeoCodeSearch()
         _search.delegate=self
-        self.view.userInteractionEnabled=true
+        self.view.isUserInteractionEnabled=true
         self.automaticallyAdjustsScrollViewInsets = false
         openxmpp() //开启xmpp
         
@@ -92,19 +92,19 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
     
     //获取总代理
     func zdl() -> AppDelegate {
-        return UIApplication.sharedApplication().delegate as! AppDelegate
+        return UIApplication.shared.delegate as! AppDelegate
     }
     
 
     
     
-    func newMainMsg(aMsg: WXMessage) {
+    func newMainMsg(_ aMsg: WXMessage) {
         
-        let defaults = NSUserDefaults.standardUserDefaults();
+        let defaults = UserDefaults.standard;
         var openmessflag:String=""
-        if(defaults.boolForKey("openmessflag"))
+        if(defaults.bool(forKey: "openmessflag"))
         {
-            openmessflag = defaults.objectForKey("openmessflag") as! String;
+            openmessflag = defaults.object(forKey: "openmessflag") as! String;
         }else
         {
             openmessflag="0"
@@ -112,9 +112,9 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
         //var openmessflag:Bool = defaults.objectForKey("openmessflag") as! Bool;
         // var openvoiceflag:Bool = defaults.objectForKey("openvoiceflag") as! Bool;
         var openvoiceflag:String=""
-        if(defaults.boolForKey("openvoiceflag"))
+        if(defaults.bool(forKey: "openvoiceflag"))
         {
-            openvoiceflag = defaults.objectForKey("openvoiceflag") as! String;
+            openvoiceflag = defaults.object(forKey: "openvoiceflag") as! String;
         }else
         {
             openvoiceflag="0"
@@ -130,7 +130,7 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
             }
             if openvoiceflag=="1"
             {
-                var o:Notice=Notice();
+                let o:Notice=Notice();
                 o.systemSound()
             }
         }
@@ -140,8 +140,8 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
   
     func searchClick()
     {
-        var sb = UIStoryboard(name:"Main", bundle: nil)
-        var vc = sb.instantiateViewControllerWithIdentifier("souviewcontroller") as! SouViewController
+        let sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "souviewcontroller") as! SouViewController
         self.navigationController?.pushViewController(vc, animated: true)
         //var vc = SearchViewController()
         //self.navigationController?.pushViewController(vc, animated: true)
@@ -152,16 +152,16 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
         NSLog("back");
         //self.navigationController?.popViewControllerAnimated(true)
         let sb = UIStoryboard(name:"Main", bundle: nil)
-        let vc = sb.instantiateViewControllerWithIdentifier("loginController") as! LoginViewController
+        let vc = sb.instantiateViewController(withIdentifier: "loginController") as! LoginViewController
         
-        self.presentViewController(vc, animated: true, completion: nil)
+        self.present(vc, animated: true, completion: nil)
         
     }
     func jumpchatlist()
     {
         
-        var sb = UIStoryboard(name:"Main", bundle: nil)
-        var vc = sb.instantiateViewControllerWithIdentifier("noticeviewcontroller") as! NoticeTableViewController
+        let sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "noticeviewcontroller") as! NoticeTableViewController
         self.navigationController?.pushViewController(vc, animated: true)
         
     }
@@ -181,7 +181,7 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
     
     // UITabBarDelegate协议的方法，在用户选择不同的标签页时调用
     
-    override func tabBar(tabBar: UITabBar, didSelectItem item: UITabBarItem) {
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         //通过tag查询到上方容器的label，并设置为当前选择的标签页的名称
         NSLog("Selected is %d",item.tag);
         self.navigationItem.title=titles[item.tag]
@@ -189,15 +189,15 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
         seltabIndex = item.tag
         if(seltabIndex == 0)
         {
-            var img=UIImage(named: "xz_laba_icon")
-            var item3=UIBarButtonItem(image: img, style: UIBarButtonItemStyle.Plain, target: self,  action: "jumpchatlist")
-            item3.tintColor=UIColor.whiteColor()
+            let img=UIImage(named: "xz_laba_icon")
+            let item3=UIBarButtonItem(image: img, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(RootTabBarController.jumpchatlist))
+            item3.tintColor=UIColor.white
             self.navigationItem.leftBarButtonItem=item3
         }else
         {
-            var returnimg=UIImage(named: "xz_nav_return_icon")
-            let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.Plain, target: self,  action: "backClick")
-            item3.tintColor=UIColor.whiteColor()
+            let returnimg=UIImage(named: "xz_nav_return_icon")
+            let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(RootTabBarController.backClick))
+            item3.tintColor=UIColor.white
             self.navigationItem.leftBarButtonItem=item3
             if(seltabIndex == 1)
             {
@@ -234,16 +234,16 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
     
     func creatSubViewControllers(){
         let sb = UIStoryboard(name:"Main", bundle: nil)
-        var TabOne = sb.instantiateViewControllerWithIdentifier("mainController") as! TabOneViewController
+        let TabOne = sb.instantiateViewController(withIdentifier: "mainController") as! TabOneViewController
         //var TabTwo = sb.instantiateViewControllerWithIdentifier("recentviewcontroller") as! RecentTableViewController
-        var TabTwo = sb.instantiateViewControllerWithIdentifier("newrecentviewcontroller") as! RecentViewController
-        var TabThree = sb.instantiateViewControllerWithIdentifier("topviewController") as! TopViewController
+        let TabTwo = sb.instantiateViewController(withIdentifier: "newrecentviewcontroller") as! RecentViewController
+        let TabThree = sb.instantiateViewController(withIdentifier: "topviewController") as! TopViewController
         //var TabFour = sb.instantiateViewControllerWithIdentifier("myinfo") as! MyInfoViewController
         
         //let TabFour=singleInfoViewController()
        //var TabFour = TabBarViewController()
         
-        var TabFour = sb.instantiateViewControllerWithIdentifier("mybaseinfoviewcontroller") as! MybaseInfoViewController
+        let TabFour = sb.instantiateViewController(withIdentifier: "mybaseinfoviewcontroller") as! MybaseInfoViewController
 
         
         let tabArray = [TabOne,TabTwo,TabThree,TabFour]
@@ -260,7 +260,7 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
     
     //处理位置坐标更新
     
-    func didUpdateBMKUserLocation(userLocation: BMKUserLocation!) {
+    func didUpdate(_ userLocation: BMKUserLocation!) {
         
         if(userLocation.location != nil)
             
@@ -270,13 +270,12 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
             
             print("纬度: \(userLocation.location.coordinate.longitude)")
             
-            userLocation.location
             
-            var defaults = NSUserDefaults.standardUserDefaults();
+            let defaults = UserDefaults.standard;
             
-            defaults.setObject(String(userLocation.location.coordinate.latitude), forKey: "lat");
+            defaults.set(String(userLocation.location.coordinate.latitude), forKey: "lat");
             
-            defaults.setObject(String(userLocation.location.coordinate.longitude), forKey: "lng");
+            defaults.set(String(userLocation.location.coordinate.longitude), forKey: "lng");
             
             defaults.synchronize();
             
@@ -288,7 +287,7 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
             
             
             
-            var option:BMKReverseGeoCodeOption=BMKReverseGeoCodeOption();
+            let option:BMKReverseGeoCodeOption=BMKReverseGeoCodeOption();
             
             option.reverseGeoPoint=pt;
             
@@ -296,14 +295,14 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
             
             locService.stopUserLocationService()
             
-            let _userid = defaults.objectForKey("userid") as! NSString;
+            let _userid = defaults.object(forKey: "userid") as! NSString;
             
-            if(defaults.objectForKey("token") != nil)
+            if(defaults.object(forKey: "token") != nil)
                 
             {
                 
-                let _token = defaults.objectForKey("token") as! NSString;
-                Alamofire.request(.POST, "http://api.bbxiaoqu.com/updatechannelid.php", parameters:["_userId" : _userid,"_channelId":_token])
+                let _token = defaults.object(forKey: "token") as! NSString;
+                Alamofire.request("http://api.bbxiaoqu.com/updatechannelid.php", method:HTTPMethod.post,parameters:["_userId" : _userid,"_channelId":_token])
                     
                     .responseJSON { response in
                         
@@ -321,7 +320,7 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
                 
                 
                 
-                Alamofire.request(.POST, "http://api.bbxiaoqu.com/updatelocation.php", parameters:["_userId" : _userid,"_lat":String(userLocation.location.coordinate.latitude),"_lng":String(userLocation.location.coordinate.longitude),"_os":"ios"])
+                Alamofire.request("http://api.bbxiaoqu.com/updatelocation.php", method:HTTPMethod.post,parameters:["_userId" : _userid,"_lat":String(userLocation.location.coordinate.latitude),"_lng":String(userLocation.location.coordinate.longitude),"_os":"ios"])
                     
                     .responseJSON { response in
                         
@@ -356,7 +355,7 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
      var district:String="";
      var streetName:String="";
     
-    func onGetReverseGeoCodeResult(searcher:BMKGeoCodeSearch, result:BMKReverseGeoCodeResult,  errorCode:BMKSearchErrorCode)
+    func onGetReverseGeoCodeResult(_ searcher:BMKGeoCodeSearch, result:BMKReverseGeoCodeResult,  errorCode:BMKSearchErrorCode)
         
     {
         
@@ -373,14 +372,14 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
             district=result.addressDetail.district;
             streetName=result.addressDetail.streetName;
             print("address: \(result.address)")
-            let defaults = NSUserDefaults.standardUserDefaults();
-            defaults.setObject(result.addressDetail.province, forKey: "province");//省直辖市
-            defaults.setObject(result.addressDetail.city , forKey: "city");//城市
-            defaults.setObject(result.addressDetail.district , forKey: "sublocality");//区县
-            defaults.setObject(result.addressDetail.streetName, forKey: "thoroughfare");//街道
-            defaults.setObject(result.addressDetail.streetName, forKey: "street");//街道
+            let defaults = UserDefaults.standard;
+            defaults.set(result.addressDetail.province, forKey: "province");//省直辖市
+            defaults.set(result.addressDetail.city , forKey: "city");//城市
+            defaults.set(result.addressDetail.district , forKey: "sublocality");//区县
+            defaults.set(result.addressDetail.streetName, forKey: "thoroughfare");//街道
+            defaults.set(result.addressDetail.streetName, forKey: "street");//街道
 
-            defaults.setObject(result.address  , forKey: "address");
+            defaults.set(result.address  , forKey: "address");
             defaults.synchronize();
             
             //求距离求小区
@@ -393,18 +392,18 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
         }else
             
         {
-            let defaults = NSUserDefaults.standardUserDefaults();
+            let defaults = UserDefaults.standard;
             let a:String = "";
             
-            defaults.setObject("", forKey: "province");//省直辖市
+            defaults.set("", forKey: "province");//省直辖市
             
-            defaults.setObject(a, forKey: "city");//城市
+            defaults.set(a, forKey: "city");//城市
             
-            defaults.setObject(a, forKey: "sublocality");//区县
+            defaults.set(a, forKey: "sublocality");//区县
             
-            defaults.setObject(a, forKey: "thoroughfare");//街道
+            defaults.set(a, forKey: "thoroughfare");//街道
             
-            defaults.setObject(a, forKey: "address");
+            defaults.set(a, forKey: "address");
             
             defaults.synchronize();
             
@@ -416,7 +415,7 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
     func loaduservisiblerange()
     {
         
-        Alamofire.request(.POST, "http://api.bbxiaoqu.com/getuservisiblerange.php", parameters:["country" : "中国","province":province,"city":city,"district":district,"street":streetName])
+        Alamofire.request( "http://api.bbxiaoqu.com/getuservisiblerange.php", method:HTTPMethod.post,parameters:["country" : "中国","province":province,"city":city,"district":district,"street":streetName])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -425,16 +424,18 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
                 print(response.result.value)
                 if(response.result.isSuccess)
                 {
-                    if let JSON = response.result.value {
+                    if let tempdata = response.result.value {
+                       
+                        let JSON:NSDictionary = tempdata as! NSDictionary;
                         print("JSON1: \(JSON.count)")
                         if(JSON.count>0)
                         {
-                            let rang:NSNumber = JSON.objectForKey("rang") as! NSNumber;
-                            let defaults = NSUserDefaults.standardUserDefaults();
-                            let formatter = NSNumberFormatter ( )
-                            let rangstr=formatter.stringFromNumber(rang);
+                            let rang:NSNumber = JSON.object(forKey: "rang") as! NSNumber;
+                            let defaults = UserDefaults.standard;
+                            let formatter = NumberFormatter ( )
+                            let rangstr=formatter.string(from: rang);
 
-                            defaults.setObject(rangstr, forKey: "rang");//省直辖市
+                            defaults.set(rangstr, forKey: "rang");//省直辖市
                             defaults.synchronize();
 
 
@@ -451,36 +452,39 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
         
     {
         
-        let defaults = NSUserDefaults.standardUserDefaults();
+        let defaults = UserDefaults.standard;
         
-        let _userid = defaults.objectForKey("userid") as! NSString;
+        let _userid = defaults.object(forKey: "userid") as! NSString;
         
-        Alamofire.request(.POST, "http://api.bbxiaoqu.com/getuservisiblecommunity.php", parameters:["userid" :_userid])
+        Alamofire.request( "http://api.bbxiaoqu.com/getuservisiblecommunity.php", method:HTTPMethod.post,parameters:["userid" :_userid])
             
             .responseJSON { response in
                 if(response.result.isSuccess)
                     
                 {
                     
-                    if let JSON = response.result.value {
+                    if let tempdata = response.result.value {
                         
-                        print("JSON1: \(JSON.count)")
+                        let JSON:NSDictionary = tempdata as! NSDictionary;
+
                         
-                        if(JSON.count>0)
+                        print("JSON1: \((JSON as AnyObject).count)")
+                        
+                        if((JSON as NSDictionary).count>0)
                             
                         {
                             
-                            let community:String = JSON.objectForKey("community") as! String;
+                            let community:String = (JSON as NSDictionary).object(forKey: "community") as! String;
                             
-                            let community_id:String = JSON.objectForKey("community_id") as! String;
+                            let community_id:String = (JSON as NSDictionary).object(forKey: "community_id") as! String;
                             
                             
                             
-                            let defaults = NSUserDefaults.standardUserDefaults();
+                            let defaults = UserDefaults.standard;
                             
-                            defaults.setObject(community, forKey: "community");//省直辖市
+                            defaults.set(community, forKey: "community");//省直辖市
                             
-                            defaults.setObject(community_id, forKey: "community_id");//省直辖市
+                            defaults.set(community_id, forKey: "community_id");//省直辖市
                             
                             defaults.synchronize();
                             

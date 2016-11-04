@@ -21,19 +21,19 @@ class BorderUIView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         //把背景色设为透明
-        self.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.clear
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func drawRect(rect: CGRect) {
-        let pathRect = CGRectInset(self.bounds, 1, 1)
+    override func draw(_ rect: CGRect) {
+        let pathRect = self.bounds.insetBy(dx: 1, dy: 1)
         let path = UIBezierPath(roundedRect: pathRect, cornerRadius: 10)
         path.lineWidth = 1
         //UIColor.greenColor().setFill()
-        UIColor.lightGrayColor().setStroke()
+        UIColor.lightGray.setStroke()
         path.fill()
         path.stroke()
     }

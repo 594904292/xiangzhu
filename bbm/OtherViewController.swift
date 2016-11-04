@@ -14,7 +14,7 @@ class OtherViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        self.view.backgroundColor=UIColor.whiteColor()
+        self.view.backgroundColor=UIColor.white
         self.navigationItem.title="襄助3"
     }
 
