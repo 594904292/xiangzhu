@@ -80,12 +80,16 @@ class XMPPManager: NSObject ,XMPPStreamDelegate {
     }
     
     func xmppStream(_ sender: XMPPStream!, didNotAuthenticate error: DDXMLElement!) {
-        let alter:UIAlertView = UIAlertView(title: "提示", message: "密码验证失败!", delegate: nil, cancelButtonTitle: "取消");
-        alter.show();
+        //let alter:UIAlertView = UIAlertView(title: "提示", message: "密码验证失败!", delegate: nil, cancelButtonTitle: "取消");
+        //alter.show();
+        
+        NSLog("密码验证失败!")
+
     }
     func xmppStreamConnectDidTimeout(_ sender: XMPPStream!) {
-        let alter:UIAlertView = UIAlertView(title: "对不起", message: "连接超时!", delegate: nil, cancelButtonTitle: "取消");
-        alter.show();
+        //let alter:UIAlertView = UIAlertView(title: "对不起", message: "连接超时!", delegate: nil, cancelButtonTitle: "取消");
+        //alter.show();
+        NSLog("连接超时!")
     }
     
     func unreadnum(_ userid:String,catagory:String)->Int
@@ -99,26 +103,26 @@ class XMPPManager: NSObject ,XMPPStreamDelegate {
     
     func xmppStream(_ sender:XMPPStream ,didReceive message:XMPPMessage? ){
                 if message != nil {
-                    print(message)
+                    NSLog("message:\(message)")
                     
                     
-                    let defaults = UserDefaults.standard;
-                    let touserid = defaults.string(forKey: "userid")
-                    let tonickname = defaults.object(forKey: "nickname") as! String;
-                    let tousericon = defaults.object(forKey: "headface") as! String;
+                    //let defaults = UserDefaults.standard;
+                    //let touserid = defaults.string(forKey: "userid")
+                    //let tonickname = defaults.object(forKey: "nickname") as! String;
+                    //let tousericon = defaults.object(forKey: "headface") as! String;
                     
-                    let cont:String = message!.forName("body").stringValue();
-                    let from:String = message!.attribute(forName: "from").stringValue();
+                    //let cont:String = message!.forName("body").stringValue();
+                    //let from:String = message!.attribute(forName: "from").stringValue();
         
-                    let date = Date()
-                    let timeFormatter = DateFormatter()
-                    timeFormatter.dateFormat = "yyy-MM-dd HH:mm:ss.SSS" //(格式可俺按自己需求修整)
-                    let strNowTime = timeFormatter.string(from: date) as String
+                    //let date = Date()
+                    //let timeFormatter = DateFormatter()
+                    //timeFormatter.dateFormat = "yyy-MM-dd HH:mm:ss.SSS" //(格式可俺按自己需求修整)
+                    //let strNowTime = timeFormatter.string(from: date) as String
         
-                    var msg:Message = Message(content:cont,sender:from,ctime:strNowTime)
-                    var db: SQLiteDB!
-                    db = SQLiteDB.sharedInstance
-                    let sql = "insert into chat(message,guid,date,senduserid,sendnickname,sendusericon,touserid,tonickname,tousericon) values('\(cont)','','\(date)','\(from)','\(from)','\(from)','\(touserid)','\(tonickname)','\(tousericon)')";
+                    //var msg:Message = Message(content:cont,sender:from,ctime:strNowTime)
+                    //var db: SQLiteDB!
+                    //db = SQLiteDB.sharedInstance
+                    //_ = "insert into chat(message,guid,date,senduserid,sendnickname,sendusericon,touserid,tonickname,tousericon) values('\(cont)','','\(date)','\(from)','\(from)','\(from)','\(touserid)','\(tonickname)','\(tousericon)')";
                     //私信
                     
                     //通知

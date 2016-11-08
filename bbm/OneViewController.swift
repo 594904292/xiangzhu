@@ -168,34 +168,10 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
     }
     var selectedSegmentval:Int=0;
 
-//    @IBOutlet weak var segment1: UISegmentedControl!
-//    @IBAction func segmentValueChange(sender: AnyObject) {
-//        NSLog("you Selected Index\(segment1.selectedSegmentIndex)")
-//        self.selectedSegmentval=segment1.selectedSegmentIndex;
-//        
-//        self.items.removeAll()
-//        self.fwitems.removeAll()
-//        
-//       
-//        if(self.selectedSegmentval==0)
-//        {
-//            self.items.removeAll()
-//            querydata(0)
-//        }else if(self.selectedSegmentval==1)
-//        {
-//            self.items.removeAll()
-//            querydata(1)
-//        }else if(self.selectedSegmentval==2)
-//        {
-//            self.items.removeAll()
-//            querydata(2)
-//        }
-//         self._tableView.reloadData()
-//    }
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController!.popViewController(animated: true)
         
     }
     
@@ -315,17 +291,7 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
 
     
     
-    func alertView(_ alertView:UIAlertView, clickedButtonAtIndex buttonIndex: Int){
-//        if(buttonIndex==alertView.cancelButtonIndex){
-//            
-//        }
-//        else
-//        {
-//            var url1 = NSURL(string: "tel://"+seltel)
-//            UIApplication.sharedApplication().openURL(url1!)
-//        }
-    }
-
+ 
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
@@ -382,7 +348,7 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
                         if let jsonItem = response.result.value as? NSArray{
                             for tempdata in jsonItem{
                                 //print("data: \(data)")
-                            var data = tempdata as!  NSDictionary
+                            let data = tempdata as!  NSDictionary
                             let content:String = data.object(forKey: "content") as! String;
                             let senduserid:String = data.object(forKey: "senduser") as! String;
                             
@@ -415,27 +381,20 @@ class OneViewController: UIViewController,UITabBarDelegate,UITableViewDataSource
                             let lat_1=(lat as NSString).doubleValue;
                             let lng_1=(lng as NSString).doubleValue;
                             let defaults = UserDefaults.standard;
-                            let userid = defaults.object(forKey: "userid") as! String;
+                            //let userid = defaults.object(forKey: "userid") as! String;
                             let mylat = defaults.object(forKey: "lat") as! String;
                             let mylng = defaults.object(forKey: "lng") as! String;
                             let lat_2=(mylat as NSString).doubleValue;
                             let lng_2=(mylng as NSString).doubleValue;
                             var address:String="";
      
-                                if(false)
-                                {
-                                    let currentLocation:CLLocation = CLLocation(latitude:lat_1,longitude:lng_1);
-                                    let targetLocation:CLLocation = CLLocation(latitude:lat_2,longitude:lng_2);
-                                     let distance:CLLocationDistance=currentLocation.distance(from: targetLocation);
-                                     address = ("\(distance)米");
-                                }else
-                                {
+                                
                                     let p1:BMKMapPoint = BMKMapPointForCoordinate(CLLocationCoordinate2D(latitude: lat_1, longitude: lng_1))
                                     let p2:BMKMapPoint = BMKMapPointForCoordinate(CLLocationCoordinate2D(latitude: lat_2, longitude: lng_2))
                                      let distance:CLLocationDistance = BMKMetersBetweenMapPoints(p1, p2);
                                     let one:UInt32 = UInt32(distance)
                                       address = ("\(one)米");
-                                }
+                                
                             let city:String = data.object(forKey: "city") as! String;
                             let street:String = data.object(forKey: "street") as! String;
                             let photo:String = data.object(forKey: "photo") as! String;

@@ -29,7 +29,7 @@ class MyCanvas: UIView {
     
     override func draw(_ rect: CGRect) {
         
-        let bezierPath = UIBezierPath()
+        _ = UIBezierPath()
         
 //        
 //        //创建一个矩形，它的所有边都内缩5%

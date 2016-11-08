@@ -61,11 +61,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
             }
             let from = message.from().user ;
             let to = message.to().user;
-            var guid =  message.elementID()
+            _ =  message.elementID()
             //完整用户名
             msg.from = message.from().user + "@" + message.from().domain
             
-            var touserid:String=message.to().user;
+            //var touserid:String=message.to().user;
             
             
             let date = Date()
@@ -327,8 +327,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
     
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        let alert:UIAlertView = UIAlertView(title: "", message: error.localizedDescription, delegate: nil, cancelButtonTitle: "OK")
-        alert.show()
+        //let alert:UIAlertView = UIAlertView(title: "", message: error.localizedDescription, delegate: nil, cancelButtonTitle: "OK")
+        //alert.show()
+        print("didFailToRegisterForRemoteNotificationsWithError error.localizedDescription==\(error.localizedDescription)")
     }
     
     

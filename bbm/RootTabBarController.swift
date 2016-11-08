@@ -87,7 +87,9 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
     
     func openxmpp() {
         zdl().xxmaindl = self
-        zdl().connect()
+        let isconnect:Bool=zdl().connect()
+        NSLog("isconnect:\(isconnect)");
+
     }
     
     //获取总代理
@@ -238,12 +240,7 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
         //var TabTwo = sb.instantiateViewControllerWithIdentifier("recentviewcontroller") as! RecentTableViewController
         let TabTwo = sb.instantiateViewController(withIdentifier: "newrecentviewcontroller") as! RecentViewController
         let TabThree = sb.instantiateViewController(withIdentifier: "topviewController") as! TopViewController
-        //var TabFour = sb.instantiateViewControllerWithIdentifier("myinfo") as! MyInfoViewController
-        
-        //let TabFour=singleInfoViewController()
-       //var TabFour = TabBarViewController()
-        
-        let TabFour = sb.instantiateViewController(withIdentifier: "mybaseinfoviewcontroller") as! MybaseInfoViewController
+         let TabFour = sb.instantiateViewController(withIdentifier: "mybaseinfoviewcontroller") as! MybaseInfoViewController
 
         
         let tabArray = [TabOne,TabTwo,TabThree,TabFour]
@@ -305,34 +302,15 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
                 Alamofire.request("http://api.bbxiaoqu.com/updatechannelid.php", method:HTTPMethod.post,parameters:["_userId" : _userid,"_channelId":_token])
                     
                     .responseJSON { response in
-                        
-                        print(response.request)  // original URL request
-                        
-                        print(response.response) // URL response
-                        
-                        print(response.data)     // server data
-                        
-                        print(response.result)   // result of response serialization
-                        
-                        print(response.result.value)
-                        
-                }
+                           print(response.result)   // result of response serialization
+                  }
                 
                 
                 
                 Alamofire.request("http://api.bbxiaoqu.com/updatelocation.php", method:HTTPMethod.post,parameters:["_userId" : _userid,"_lat":String(userLocation.location.coordinate.latitude),"_lng":String(userLocation.location.coordinate.longitude),"_os":"ios"])
-                    
                     .responseJSON { response in
                         
-                        print(response.request)  // original URL request
-                        
-                        print(response.response) // URL response
-                        
-                        print(response.data)     // server data
-                        
-                        print(response.result)   // result of response serialization
-                        
-                        print(response.result.value)
+                         print(response.result)   // result of response serialization
                         
                         
                         

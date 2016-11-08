@@ -36,12 +36,7 @@ class SystemSettingViewController: UIViewController,XxDL {
         
         Alamofire.request( "http://api.bbxiaoqu.com/resetuserfield.php", method:HTTPMethod.post,parameters:["userid" : self.userid,"field":"isrecvmess","fieldvalue":open])
             .responseJSON { response in
-                print(response.request)  // original URL request
-                print(response.response) // URL response
-                print(response.data)     // server data
                 print(response.result)   // result of response serialization
-                print(response.result.value)
-                
                 
         }
 
@@ -68,12 +63,7 @@ class SystemSettingViewController: UIViewController,XxDL {
         defaults.synchronize();
         Alamofire.request( "http://api.bbxiaoqu.com/resetuserfield.php",method:HTTPMethod.post, parameters:["userid" : self.userid,"field":"isopenvoice","fieldvalue":open])
             .responseJSON { response in
-                print(response.request)  // original URL request
-                print(response.response) // URL response
-                print(response.data)     // server data
                 print(response.result)   // result of response serialization
-                print(response.result.value)
-                
                 
         }
     }
@@ -133,13 +123,14 @@ class SystemSettingViewController: UIViewController,XxDL {
 //        defaults.setObject(isopenvice, forKey: "openvoiceflag");
         zdl().xxdl = self
         
-        zdl().connect()
+        let isconnect:Bool=zdl().connect()
+        print("isconnect:\(isconnect)");
     }
 
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController!.popViewController(animated: true)
     }
     //获取总代理
     func zdl() -> AppDelegate {
