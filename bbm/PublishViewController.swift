@@ -33,7 +33,7 @@ fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 }
 
 
-class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,BMKLocationServiceDelegate,BMKGeoCodeSearchDelegate{
+class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate,BMKLocationServiceDelegate,BMKGeoCodeSearchDelegate{
     var cat=0;
     @IBOutlet weak var contenttip: UILabel!
     @IBOutlet weak var content: UITextView!
@@ -41,7 +41,7 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
     @IBOutlet weak var ContentW: NSLayoutConstraint!
     @IBOutlet weak var ContenH: NSLayoutConstraint!
     
-    var alertView:UIAlertView?
+    var alertView:UIAlertController?
     var img = UIImage()
     var arr = [UIImageView]()
      var closearr = [UIImageView]()
@@ -64,7 +64,7 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
         let h1:CGFloat = self.view.frame.height/10
         let ypos1 = CGFloat(0);
         let ypos2 = h1*CGFloat(2);
-        var ypos3 = h1*CGFloat(3);
+        _ = h1*CGFloat(3);
         
         print(content.frame)
         content.frame=CGRect(x:5,y:ypos1+75,width:w-10,height:h1*2)
@@ -101,16 +101,14 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
         self.navigationItem.rightBarButtonItem=itemadd
         
         self.navigationItem.title="求帮助"
-        var w:CGFloat = UIScreen.main.bounds.width
        let h1:CGFloat = self.view.frame.height/10
-        var ypos1 = CGFloat(0);
+       
         let ypos2 = h1*CGFloat(3);
-        var ypos3 = h1*CGFloat(3)+90;
+       
 
 
         let bw:CGFloat = UIScreen.main.bounds.width
         var index=0
-        let count = 4;
              //for(j:Int, in 0 ..< 4)
             for j:Int in 0 ..< 4
             {
@@ -121,8 +119,9 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
                 imageView.tag = index
                 
                 /////设置允许交互属性
+
                 imageView.isUserInteractionEnabled = true;
-                /////添加tapGuestureRecognizer手势
+                /////添加tapGuestureRecognizer手势                
                 let tapGR = UITapGestureRecognizer(target: self, action: #selector(PublishViewController.goImagesel(_:)))
                 imageView.addGestureRecognizer(tapGR)
 
@@ -211,20 +210,12 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
                 
                 Alamofire.request("http://api.bbxiaoqu.com/updatechannelid.php", method:HTTPMethod.post, parameters:["_userId" : _userid,"_channelId":_token])
                     .responseJSON { response in
-                        print(response.request)  // original URL request
-                        print(response.response) // URL response
-                        print(response.data)     // server data
                         print(response.result)   // result of response serialization
-                        print(response.result.value)
                 }
  
                 Alamofire.request("http://api.bbxiaoqu.com/updatelocation.php", method:HTTPMethod.post, parameters:["_userId" : _userid,"_lat":String(userLocation.location.coordinate.latitude),"_lng":String(userLocation.location.coordinate.longitude),"_os":"ios"])
                     .responseJSON { response in
-                        print(response.request)  // original URL request
-                        print(response.response) // URL response
-                        print(response.data)     // server data
                         print(response.result)   // result of response serialization
-                        print(response.result.value)
                         
                 }
             }
@@ -279,7 +270,7 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController!.popViewController(animated: true)
 
     }
     
@@ -324,7 +315,7 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
         
         /** 设置解码方式 */
         let returnString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
-        let returnData = returnString?.data(using: String.Encoding.utf8.rawValue)
+        _ = returnString?.data(using: String.Encoding.utf8.rawValue)
        
             print("returnString----\(returnString)")
         }
@@ -337,37 +328,26 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
         
         if(content.text?.characters.count==0)
         {
-            self.alertView = UIAlertView()
-            self.alertView!.title = "提示"
-            self.alertView!.message = "消息为空"
-            self.alertView!.addButton(withTitle: "关闭")
-            Timer.scheduledTimer(timeInterval: 1, target:self, selector:#selector(PublishViewController.dismiss(_:)), userInfo:self.alertView!, repeats:false)
-            self.alertView!.show()
-            return;
-        }
-        let alertView = UIAlertView()
-        alertView.title = "系统提示"
-        alertView.message = "您确定发布信息吗？"
-        alertView.addButton(withTitle: "取消")
-        alertView.addButton(withTitle: "确定")
-        alertView.cancelButtonIndex=0
-        alertView.delegate=self;
-        alertView.show()
-    }
-    
-    func dismiss(_ timer:Timer){
-        alertView!.dismiss(withClickedButtonIndex: 0, animated:true)
-    }
-    
-    func alertView(_ alertView:UIAlertView, clickedButtonAtIndex buttonIndex: Int){
-        if(buttonIndex==alertView.cancelButtonIndex){
-            print("点击了取消")
-        }
-        else
-        {
-            NSLog("add")
             
-            let mess:String = content.text!
+            self.alertView = UIAlertController(title: "提示", message: "消息不能为空", preferredStyle: .alert)
+            self.alertView?.addAction(UIAlertAction(title: "关闭", style: .default, handler: nil))
+            self.present(self.alertView!, animated: true, completion: nil)
+            return;
+
+            
+        }
+        //let alertView = UIAlertView()
+        //alertView.title = "系统提示"
+        //alertView.message = "您确定发布信息吗？"
+        //alertView.addButton(withTitle: "取消")
+        //alertView.addButton(withTitle: "确定")
+        //alertView.cancelButtonIndex=0
+        //alertView.delegate=self;
+        //alertView.show()
+        self.alertView = UIAlertController(title: "提示", message: "您确定发布信息吗?", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "取消", style: UIAlertActionStyle.cancel, handler: nil)
+        let callOkActionHandler = { (action:UIAlertAction!) -> Void in
+            let mess:String = self.content.text!
             Alamofire.request( "http://api.bbxiaoqu.com/words/isbadword.php",method:HTTPMethod.post, parameters:["mess" : mess])
                 .responseJSON { response in
                     if(response.result.isSuccess)
@@ -394,7 +374,13 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
                         print("网络请求错误")
                     }
             }
+
         }
+        let okAction = UIAlertAction(title: "确认", style: UIAlertActionStyle.default, handler: callOkActionHandler)
+        self.alertView? .addAction(cancelAction)
+        self.alertView? .addAction(okAction)
+        self.present(self.alertView! , animated: true, completion: nil)
+        
     }
     
     func savedb()
@@ -513,17 +499,13 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
         
         Alamofire.request("http://api.bbxiaoqu.com/send_test.php",method:HTTPMethod.post, parameters: dic)
             .responseJSON { response in
-                print(response.request)  // original URL request
-                print(response.response) // URL response
-                print(response.data)     // server data
                 print(response.result)   // result of response serialization
-                print(response.result.value)
                 //                if let JSON = response.result.value {
                 //                    print("JSON: \(JSON)")
                 //                }
                 
                 self.successNotice("发布成功")
-                self.navigationController?.popViewController(animated: true)
+                self.navigationController!.popViewController(animated: true)
         }
     }
     
@@ -584,19 +566,38 @@ class PublishViewController: UIViewController,UIImagePickerControllerDelegate,UI
         
         print("------");
         print("------");
-        let actionSheet = UIActionSheet(title: "图片来源", delegate: self, cancelButtonTitle: "照片", destructiveButtonTitle: "相机")
-        actionSheet.show(in: self.view)
+//        let actionSheet = UIActionSheet(title: "图片来源", delegate: self, cancelButtonTitle: "照片", destructiveButtonTitle: "相机")
+//        actionSheet.show(in: self.view)
+        
+        
+        let actionSheet = UIAlertController(title: "图片来源", message: "请选择获取方式", preferredStyle: UIAlertControllerStyle.actionSheet)
+        let option1 = UIAlertAction(title: "照片", style: UIAlertActionStyle.destructive, handler: {(actionSheet: UIAlertAction!) in
+            self.goImage()
+        })
+        let option2 = UIAlertAction(title: "相机", style: UIAlertActionStyle.destructive, handler: {(actionSheet: UIAlertAction!) in
+            self.goCamera()
+        })
+        
+        let CancelAction = UIAlertAction(title: "取消", style: .cancel, handler: {(action) -> Void in
+            print("Cancel image Select")
+        })
+        
+        actionSheet.addAction(option1)
+        actionSheet.addAction(option2)
+        actionSheet.addAction(CancelAction)
+        self.present(actionSheet, animated: true, completion: nil)
+
     }
     
-    func actionSheet(_ actionSheet: UIActionSheet, clickedButtonAt buttonIndex: Int) {
-        if(buttonIndex==0)
-        {
-            goCamera()
-        }else
-        {
-            goImage()
-        }
-    }
+//    func actionSheet(_ actionSheet: UIActionSheet, clickedButtonAt buttonIndex: Int) {
+//        if(buttonIndex==0)
+//        {
+//            goCamera()
+//        }else
+//        {
+//            goImage()
+//        }
+//    }
     //打开相机
     func goCamera(){
         //先设定sourceType为相机，然后判断相机是否可用（ipod）没相机，不可用将sourceType设定为相片库

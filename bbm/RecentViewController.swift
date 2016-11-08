@@ -85,7 +85,7 @@ class RecentViewController: UIViewController,UINavigationControllerDelegate,UITa
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController!.popViewController(animated: true)
     }
     
     override func didReceiveMemoryWarning() {
@@ -270,11 +270,9 @@ class RecentViewController: UIViewController,UINavigationControllerDelegate,UITa
         let seluserid:String = (self.items[indexPath.row] as itemRecent).userid
         
         let sql = "update friend set messnum=0 where userid='\(seluserid)'"
-        db.execute(sql: sql)
-        
+         db.execute(sql: sql)
         let sql1 = "update chat set readed=1 where senduserid='\(seluserid)' or touserid='\(seluserid)'"
-        db.execute(sql: sql1)
-        
+         db.execute(sql: sql1)
         (self.items[indexPath.row] as itemRecent).messnum = "0";
         self._tableview.reloadData()
         

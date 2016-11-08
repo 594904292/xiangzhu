@@ -40,7 +40,7 @@ class sqlitehelp: NSObject {
     {
         let db: SQLiteDB! = SQLiteDB.sharedInstance
         let sql = "insert into friend(userid,nickname,usericon,lastuserid,lastnickname,lastinfo,lasttime,messnum) values('\(userid )','\(nickname)','\(usericon)','\(lastuserid)','\(lastnickname)','\(lastinfo)','\(lasttime)','\(messnum)')";
-        db.execute(sql: sql)
+       _ = db.execute(sql: sql)
         
     }
 
@@ -50,7 +50,7 @@ class sqlitehelp: NSObject {
     {
         let db: SQLiteDB! = SQLiteDB.sharedInstance
         let sql = "update friend set lastuserid='\(lastuserid)',lastinfo='\(lastinfo)',lasttime='\(lasttime)' ,messnum=messnum+1 where userid='\(userid)'";
-        db.execute(sql: sql)
+        _ = db.execute(sql: sql)
         
     }
     /*通知*/
@@ -59,7 +59,7 @@ class sqlitehelp: NSObject {
     {
         let db: SQLiteDB! = SQLiteDB.sharedInstance
         let sql = "insert into notice(date,catagory,relativeid,content,readed) values('\(date)','\(catagory)','\(relativeid)','\(content)','\(readed)')";
-        db.execute(sql: sql)
+        _ = db.execute(sql: sql)
         
         
     }
@@ -68,7 +68,7 @@ class sqlitehelp: NSObject {
     {
         let db: SQLiteDB! = SQLiteDB.sharedInstance
         let sql = "update notice  set content='\(content)' where relativeid='\(userid)'";
-        db.execute(sql: sql)
+        _ = db.execute(sql: sql)
         
         
     }
@@ -91,7 +91,7 @@ class sqlitehelp: NSObject {
     func addchat(_ senduserid:String,touserid:String,message:String,guid:String,date:String,readed:String)
     {
         let sendnickname:String=loadusername(senduserid)
-        var sendusericon:String=loadheadface(senduserid)
+        //var sendusericon:String=loadheadface(senduserid)
         
         let tonickname:String=loadusername(touserid)
         let tousericon:String=loadheadface(touserid)
@@ -99,7 +99,7 @@ class sqlitehelp: NSObject {
         
         let db: SQLiteDB! = SQLiteDB.sharedInstance
         let sql = "insert into chat(senduserid,sendnickname,sendusericon,touserid,tonickname,tousericon,message,guid,date,readed) values('\(senduserid)','\(sendnickname)','\(sendnickname)','\(touserid)','\(tonickname)','\(tousericon)','\(message)','','\(date)','0')";
-        db.execute(sql: sql)
+        _ = db.execute(sql: sql)
     }
 
     
@@ -109,7 +109,7 @@ class sqlitehelp: NSObject {
         let sql = "insert into chat(message,guid,date,senduserid,sendnickname,sendusericon,touserid,tonickname,tousericon) values('\(messae)','\(guid)','\(date)','\(senduserid)','\(sendnickname)','\(sendusericon)','\(touserid)','\(tousernickname)','\(tousericon)')";
         
         NSLog("sql: \(sql)")
-        db.execute(sql: sql)
+        _ = db.execute(sql: sql)
     }
 
     
@@ -208,7 +208,7 @@ class sqlitehelp: NSObject {
     {
         let db: SQLiteDB! = SQLiteDB.sharedInstance
         let sql="delete from messagegz ";
-        let result = db.execute(sql: sql)
+        _ = db.execute(sql: sql)
         return true
     }
 
@@ -255,7 +255,7 @@ class sqlitehelp: NSObject {
     {
         let db: SQLiteDB! = SQLiteDB.sharedInstance
         let sql="delete from messagegz where infoid='"+infoid+"' and userid='"+userid+"'";
-        let result = db.execute(sql: sql)
+        _ = db.execute(sql: sql)
         return true
    }
 
@@ -293,7 +293,7 @@ class sqlitehelp: NSObject {
     {
         let db: SQLiteDB! = SQLiteDB.sharedInstance
         let sql="delete from messagezan where infoid='"+infoid+"' and userid='"+userid+"'";
-        let result = db.execute(sql: sql)
+        _ = db.execute(sql: sql)
         return true
     }
     
@@ -323,7 +323,6 @@ class sqlitehelp: NSObject {
         print("sql: \(sql)")
         //通过封装的方法执行sql
         let result = db.execute(sql: sql)
-        
         print(result)
         NSLog(sql)
         
@@ -333,7 +332,7 @@ class sqlitehelp: NSObject {
     {
         let db: SQLiteDB! = SQLiteDB.sharedInstance
         let sql="delete from messagets where infoid='"+infoid+"' and userid='"+userid+"'";
-        let result = db.execute(sql: sql)
+        _ = db.execute(sql: sql)
         return true
     }
     
@@ -373,7 +372,7 @@ class sqlitehelp: NSObject {
     {
         let db: SQLiteDB! = SQLiteDB.sharedInstance
         let sql="delete from memberts where memberid='"+memberid+"' and userid='"+userid+"'";
-        let result = db.execute(sql: sql)
+        _ = db.execute(sql: sql)
         return true
     }
     

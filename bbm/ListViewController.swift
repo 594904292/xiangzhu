@@ -66,8 +66,14 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
         addline(posx*2);
         tabBar.selectedItem=tabBar.items![selectedTabNumber] 
         //var rect  = self.view.frame
-        var rect  =  UIScreen.main.applicationFrame
-        rect.origin.y += tabBar.frame.origin.y+tabBar.frame.size.height-1
+        //var rect  =  UIScreen.main.applicationFrame
+        var rect:CGRect = CGRect(x:0,y:20,width:
+                                           UIScreen.main.bounds.width,
+                                 height:UIScreen.main.bounds.height-20)
+        //var rect:CGRect = UIScreen.main.bounds
+        //println(screenBounds) //iPhone6输出：（0.0,0.0,375.0,667.0）
+        
+         rect.origin.y = rect.origin.y+tabBar.frame.origin.y+tabBar.frame.size.height-1
         _tableView = UITableView(frame: rect)
         _tableView.register(OneTableViewCell.self, forCellReuseIdentifier: "cell")//注册自定义cell
         
@@ -317,13 +323,8 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
             let string:NSString = cell.content.text! as NSString
             let options:NSStringDrawingOptions = .usesLineFragmentOrigin
             let boundingRect = string.boundingRect(with: CGSize(width: 200, height: 0), options: options, attributes:[NSFontAttributeName:cell.content.font], context: nil)
-            cell.content.frame = CGRect(x: 10, y: toph+33+20, width: UIScreen.main.applicationFrame.width-20, height: boundingRect.height)
+            cell.content.frame = CGRect(x: 10, y: toph+33+20, width: UIScreen.main.bounds.width-20, height: boundingRect.height)
             cell.content.numberOfLines = 10;
-            
-           
-            
-            
-            
             
             return cell
         }else
@@ -383,7 +384,6 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
         {
             picnum=4
         }
-        let count = 4;
         for j:Int in 0 ..< picnum
         {
             let imageView:UIImageView = UIImageView();
@@ -453,57 +453,37 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
         func tapLabel(_ recognizer:UITapGestureRecognizer){
             let labelView:UIView = recognizer.view!;
             let tapTag:NSInteger = labelView.tag;
-            
             print(tapTag)
             sel_guid=(items[tapTag] as itemMess).guid 
-        let alertView = UIAlertView()
-        alertView.title = "系统提示"
-        alertView.message = "您确定要删除吗？"
-        alertView.addButton(withTitle: "取消")
-        alertView.addButton(withTitle: "确定")
-        alertView.cancelButtonIndex=0
-        alertView.delegate=self;
-        alertView.show()
-        
-        
-    }
-    
-    
-    func alertView(_ alertView:UIAlertView, clickedButtonAtIndex buttonIndex: Int){
-        if(buttonIndex==alertView.cancelButtonIndex){
-            print("点击了取消")
-        }
-        else
-        {
-            print("点击了确认")
-            let url:String="http://api.bbxiaoqu.com/delinfoforguid.php?_guid=" + sel_guid;
+            let alertController = UIAlertController(title: "系统提示", message: "您确定要删除吗?", preferredStyle: UIAlertControllerStyle.alert)
             
-            
-            
-            Alamofire.request(url).response { response in
-                print("Request: \(response.request)")
-                print("Response: \(response.response)")
-                print("Error: \(response.error)")
-                if let data = response.data, let utf8Text = String(data: data, encoding: .utf8) {
-                    
-                    
-                    
-                    DispatchQueue.main.async(execute: { () -> Void in
-                        Thread.sleep(forTimeInterval: 2)  // 模拟两秒的执行时间
-                        //self.querydata(self.selectedTabNumber)
-                        self.headerRefresh();
-                    });
-
+            let cancelAction = UIAlertAction(title: "取消", style: UIAlertActionStyle.cancel, handler: nil)
+            let callOkActionHandler = { (action:UIAlertAction!) -> Void in
+                 let url:String="http://api.bbxiaoqu.com/delinfoforguid.php?_guid=" + self.sel_guid;
+                Alamofire.request(url).response { response in
+                    print("Request: \(response.request)")
+                    print("Response: \(response.response)")
+                    print("Error: \(response.error)")
+                    if let data = response.data, let utf8Text = String(data: data, encoding: .utf8) {
+                         DispatchQueue.main.async(execute: { () -> Void in
+                            print("utf8Text : \(utf8Text)")
+                            Thread.sleep(forTimeInterval: 2)  // 模拟两秒的执行时间
+                            //self.querydata(self.selectedTabNumber)
+                            self.headerRefresh();
+                        });
+                        
+                    }
                 }
+                
             }
-            
-            
-            
-            
-            
-
-        }
+            let okAction = UIAlertAction(title: "确定", style: UIAlertActionStyle.default, handler: callOkActionHandler)
+            alertController.addAction(cancelAction)
+            alertController.addAction(okAction)
+            self.present(alertController, animated: true, completion: nil)
+       
     }
+    
+    
     var loaditeminfo:Bool=false;
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
          // activityIndicatorView.startAnimating()
@@ -648,25 +628,12 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
                             let lat_1=(infolat as NSString).doubleValue;
                             let lng_1=(infolng as NSString).doubleValue;
                             
-                            let defaults = UserDefaults.standard;
-                            var userid = defaults.object(forKey: "userid") as! String;
-                            var mylat = defaults.object(forKey: "lat") as! String;
-                            var mylng = defaults.object(forKey: "lng") as! String;
-                            
-                            
                             let lat_2=(lat as NSString).doubleValue;
                             let lng_2=(lng as NSString).doubleValue;
                             var address:String="";
                             
-                            if(false)
-                            {
-                                let currentLocation:CLLocation = CLLocation(latitude:lat_1,longitude:lng_1);
-                                let targetLocation:CLLocation = CLLocation(latitude:lat_2,longitude:lng_2);
-                                let distance:CLLocationDistance=currentLocation.distance(from: targetLocation);
-                                address = ("\(distance)米");
-                            }else
-                            {
-                                let p1:BMKMapPoint = BMKMapPointForCoordinate(CLLocationCoordinate2D(latitude: lat_1, longitude: lng_1))
+                           
+                               let p1:BMKMapPoint = BMKMapPointForCoordinate(CLLocationCoordinate2D(latitude: lat_1, longitude: lng_1))
                                 let p2:BMKMapPoint = BMKMapPointForCoordinate(CLLocationCoordinate2D(latitude: lat_2, longitude: lng_2))
                                 let distance:CLLocationDistance = BMKMetersBetweenMapPoints(p1, p2);
                                 
@@ -680,7 +647,7 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
                                 {
                                     address = ("\(one)米");
                                 }
-                            }
+                            
                              let city:String = data.object(forKey: "city") as! String;
                             let street:String = data.object(forKey: "street") as! String;
                             let photo:String = data.object(forKey: "photo") as! String;

@@ -11,7 +11,7 @@ import Alamofire
 
 
 
-class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,UIScrollViewDelegate,UIImagePickerControllerDelegate,UIActionSheetDelegate,UITextFieldDelegate,UITextViewDelegate,ChangeXiaoquDelegate{
+class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,UIScrollViewDelegate,UIImagePickerControllerDelegate,UITextFieldDelegate,UITextViewDelegate,ChangeXiaoquDelegate{
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var row1: UIView!
@@ -91,8 +91,9 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
         let pageHeight=self.view.frame.size.height
         
         
-        var screenpageHeight=UIScreen.main.applicationFrame.size.height
-        var aaa = self.view.frame.size.height - 210
+        //var screenpageHeight=UIScreen.main.applicationFrame.size.height
+        _=UIScreen.main.bounds.size.height
+        let aaa = self.view.frame.size.height - 210
         scrollView.frame=CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: CGFloat(aaa))
             
         
@@ -109,12 +110,12 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
         iv_photo.layer.cornerRadius = (iv_photo.frame.width) / 2
         iv_photo.layer.masksToBounds = true
         
-        var rect  =  UIScreen.main.applicationFrame
-        var posx = rect.width / 3;
+        let rect  =  UIScreen.main.bounds
+        let posx = rect.width / 3;
         
-        var ww = rect.width / 3;
+        let ww = rect.width / 3;
         
-        var posy = CGFloat(10)
+        let posy = CGFloat(10)
         
         row2.backgroundColor=UIColor.white
         addtagarea(index: 1,posx: 2,posy: 0,w: ww-4,h: 60)
@@ -152,7 +153,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     {
         iv_photo.isUserInteractionEnabled = true
         
-        var singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "goImagesel")
+        let singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MybaseInfoViewController.goImagesel))
         iv_photo .addGestureRecognizer(singleTap)
     }
     
@@ -160,14 +161,14 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     {
         update_nickname.isUserInteractionEnabled = true
         
-        var singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "gomodiffynickname")
+        let singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MybaseInfoViewController.gomodiffynickname))
         update_nickname .addGestureRecognizer(singleTap)
     }
     func modifybrithday()
     {
         update_brithday.isUserInteractionEnabled = true
         
-        var singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "gomodifybrithday")
+        let singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MybaseInfoViewController.gomodifybrithday))
         update_brithday .addGestureRecognizer(singleTap)
         
     }
@@ -175,7 +176,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     {
         sex_tv.isUserInteractionEnabled = true
         
-        var singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "gomodifysex")
+        let singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MybaseInfoViewController.gomodifysex))
         sex_tv .addGestureRecognizer(singleTap)
     }
     
@@ -183,7 +184,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     {
         update_tel.isUserInteractionEnabled = true
         
-        var singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "gomodifytelphone")
+        let singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MybaseInfoViewController.gomodifytelphone))
         update_tel .addGestureRecognizer(singleTap)
     }
     
@@ -192,7 +193,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     {
         update_weixin.isUserInteractionEnabled = true
         
-        var singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "gomodifyweixin")
+        let singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MybaseInfoViewController.gomodifyweixin))
         update_weixin .addGestureRecognizer(singleTap)
     }
     
@@ -200,7 +201,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     {
         update_xiaoqu.isUserInteractionEnabled = true
         
-        var singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "gomodifyxiaoqu")
+        let singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MybaseInfoViewController.gomodifyxiaoqu))
         update_xiaoqu .addGestureRecognizer(singleTap)
     }
     //    func changeXiaoqu(controller:SouXiaoQuViewController,name:String,code:String)
@@ -216,7 +217,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     {
         update_othertel.isUserInteractionEnabled = true
         
-        var singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "gomodifyothertel")
+        let singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MybaseInfoViewController.gomodifyothertel))
         update_othertel .addGestureRecognizer(singleTap)
     }
     
@@ -227,7 +228,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
         
         SystenSetting.isUserInteractionEnabled = true
         
-        var singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "gosugguestaboutViewController")
+        let singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MybaseInfoViewController.gosugguestaboutViewController))
         SystenSetting .addGestureRecognizer(singleTap)
         
     }
@@ -235,12 +236,12 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     {
         update_share.isUserInteractionEnabled = true
         
-        var singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "gomodifyshare")
+        let singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MybaseInfoViewController.gomodifyshare))
         update_share .addGestureRecognizer(singleTap)
     }
     func gosugguestaboutViewController()
     {
-        var sb = UIStoryboard(name:"Main", bundle: nil)
+        let sb = UIStoryboard(name:"Main", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "sugguestabout") as! SugguestAboutViewController
         self.navigationController?.pushViewController(vc, animated: true)
         
@@ -249,7 +250,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     {
         exit.isUserInteractionEnabled = true
         
-        var singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "exitClick")
+        let singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MybaseInfoViewController.exitClick))
         exit .addGestureRecognizer(singleTap)
     }
     func updb(field:String,fieldvalue:String)
@@ -309,6 +310,8 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
             (txtUsername) -> Void in
             nickNameTextField = txtUsername
             nickNameTextField!.placeholder = "新昵称"
+            nickNameTextField!.text = self.loadusername
+
         }
         
         
@@ -325,7 +328,18 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
         let datePicker = UIDatePicker( )
         datePicker.locale = NSLocale(localeIdentifier: "zh_CN") as Locale
         datePicker.datePickerMode = UIDatePickerMode.date
-        datePicker.date = NSDate() as Date
+        if(self.loadbrithday.characters.count>0)
+        {
+            let formatter:DateFormatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            
+            let outputA:Date = formatter.date(from: loadbrithday)!
+            
+            datePicker.date = outputA
+        }else
+        {
+            datePicker.date = NSDate() as Date
+        }
         // 响应事件（只要滚轮变化就会触发）
         // datePicker.addTarget(self, action:Selector("datePickerValueChange:"), forControlEvents: UIControlEvents.ValueChanged)
         alertController.addAction(UIAlertAction(title: "确定", style: UIAlertActionStyle.default){
@@ -334,15 +348,15 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
             
             print("date select: \(datePicker.date.description)")
             
-            var formatter:DateFormatter = DateFormatter()
+            let formatter:DateFormatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd"
             
             
-            var brithday = formatter.string(from: datePicker.date)
+            let brithday = formatter.string(from: datePicker.date)
             
             NSLog("now:\(brithday)")
             
-            var todayDate: NSDate = NSDate()
+            let todayDate: NSDate = NSDate()
             // let second =todayDate.timeIntervalSinceDate(<#T##anotherDate: NSDate##NSDate#>)
             let second = todayDate.timeIntervalSince(datePicker.date)
             let year=Int(second/(60*60*24*365))
@@ -370,14 +384,27 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     func gomodifysex()
     {
         action="sex"
-        var actionSheet=UIActionSheet()
-        //actionSheet.title = "请选择操作"
-        actionSheet.addButton(withTitle: "取消")
-        actionSheet.addButton(withTitle: "男")
-        actionSheet.addButton(withTitle: "女")
-        actionSheet.cancelButtonIndex=0
-        actionSheet.delegate=self
-        actionSheet.show(in: self.view);
+        let actionSheet = UIAlertController(title: "性别", message: "请选择性别", preferredStyle: UIAlertControllerStyle.actionSheet)
+        let option1 = UIAlertAction(title: "男", style: UIAlertActionStyle.destructive, handler: {(actionSheet: UIAlertAction!) in
+            
+            self.sex_tv.text="男"
+            self.updb(field: "sex",fieldvalue: "0")
+        })
+        let option2 = UIAlertAction(title: "女", style: UIAlertActionStyle.destructive, handler: {(actionSheet: UIAlertAction!) in
+            self.sex_tv.text="女"
+             self.updb(field: "sex",fieldvalue: "1")
+        })
+        
+        let CancelAction = UIAlertAction(title: "取消", style: .cancel, handler: {(action) -> Void in
+            print("Cancel Sex Select")
+        })
+        
+        actionSheet.addAction(option1)
+        actionSheet.addAction(option2)
+         actionSheet.addAction(CancelAction)
+        self.present(actionSheet, animated: true, completion: nil)
+
+        
     }
     
     
@@ -411,6 +438,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
             (txtUsername) -> Void in
             telPhoneTextField = txtUsername
             telPhoneTextField!.placeholder = "新电话"
+            telPhoneTextField?.text = self.loadtelphone
         }
         
         
@@ -451,6 +479,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
             (txtUsername) -> Void in
             WeixinTextField = txtUsername
             WeixinTextField!.placeholder = "新微信"
+            WeixinTextField?.text = self.loadweixin
         }
         
         
@@ -462,8 +491,8 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     
     func gomodifyxiaoqu()
     {
-        var sb = UIStoryboard(name:"Main", bundle: nil)
-        var vc = sb.instantiateViewController(withIdentifier: "souxiaoquviewcontroller") as! SouXiaoQuViewController
+        let sb = UIStoryboard(name:"Main", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "souxiaoquviewcontroller") as! SouXiaoQuViewController
         vc.delegate=self
         self.navigationController?.pushViewController(vc, animated: true)
         
@@ -520,16 +549,6 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
         msg.title = "襄助何必曾相识"
         msg.description = "襄助是基于位置的是传播正能量的联网互助平台。让附近的人互相帮忙，我们希望把大众的力量组织起来，有一技之长的人可以通过“襄助”为附近的人提供帮助；普通大众可以通过“襄助” 快速寻求帮助。 “涓滴之水成海洋，颗颗爱心变希望”。"
         
-        
-        //        let url = NSURL(string: "http://www.bbxiaoqu.com/pc/img/qrcode.png")
-        //        //从网络获取数据流
-        //        let data = NSData(contentsOfURL: url!)
-        //let newImage = UIImage(data: data!)
-        //downqrcode
-        //
-        //let newImage = UIImage(named: "downqrcode")
-        //msg.setThumbImage(newImage)
-        
         msg.setThumbImage(UIImage(named: "icon.png"));
         
         let req = SendMessageToWXReq()
@@ -579,13 +598,6 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
             //            self.updb("emergencycontact,emergencycontacttelphone",fieldvalue: aa)
         }
         
-        // 3.
-        let cancleAction = UIAlertAction(
-        title: "取消", style: UIAlertActionStyle.default) {
-            (action) -> Void in
-            
-            
-        }
         
         
         // 4.
@@ -602,7 +614,8 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
         }
         
         // 5.
-        alertController.addAction(UIAlertAction(title: "取消", style: UIAlertActionStyle.cancel,handler:nil));       alertController.addAction(loginAction)
+        alertController.addAction(UIAlertAction(title: "取消", style: UIAlertActionStyle.cancel,handler:nil));
+        alertController.addAction(loginAction)
         self.present(alertController, animated: true, completion: nil)
     }
     
@@ -625,22 +638,11 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
         
         labnum.numberOfLines = 0;
         labnum.lineBreakMode = NSLineBreakMode.byCharWrapping;
-        
         labnum.tag = index;
         labnum.isUserInteractionEnabled = true;
         Numtag.append(labnum)
-        //var tap = UITapGestureRecognizer(target:self, action:"tapLabel:");
-        //let tap=UITapGestureRecognizer(target:self,action:#selector(tapLabel(_:)))
-        //let tap=UITapGestureRecognizer(target:self,action:"tapLabel:")
-        
-        //let tap = UITapGestureRecognizer(target: self, action: #selector(self.tapLabel(_:)))
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.tapLabel(_:)))
-
         labnum.addGestureRecognizer(tap);
-        
-        
-        
-        
         let labname=UILabel(frame: CGRect(x: 10, y: 30, width:w-20, height: 20))
         labname.font = UIFont.systemFont(ofSize: 15);
         labname.textAlignment = NSTextAlignment.center;
@@ -667,11 +669,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
         customView.tag = index;
         customView.isUserInteractionEnabled = true;
         customView.addGestureRecognizer(tap);
-        
         self.row2.addSubview(customView)
-        
-
-        
     }
     
    
@@ -682,20 +680,20 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
         let tapTag:NSInteger = labelView.tag;
         if(tapTag==1)
         {
-            var vc = ListViewController()
+            let vc = ListViewController()
             vc.selectedTabNumber=2
             self.navigationController?.pushViewController(vc, animated: true)
             
         }else if(tapTag==3)
         {
-            var sb = UIStoryboard(name:"Main", bundle: nil)
-            var vc = sb.instantiateViewController(withIdentifier: "friendsviewcontroller") as! FriendsTableViewController
+            let sb = UIStoryboard(name:"Main", bundle: nil)
+            let vc = sb.instantiateViewController(withIdentifier: "friendsviewcontroller") as! FriendsTableViewController
             self.navigationController?.pushViewController(vc, animated: true)
             
         }else if(tapTag==5)
         {
-            var sb = UIStoryboard(name:"Main", bundle: nil)
-            var vc = sb.instantiateViewController(withIdentifier: "gzinfosviewcontroller") as! GzInfosTableViewController
+            let sb = UIStoryboard(name:"Main", bundle: nil)
+            let vc = sb.instantiateViewController(withIdentifier: "gzinfosviewcontroller") as! GzInfosTableViewController
             self.navigationController?.pushViewController(vc, animated: true)
             
         }
@@ -723,27 +721,10 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
             let nvc=UINavigationController(rootViewController:vc);
             //设置根视图
             self.view.window!.rootViewController=nvc;
-            
-            
-            
-
-        }
-        
-        // 3.
-        let cancleAction = UIAlertAction(
-        title: "取消", style: UIAlertActionStyle.default) {
-            (action) -> Void in
-            
-            
-        }
-        
-        
-       
-        // 5.
-        alertController.addAction(UIAlertAction(title: "取消", style: UIAlertActionStyle.cancel,handler:nil));       alertController.addAction(loginAction)
+         }
+        alertController.addAction(UIAlertAction(title: "取消", style: UIAlertActionStyle.cancel,handler:nil));
+        alertController.addAction(loginAction)
         self.present(alertController, animated: true, completion: nil)
-        
-        
     }
     
     
@@ -763,7 +744,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     
     override func viewDidLayoutSubviews() {
         
-        var rect  =  UIScreen.main.applicationFrame
+        let rect  =  UIScreen.main.bounds
         _ = rect.width ;
     }
     
@@ -773,27 +754,15 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     }
     
     
-    func scrollViewDidScroll(scrollView: UIScrollView) {
-        
-        //scrollView.contentOffset = CGPoint(x: 1000, y: 450)
-        //let scrollviewW:CGFloat = galleryScrollView.frame.size.width;
-        
-        
-    }
     
     
     func loadusersummaryinfo(userid:String)
     {
         
-        var url_str:String = "http://api.bbxiaoqu.com/getusersummary.php?userid=".appending(userid)
+        let url_str:String = "http://api.bbxiaoqu.com/getusersummary.php?userid=".appending(userid)
         Alamofire.request(url_str)
             .responseJSON { response in
-                print(response.request)  // original URL request
-                print(response.response) // URL response
-                print(response.data)     // server data
                 print(response.result)   // result of response serialization
-                print(response.result.value)
-                
                 if(response.result.isSuccess)
                 {
                     if let tempdata = response.result.value{
@@ -801,7 +770,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
                         let data:NSDictionary = tempdata as! NSDictionary;
 
                         let num1:NSNumber = data.object(forKey: "num1") as! NSNumber;
-                        var num2:NSNumber = data.object(forKey: "num3") as! NSNumber;
+                        let num2:NSNumber = data.object(forKey: "num3") as! NSNumber;
                         let num3:NSNumber = data.object(forKey: "num5") as! NSNumber;
                         (self.Numtag[0] as UILabel).text=num1.stringValue
                         (self.Numtag[1] as UILabel).text=num2.stringValue
@@ -819,34 +788,35 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     }
     
     
+    var loadtelphone:String="";
+    var loadusername:String="";
+    var loadweixin:String=""
     
+    var loademergencycontact:String="";
+    var loadmergencytelphone:String="";
+    var loadbrithday:String="";
     func loaduserinfo(userid:String)
     {
-        var url_str:String = "http://api.bbxiaoqu.com/getuserinfo.php?userid=".appending(userid)
+        let url_str:String = "http://api.bbxiaoqu.com/getuserinfo.php?userid=".appending(userid)
         Alamofire.request(url_str)
             .responseJSON { response in
-                //                print(response.request)  // original URL request
-                //                print(response.response) // URL response
-                //                print(response.data)     // server data
-                //                print(response.result)   // result of response serialization
-                //print(response.result.value)
-                if let JSON:NSArray = response.result.value as! NSArray {
+                if let JSON:NSArray = response.result.value as? NSArray {
                     print("JSON1: \(JSON.count)")
                     if(JSON.count>0)
                     {
                         let data:NSDictionary = JSON[0] as! NSDictionary;
 
-                        let telphone:String = data.object(forKey: "telphone") as! String;
+                        self.loadtelphone = data.object(forKey: "telphone") as! String;
                         let headfaceurl:String = data.object(forKey: "headface") as! String;
-                        let username:String = data.object(forKey: "username") as! String;
-                        var age:String;
-                        if(data.object(forKey: "age")  == nil)
-                        {
-                            age="";
-                        }else
-                        {
-                            age = data.object(forKey: "age") as! String;
-                        }
+                        self.loadusername = data.object(forKey: "username") as! String;
+                       //var age:String;
+                        //if(data.object(forKey: "age")  == nil)
+                        //{
+                        //    age="";
+                        //}else
+                        //{
+                        //    age = data.object(forKey: "age") as! String;
+                        //}
                         
                         var usersex:String;
                         if(data.object(forKey: "sex")  == nil)
@@ -857,13 +827,12 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
                             usersex = data.object(forKey: "sex") as! String;
                         }
                         
-                        var weixin:String;
-                        if(data.object(forKey: "weixin")  == nil)
+                                                if(data.object(forKey: "weixin")  == nil)
                         {
-                            weixin="";
+                            self.loadweixin="";
                         }else
                         {
-                            weixin = data.object(forKey: "weixin") as! String;
+                            self.loadweixin = data.object(forKey: "weixin") as! String;
                         }
                         
                         
@@ -884,27 +853,25 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
                         }
                         
                         
-                        var emergency:String;
                         if(data.object(forKey: "emergencycontact")  == nil)
                         {
-                            emergency="";
+                            self.loademergencycontact="";
                         }else
                         {
-                            emergency = data.object(forKey: "emergencycontact") as! String;
+                            self.loademergencycontact = data.object(forKey: "emergencycontact") as! String;
                         }
-                        var emergencytelphone:String;
                         if(data.object(forKey: "emergencycontacttelphone") == nil)
                         {
-                            emergencytelphone="";
+                            self.loadmergencytelphone="";
                         }else
                         {
-                            emergencytelphone = data.object(forKey: "emergencycontacttelphone") as! String;
+                            self.loadmergencytelphone = data.object(forKey: "emergencycontacttelphone") as! String;
                         }
-                        self.my_nickname.text=username;
-                        self.my_userid.text=Util.hiddentelphonechartacter(telphone);
-                        self.weixin_tv.text=weixin
-                        self.username.text=username;
-                        self.telphone_tv.text=telphone;
+                        self.my_nickname.text=self.loadusername;
+                        self.my_userid.text=Util.hiddentelphonechartacter(self.loadtelphone);
+                        self.weixin_tv.text=self.loadweixin
+                        self.username.text=self.loadusername;
+                        self.telphone_tv.text=self.loadtelphone;
                         self.xiaoqu_tv.text=self.community;
                         if(usersex=="1")
                         {//男
@@ -918,21 +885,24 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
                         if(data.object(forKey: "brithday") == nil)
                         {
                             self.brithday_tv.text="1970-01-01";
+                            self.loadbrithday="1970-01-01";
                         }else
                         {
                             var brithday:String = data.object(forKey: "brithday") as! String;
                             if(brithday.characters.count<10)
                             {
                                 self.brithday_tv.text="1970-01-01";
+                                self.loadbrithday="1970-01-01";
                             }
                             else
                             {
                                 self.brithday_tv.text=brithday;
+                                self.loadbrithday=brithday;
                             }
                         }
-                        if(emergency.characters.count>0)
+                        if(self.loademergencycontact.characters.count>0)
                         {
-                            self.emergencycontact_tv.text=emergency
+                            self.emergencycontact_tv.text=self.loademergencycontact
                         }else
                         {
                             self.emergencycontact_tv.text="未设置"
@@ -972,40 +942,26 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     func goImagesel()
     {
         action="pic"
-        let actionSheet = UIActionSheet(title: "图片来源", delegate: self, cancelButtonTitle: "照片", destructiveButtonTitle: "相机")
-        actionSheet.show(in: self.view)
+        let actionSheet = UIAlertController(title: "图片来源", message: "请选择获取方式", preferredStyle: UIAlertControllerStyle.actionSheet)
+        let option1 = UIAlertAction(title: "照片", style: UIAlertActionStyle.destructive, handler: {(actionSheet: UIAlertAction!) in
+             self.goImage()
+        })
+        let option2 = UIAlertAction(title: "相机", style: UIAlertActionStyle.destructive, handler: {(actionSheet: UIAlertAction!) in
+             self.goCamera()
+        })
+        
+        let CancelAction = UIAlertAction(title: "取消", style: .cancel, handler: {(action) -> Void in
+            print("Cancel Sex Select")
+        })
+
+        actionSheet.addAction(option1)
+        actionSheet.addAction(option2)
+        actionSheet.addAction(CancelAction)
+        self.present(actionSheet, animated: true, completion: nil)
+        
     }
     
-    func actionSheet(actionSheet: UIActionSheet, clickedButtonAtIndex buttonIndex: Int) {
-        if(action=="pic")
-        {
-            if(buttonIndex==0)
-            {
-                goCamera()
-            }else
-            {
-                goImage()
-            }
-        }else
-        {//男 1 女2 数据库中 要减1
-            if(buttonIndex>0)
-            {
-                print("点击了："+actionSheet.buttonTitle(at: buttonIndex)!)
-                sex_tv.text=actionSheet.buttonTitle(at: buttonIndex)!
-                if(buttonIndex==1)
-                {
-                    self.updb(field: "sex",fieldvalue: "0")
-                    
-                }else
-                {
-                    self.updb(field: "sex",fieldvalue: "1")
-                    
-                }
-                
-                
-            }
-        }
-    }
+    
     
     var openmessflag=false;
     var openvoiceflag=false;
@@ -1035,16 +991,6 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
         defaults.synchronize();
         self.updb(field: "isrecvmess",fieldvalue: open)
         self.updb(field: "isopenvoice",fieldvalue: open)
-        //        Alamofire.request(.POST, "http://api.bbxiaoqu.com/resetuserfield.php", parameters:["userid" : self.userid,"field":"isopenvoice","fieldvalue":open])
-        //            .responseJSON { response in
-        //                print(response.request)  // original URL request
-        //                print(response.response) // URL response
-        //                print(response.data)     // server data
-        //                print(response.result)   // result of response serialization
-        //                print(response.result.value)
-        //
-        //
-        //        }
         
     }
     
@@ -1093,7 +1039,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     //    }
     
     //选择好照片后choose后执行的方法
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject])
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any])
     {
         //获取照片的原图
         img = info[UIImagePickerControllerEditedImage] as! UIImage
@@ -1103,13 +1049,13 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
         let userid = defaults.object(forKey: "userid") as! NSString;
         
         
-        var date = NSDate()
-        var timeFormatter = DateFormatter()
+        let date = NSDate()
+        let timeFormatter = DateFormatter()
         timeFormatter.dateFormat = "yyyMMddHHmmss"
-        var strNowTime = timeFormatter.string(from: date as Date) as String
+        let strNowTime = timeFormatter.string(from: date as Date) as String
         
         
-        var iconImageFileName=userid.appending("_").appending(strNowTime).appending(".jpg")
+        let iconImageFileName=userid.appending("_").appending(strNowTime).appending(".jpg")
         //        //保存图片至沙盒
         //        //self.saveImage(img, newSize: CGSize(width: 256, height: 256), percent: 0.5, imageName: imgname)
         self.saveImage(currentImage: img, newSize: CGSize(width: 256, height: 256), percent: 0.5,imageName: iconImageFileName)
@@ -1144,11 +1090,11 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     {
         let defaults = UserDefaults.standard;
         let userid = defaults.object(forKey: "userid") as! String;
-        var date = NSDate()
-        var timeFormatter = DateFormatter()
+        let date = NSDate()
+        let timeFormatter = DateFormatter()
         timeFormatter.dateFormat = "yyyMMddHHmmss"
         let strNowTime = timeFormatter.string(from: date as Date) as String
-        var fname:String = userid.appending("_").appending(strNowTime).appending(".jpg")
+        let fname:String = userid.appending("_").appending(strNowTime).appending(".jpg")
         // NSLog(fullPath)
         
         print("savemyinfo fullPath=\(fullPath)")
@@ -1168,14 +1114,14 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     
     func uploadImg(image: String,filename: String){
         //设定路径
-        var furl: NSURL = NSURL(fileURLWithPath: image)
+        let furl: NSURL = NSURL(fileURLWithPath: image)
         /** 把UIImage转化成NSData */
         let imageData = NSData(contentsOf: furl as URL)
         if (imageData != nil) {
             
             /** 设置上传图片的URL和参数 */
             let defaults = UserDefaults.standard;
-            let user_id = defaults.string(forKey: "userid")
+            _ = defaults.string(forKey: "userid")
             let url = "http://api.bbxiaoqu.com/upload.php"
             let request = NSMutableURLRequest(url: NSURL(string:url)! as URL)
             
@@ -1194,7 +1140,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
             body.append(NSString(format:"Content-Disposition: form-data; name=\"uploadfile\"; filename=\"%@\"\r\n",filename).data(using: String.Encoding.utf8.rawValue)!)
             
             body.append(NSString(format: "Content-Type: application/octet-stream\r\n\r\n").data(using: String.Encoding.utf8.rawValue)!)
-            body.append((imageData! as! NSData) as Data)
+            body.append((imageData! ) as Data)
             
             body.append(NSString(format: "\r\n--%@\r\n", boundary).data(using: String.Encoding.utf8.rawValue)!)
             request.httpBody = body as Data
@@ -1205,7 +1151,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
                     
                     /** 设置解码方式 */
                     let returnString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
-                    let returnData = returnString?.data(using: String.Encoding.utf8.rawValue)
+                    _ = returnString?.data(using: String.Encoding.utf8.rawValue)
                     
                     print("returnString----\(returnString)")
                 }
@@ -1252,7 +1198,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
     
     
     //cancel后执行的方法
-    func imagePickerControllerDidCancel(picker: UIImagePickerController){
+    private func imagePickerControllerDidCancel(picker: UIImagePickerController){
         //println("cancel--------->>")
         picker.dismiss(animated: true, completion: nil)
         
@@ -1264,9 +1210,9 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
      
      :param: textView textView description
      */
-    func textViewDidBeginEditing(textView: UITextView) {
-        var frame:CGRect = textView.frame
-        var offset:CGFloat = frame.origin.y + 100 - (self.view.frame.size.height-330)
+    private func textViewDidBeginEditing(textView: UITextView) {
+        let frame:CGRect = textView.frame
+        let offset:CGFloat = frame.origin.y + 100 - (self.view.frame.size.height-330)
         
         if offset > 0  {
             
@@ -1283,7 +1229,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
      
      :param: textView textView description
      */
-    func textViewDidEndEditing(textView: UITextView) {
+    private func textViewDidEndEditing(textView: UITextView) {
         self.view.frame = CGRect(x:0, y:0, width:self.view.frame.size.width, height:self.view.frame.size.height)
     }
     
@@ -1293,10 +1239,10 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
      解决textField遮挡键盘代码
      :param: textField textField description
      */
-    func textFieldDidBeginEditing(textField: UITextField) {
+    private func textFieldDidBeginEditing(textField: UITextField) {
         //
-        var frame:CGRect = textField.frame
-        var offset:CGFloat = frame.origin.y + 100 - (self.view.frame.size.height-216)
+        let frame:CGRect = textField.frame
+        let offset:CGFloat = frame.origin.y + 100 - (self.view.frame.size.height-216)
         
         if offset > 0  {
             
@@ -1309,7 +1255,7 @@ class MybaseInfoViewController: UIViewController,UINavigationControllerDelegate,
      
      :param: textField textField description
      */
-    func textFieldDidEndEditing(textField: UITextField) {
+    private func textFieldDidEndEditing(textField: UITextField) {
         //
         self.view.frame = CGRect(x:0, y:0, width:self.view.frame.size.width, height:self.view.frame.size.height)
         

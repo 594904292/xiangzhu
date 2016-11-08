@@ -62,7 +62,7 @@ class TabOneViewController: UIViewController {
         ////////////////////////////////////
         let customView4 = UIView(frame: CGRect(x: 0, y: h1*7, width: w, height: h1*3))
         let w3 = w/6
-        var y3 = w/6
+        _ = w/6
         let totalh=h1*3;
         let childh=totalh/7;
         let tel1 = UIButton(frame:CGRect(x: w3-childh, y: childh, width: childh*2, height: childh*2))
@@ -175,7 +175,6 @@ class TabOneViewController: UIViewController {
         let url_str:String = "http://api.bbxiaoqu.com/getuserinfo.php?userid=" + userid
         Alamofire.request(url_str)
             .responseJSON { response in
-                print(response.result.value)
                 if let JSON:NSArray = response.result.value as! NSArray {
                     print("JSON1: \(JSON.count)")
                     if(JSON.count>0)
@@ -220,7 +219,7 @@ class TabOneViewController: UIViewController {
         let url_str:String = "http://api.bbxiaoqu.com/gonggao.php"
         Alamofire.request(url_str,method:HTTPMethod.post, parameters:nil)
             .responseJSON { response in
-                print(response.result.value)
+                //print(response.result.value)
                 if let JSON:NSArray = response.result.value as! NSArray {
                     //print("JSON1: \(JSON.count)")
                     
@@ -242,14 +241,6 @@ class TabOneViewController: UIViewController {
                         }else
                         {
                             title = data.object(forKey: "title") as! String;
-                        }
-                        var content:String;
-                        if(data.object(forKey: "content")==nil)
-                        {
-                            content="";
-                        }else
-                        {
-                            content = data.object(forKey: "content") as! String;
                         }
                         var publishdate:String;
                         if(data.object(forKey: "publishdate")==nil)

@@ -40,7 +40,8 @@ class OneTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         if !self.isEqual(nil) {
             let toph=CGFloat(15);
-            let topfgview:UIView=UIView.init(frame: CGRect(x: 0, y: 0, width: UIScreen.main.applicationFrame.width, height: toph))
+            
+            let topfgview:UIView=UIView.init(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: toph))
             topfgview.backgroundColor=UIColor(colorLiteralRed: 239/255.0, green: 239/255.0, blue: 239/255.0, alpha: 1)
 
             
@@ -64,7 +65,7 @@ class OneTableViewCell: UITableViewCell {
             
             
             //var w=self.superview?.frame.size.width
-            let a=UIScreen.main.applicationFrame.width
+            let a=UIScreen.main.bounds.width
             let aa  = a-70
             statusimg = UIImageView.init(frame: CGRect(x: aa, y: toph+5, width: 70, height: 70))
             statusimg.image=UIImage(named: "xz_qiuzhu_icon")
@@ -98,7 +99,7 @@ class OneTableViewCell: UITableViewCell {
             timesgo.textColor=UIColor.lightGray
             self.contentView.addSubview(timesgo)
             
-            fgview=UIView.init(frame: CGRect(x: 10, y: toph+65, width: UIScreen.main.applicationFrame.width-20, height: 1))
+            fgview=UIView.init(frame: CGRect(x: 10, y: toph+65, width: UIScreen.main.bounds.width-20, height: 1))
             fgview.backgroundColor=UIColor(colorLiteralRed: 215/255.0, green: 212/255.0, blue: 212/255.0, alpha: 1)
             self.contentView.addSubview(fgview)
             
@@ -115,7 +116,7 @@ class OneTableViewCell: UITableViewCell {
             let string:NSString = content.text! as NSString
             let options:NSStringDrawingOptions = .usesLineFragmentOrigin
             let boundingRect = string.boundingRect(with: CGSize(width: 200, height: 0), options: options, attributes:[NSFontAttributeName:content.font], context: nil)
-            content.frame = CGRect(x: 10, y: toph+33, width: UIScreen.main.applicationFrame.width-20, height: boundingRect.height)
+            content.frame = CGRect(x: 10, y: toph+33, width: UIScreen.main.bounds.width-20, height: boundingRect.height)
             content.numberOfLines = 2;
             //content.lineBreakMode = NSLineBreakMode.ByWordWrapping
             content.lineBreakMode=NSLineBreakMode.byTruncatingTail
@@ -125,12 +126,12 @@ class OneTableViewCell: UITableViewCell {
             self.contentView.addSubview(content)
             
             let img_posy = CGFloat(toph+105);
-            imgview=UIView.init(frame: CGRect(x: 10, y: img_posy, width: UIScreen.main.applicationFrame.width-20, height: UIScreen.main.applicationFrame.width/4))
+            imgview=UIView.init(frame: CGRect(x: 10, y: img_posy, width: UIScreen.main.bounds.width-20, height: UIScreen.main.bounds.width/4))
             //imgview.backgroundColor=UIColor.greenColor()
             self.contentView.addSubview(imgview)
 
             
-            let bottom_posy = img_posy+UIScreen.main.applicationFrame.width/4;
+            let bottom_posy = img_posy+UIScreen.main.bounds.width/4;
             
             delimg = UIImageView.init(frame: CGRect(x: 10, y: bottom_posy+10, width: 10, height: 10))
             delimg.image=UIImage(named: "xz_la_icon")
@@ -147,25 +148,25 @@ class OneTableViewCell: UITableViewCell {
             clickBtn.textColor=UIColor.black
             self.contentView.addSubview(clickBtn)
             
-            tag1img = UIImageView.init(frame: CGRect(x: UIScreen.main.applicationFrame.width-193, y: bottom_posy+10, width: 18, height: 10))
+            tag1img = UIImageView.init(frame: CGRect(x: UIScreen.main.bounds.width-193, y: bottom_posy+10, width: 18, height: 10))
             tag1img.image=UIImage(named: "xz_yan_icon")
             self.contentView.addSubview(tag1img)
             
 
-            tag1 = UILabel.init(frame: CGRect(x: UIScreen.main.applicationFrame.width-175, y: bottom_posy, width: 80, height: 30))
+            tag1 = UILabel.init(frame: CGRect(x: UIScreen.main.bounds.width-175, y: bottom_posy, width: 80, height: 30))
             tag1.text="浏览:67次"
             tag1.font = UIFont.systemFont(ofSize: 14)
             self.contentView.addSubview(tag1)
             
             
-            tag2 = UILabel.init(frame: CGRect(x: UIScreen.main.applicationFrame.width-80, y: bottom_posy, width: 80, height: 30))
+            tag2 = UILabel.init(frame: CGRect(x: UIScreen.main.bounds.width-80, y: bottom_posy, width: 80, height: 30))
             tag2.text="评价:12次"
             tag2.font = UIFont.systemFont(ofSize: 14)
             
             self.contentView.addSubview(tag2)
             
             
-            tag2img = UIImageView.init(frame: CGRect(x: UIScreen.main.applicationFrame.width-100, y: bottom_posy+10, width: 20, height: 15))
+            tag2img = UIImageView.init(frame: CGRect(x: UIScreen.main.bounds.width-100, y: bottom_posy+10, width: 20, height: 15))
             tag2img.image=UIImage(named: "xz_xin_icon")
             self.contentView.addSubview(tag2img)
 

@@ -33,9 +33,9 @@ class TableViewCell:UITableViewCell
             
         }
         let type =  self.msgItem.mtype
-        let screenw = UIScreen.main.applicationFrame.size.width
+        let screenw = UIScreen.main.bounds.size.width
         self.frame.size.width=screenw;//针对大屏要重设frame.size.width
-        let framewidth =  self.frame.size.width
+        _ =  self.frame.size.width
         let width =  self.msgItem.view.frame.size.width
         let height =  self.msgItem.view.frame.size.height
         

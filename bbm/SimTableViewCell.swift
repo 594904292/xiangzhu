@@ -39,7 +39,7 @@ class SimTableViewCell:UITableViewCell
             
         }
         
-        let type =  self.msgItem.mtype
+        _ =  self.msgItem.mtype
         let width =  self.msgItem.view.frame.size.width
         let height =  self.msgItem.view.frame.size.height
         var x :CGFloat = 0

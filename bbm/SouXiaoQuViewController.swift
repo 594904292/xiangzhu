@@ -88,7 +88,7 @@ class SouXiaoQuViewController: UIViewController,UITableViewDataSource,UITableVie
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController!.popViewController(animated: true)
     }
     
     
@@ -96,7 +96,7 @@ class SouXiaoQuViewController: UIViewController,UITableViewDataSource,UITableVie
     func querydata(_ name:String)
     {
         let defaults = UserDefaults.standard;
-        let userid = defaults.object(forKey: "userid") as! NSString;
+        _ = defaults.object(forKey: "userid") as! NSString;
         let aname:String = name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
         var url:String=""
         if aname.characters.count>0
@@ -261,7 +261,7 @@ class SouXiaoQuViewController: UIViewController,UITableViewDataSource,UITableVie
             if((self.delegate) != nil){
                 self.delegate?.ChangeXiaoqu(self, name: xiaoquname, code: xiaoqucode)
             }
-            self.navigationController?.popViewController(animated: true)
+            self.navigationController!.popViewController(animated: true)
 
             
             

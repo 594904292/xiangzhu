@@ -59,8 +59,7 @@ class GzInfosTableViewController: UITableViewController {
     }
     func backClick()
     {
-        NSLog("back");
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController!.popViewController(animated: true)
     }
     
     func searchClick()
@@ -157,7 +156,6 @@ class GzInfosTableViewController: UITableViewController {
             cell.headface.layer.masksToBounds = true
         }
         let bw:CGFloat = UIScreen.main.bounds.width-20
-        var index=0
         
         var photoArr:[String] = (items[indexPath.row] as itemMess).photo.characters.split{$0 == ","}.map{String($0)}
         
@@ -168,7 +166,6 @@ class GzInfosTableViewController: UITableViewController {
             picnum=4
         }
         
-        let count = 4;
         for j:Int in 0 ..< picnum
         {
             let imageView:UIImageView = UIImageView();
@@ -318,7 +315,7 @@ class GzInfosTableViewController: UITableViewController {
                         let lng_1=(lng as NSString).doubleValue;
                         
                         let defaults = UserDefaults.standard;
-                        let userid = defaults.object(forKey: "userid") as! String;
+                        _ = defaults.object(forKey: "userid") as! String;
                         //                            let mylat = defaults.objectForKey("lat") as! String;
                         //                            let mylng = defaults.objectForKey("lng") as! String;
                         
@@ -327,16 +324,7 @@ class GzInfosTableViewController: UITableViewController {
                         let lng_2=(lng as NSString).doubleValue;
                         var address:String="";
                         
-                        if(false)
-                        {
-                            let currentLocation:CLLocation = CLLocation(latitude:lat_1,longitude:lng_1);
-                            let targetLocation:CLLocation = CLLocation(latitude:lat_2,longitude:lng_2);
-                            
-                            
-                            let distance:CLLocationDistance=currentLocation.distance(from: targetLocation);
-                            address = ("\(distance)米");
-                        }else
-                        {
+                        
                             let p1:BMKMapPoint = BMKMapPointForCoordinate(CLLocationCoordinate2D(latitude: lat_1, longitude: lng_1))
                             let p2:BMKMapPoint = BMKMapPointForCoordinate(CLLocationCoordinate2D(latitude: lat_2, longitude: lng_2))
                             //var a2:BMKMapPoint = CLLocationCoordinate2D(latitude: lat_2, longitude: lng_2)
@@ -352,7 +340,7 @@ class GzInfosTableViewController: UITableViewController {
                             {
                                 address = ("\(one)米");
                             }
-                        }
+                        
                         
                         
                         

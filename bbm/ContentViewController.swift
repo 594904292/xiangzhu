@@ -11,7 +11,7 @@ import Alamofire
 import AlamofireImage
 
 class ContentViewController: UIViewController,UINavigationControllerDelegate,UIScrollViewDelegate,UIActionSheetDelegate,UITableViewDataSource,UITableViewDelegate ,BMKLocationServiceDelegate,BMKGeoCodeSearchDelegate{
-    var alertView:UIAlertView?
+//var alertView:UIAlertView?
      var txtMsg:UITextField!
     var sendView:UIView!;
 
@@ -62,22 +62,164 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         
         if(self.inforeport_btn.titleLabel?.text! == "举报")
         {
-            let actionSheet=UIActionSheet()
-            actionSheet.title = "请选择举报类型"
-            actionSheet.addButton(withTitle: "取消")
-            actionSheet.addButton(withTitle: "广告")
-            actionSheet.addButton(withTitle: "政治")
-            actionSheet.addButton(withTitle: "暴恐")
-            actionSheet.addButton(withTitle: "淫秽")
-            actionSheet.addButton(withTitle: "赌博")
-            actionSheet.addButton(withTitle: "诈骗")
-            actionSheet.addButton(withTitle: "其它")
-            actionSheet.cancelButtonIndex=0
-            actionSheet.delegate=self
-            actionSheet.show(in: self.view);
+            
+            
+           
+
+            let actionSheet:UIAlertController = UIAlertController(title: "举报", message: "请选择举报类型", preferredStyle: UIAlertControllerStyle.actionSheet)
+            let option1 = UIAlertAction(title: "广告", style: UIAlertActionStyle.destructive, handler: {(actionSheet: UIAlertAction!) in
+                let sqlitehelpInstance1=sqlitehelp.shareInstance()
+                
+                let defaults = UserDefaults.standard;
+                let userid = defaults.object(forKey: "userid") as! String;
+                sqlitehelpInstance1.addts(self.infoid, userid: userid)
+
+                let senduseridstr = defaults.object(forKey: "userid") as! String;
+                let  dics:Dictionary<String,String> = ["_tsuid" : self.puserid,"_uid" : senduseridstr,"_infoid" : self.infoid,"_guid" : self.guid,"_tsreason" : "广告","_action" : "add"]
+                let url_str:String = "http://api.bbxiaoqu.com/addusertsinfo.php";
+                Alamofire.request(url_str,method:HTTPMethod.post, parameters:dics)
+                    .responseString{ response in
+                        if(response.result.isSuccess)
+                        {
+                            self.inforeport_btn.setTitle("取消", for: UIControlState())
+                        }
+                }
+            })
+            let option2 = UIAlertAction(title: "政治", style: UIAlertActionStyle.destructive, handler: {(actionSheet: UIAlertAction!) in
+                let sqlitehelpInstance1=sqlitehelp.shareInstance()
+                let defaults = UserDefaults.standard;
+                let userid = defaults.object(forKey: "userid") as! String;
+                sqlitehelpInstance1.addts(self.infoid, userid: userid)
+                let senduseridstr = defaults.object(forKey: "userid") as! String;
+                let  dics:Dictionary<String,String> = ["_tsuid" : self.puserid,"_uid" : senduseridstr,"_infoid" : self.infoid,"_guid" : self.guid,"_tsreason" : "政治","_action" : "add"]
+                let url_str:String = "http://api.bbxiaoqu.com/addusertsinfo.php";
+                Alamofire.request(url_str,method:HTTPMethod.post, parameters:dics)
+                    .responseString{ response in
+                        if(response.result.isSuccess)
+                        {
+                            self.inforeport_btn.setTitle("取消", for: UIControlState())
+                        }
+                }
+               
+                
+            })
+            
+            let option3 = UIAlertAction(title: "暴恐", style: UIAlertActionStyle.destructive, handler: {(actionSheet: UIAlertAction!) in
+                let sqlitehelpInstance1=sqlitehelp.shareInstance()
+                let defaults = UserDefaults.standard;
+                let userid = defaults.object(forKey: "userid") as! String;
+                sqlitehelpInstance1.addts(self.infoid, userid: userid)
+                let senduseridstr = defaults.object(forKey: "userid") as! String;
+                let  dics:Dictionary<String,String> = ["_tsuid" : self.puserid,"_uid" : senduseridstr,"_infoid" : self.infoid,"_guid" : self.guid,"_tsreason" : "暴恐","_action" : "add"]
+                let url_str:String = "http://api.bbxiaoqu.com/addusertsinfo.php";
+                Alamofire.request(url_str,method:HTTPMethod.post, parameters:dics)
+                    .responseString{ response in
+                        if(response.result.isSuccess)
+                        {
+                            self.inforeport_btn.setTitle("取消", for: UIControlState())
+                        }
+                }
+                
+            })
+            let option4 = UIAlertAction(title: "淫秽", style: UIAlertActionStyle.destructive, handler: {(actionSheet: UIAlertAction!) in
+                let sqlitehelpInstance1=sqlitehelp.shareInstance()
+                let defaults = UserDefaults.standard;
+                let userid = defaults.object(forKey: "userid") as! String;
+                sqlitehelpInstance1.addts(self.infoid, userid: userid)
+                let senduseridstr = defaults.object(forKey: "userid") as! String;
+                let  dics:Dictionary<String,String> = ["_tsuid" : self.puserid,"_uid" : senduseridstr,"_infoid" : self.infoid,"_guid" : self.guid,"_tsreason" : "淫秽","_action" : "add"]
+                let url_str:String = "http://api.bbxiaoqu.com/addusertsinfo.php";
+                Alamofire.request(url_str,method:HTTPMethod.post, parameters:dics)
+                    .responseString{ response in
+                        if(response.result.isSuccess)
+                        {
+                            self.inforeport_btn.setTitle("取消", for: UIControlState())
+                        }
+                }
+                
+            })
+            let option5 = UIAlertAction(title: "赌博", style: UIAlertActionStyle.destructive, handler: {(actionSheet: UIAlertAction!) in
+                let sqlitehelpInstance1=sqlitehelp.shareInstance()
+                let defaults = UserDefaults.standard;
+                let userid = defaults.object(forKey: "userid") as! String;
+                sqlitehelpInstance1.addts(self.infoid, userid: userid)
+                let senduseridstr = defaults.object(forKey: "userid") as! String;
+                let  dics:Dictionary<String,String> = ["_tsuid" : self.puserid,"_uid" : senduseridstr,"_infoid" : self.infoid,"_guid" : self.guid,"_tsreason" : "赌博","_action" : "add"]
+                let url_str:String = "http://api.bbxiaoqu.com/addusertsinfo.php";
+                Alamofire.request(url_str,method:HTTPMethod.post, parameters:dics)
+                    .responseString{ response in
+                        if(response.result.isSuccess)
+                        {
+                            self.inforeport_btn.setTitle("取消", for: UIControlState())
+                        }
+                }
+                
+            })
+            let option6 = UIAlertAction(title: "诈骗", style: UIAlertActionStyle.destructive, handler: {(actionSheet: UIAlertAction!) in
+                let sqlitehelpInstance1=sqlitehelp.shareInstance()
+                let defaults = UserDefaults.standard;
+                let userid = defaults.object(forKey: "userid") as! String;
+                sqlitehelpInstance1.addts(self.infoid, userid: userid)
+                let senduseridstr = defaults.object(forKey: "userid") as! String;
+                let  dics:Dictionary<String,String> = ["_tsuid" : self.puserid,"_uid" : senduseridstr,"_infoid" : self.infoid,"_guid" : self.guid,"_tsreason" : "诈骗","_action" : "add"]
+                let url_str:String = "http://api.bbxiaoqu.com/addusertsinfo.php";
+                Alamofire.request(url_str,method:HTTPMethod.post, parameters:dics)
+                    .responseString{ response in
+                        if(response.result.isSuccess)
+                        {
+                            self.inforeport_btn.setTitle("取消", for: UIControlState())
+                        }
+                }
+                
+               
+            })
+            let option7 = UIAlertAction(title: "其它", style: UIAlertActionStyle.destructive, handler: {(actionSheet: UIAlertAction!) in
+                let sqlitehelpInstance1=sqlitehelp.shareInstance()
+                let defaults = UserDefaults.standard;
+                let userid = defaults.object(forKey: "userid") as! String;
+                sqlitehelpInstance1.addts(self.infoid, userid: userid)
+                let senduseridstr = defaults.object(forKey: "userid") as! String;
+                let  dics:Dictionary<String,String> = ["_tsuid" : self.puserid,"_uid" : senduseridstr,"_infoid" : self.infoid,"_guid" : self.guid,"_tsreason" : "其它","_action" : "add"]
+                let url_str:String = "http://api.bbxiaoqu.com/addusertsinfo.php";
+                Alamofire.request(url_str,method:HTTPMethod.post, parameters:dics)
+                    .responseString{ response in
+                        if(response.result.isSuccess)
+                        {
+                            self.inforeport_btn.setTitle("取消", for: UIControlState())
+                        }
+                }
+                
+                
+            })
+           let CancelAction = UIAlertAction(title: "取消", style: .cancel, handler: {(action) -> Void in
+                print("Cancel Sex Select")
+            })
+            
+            actionSheet.addAction(option1)
+            actionSheet.addAction(option2)
+            actionSheet.addAction(option3)
+            actionSheet.addAction(option4)
+            actionSheet.addAction(option5)
+            actionSheet.addAction(option6)
+            actionSheet.addAction(option7)
+            
+            actionSheet.addAction(CancelAction)
+            self.present(actionSheet, animated: true, completion: nil)
+            
+
+            
+         
         }else if(self.inforeport_btn.titleLabel?.text! == "取消")
         {
+            let sqlitehelpInstance1=sqlitehelp.shareInstance()
+            
             let defaults = UserDefaults.standard;
+            let userid = defaults.object(forKey: "userid") as! String;
+            let isok:Bool = sqlitehelpInstance1.removets(self.infoid, userid: userid)
+            
+
+             print("isok \(isok)")
+           
             let senduseridstr = defaults.object(forKey: "userid") as! String;
             let  dics:Dictionary<String,String> = ["_tsuid" : self.puserid,"_uid" : senduseridstr,"_infoid" : self.infoid,"_guid" : self.guid,"_tsreason" : "","_action" : "remove"]
             let url_str:String = "http://api.bbxiaoqu.com/addusertsinfo.php";
@@ -118,7 +260,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     @IBOutlet weak var gzbtn: UIButton!
     @IBAction func gzbtnaction(_ sender: UIButton) {
         print("gzbtnaction")
-        DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).async { () -> Void in
+        //DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).async { () -> Void in
             if(self.gzbtn.titleLabel?.text == "收藏")
             {
                 let sqlitehelpInstance1=sqlitehelp.shareInstance()
@@ -140,8 +282,9 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
                 
                 let defaults = UserDefaults.standard;
                 let userid = defaults.object(forKey: "userid") as! String;
-                sqlitehelpInstance1.removegz(self.guid, userid: userid)
-                
+                let isok:Bool = sqlitehelpInstance1.removegz(self.guid, userid: userid)
+                print("isok \(isok)")
+
                 DispatchQueue.main.async(execute: { () -> Void in
                     self.gzbtn.setTitle("收藏", for: UIControlState())
                     //self.gzbtn.imageView?.image=UIImage(named: "xz_aixin_icon")
@@ -149,20 +292,56 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
                     self.successNotice("取消收藏成功")
                 })
             }
-        }
+        //}
     }
     //交流处理
     @IBOutlet weak var rl_bottom: UIView!
     @IBOutlet weak var chat_btn: UIButton!
     @IBAction func dohelp(_ sender: UIButton) {
-        let actionSheet=UIActionSheet()
-        actionSheet.title = "请选择举报类型"
-        actionSheet.addButton(withTitle: "取消")
-        actionSheet.addButton(withTitle: "在线聊天")
-        actionSheet.addButton(withTitle: "文字评论")
-        actionSheet.cancelButtonIndex=0
-        actionSheet.delegate=self
-        actionSheet.show(in: self.view);
+        
+        let actionSheet:UIAlertController = UIAlertController(title: "帮助类型", message: "请选择帮助类型", preferredStyle: UIAlertControllerStyle.actionSheet)
+        let option1 = UIAlertAction(title: "在线聊天", style: UIAlertActionStyle.destructive, handler: {(actionSheet: UIAlertAction!) in
+            let defaults = UserDefaults.standard;
+            let userid = defaults.object(forKey: "userid") as! String;
+            if(self.puserid==userid)
+            {
+                self.successNotice("请选择与其它人聊天")
+            }else
+            {
+                //做了一次报名动作
+                self.savebmThread();
+                self.AddInfoHelpUserThread();
+                let defaults = UserDefaults.standard;
+                let myuserid = defaults.object(forKey: "userid") as! String;
+                let sb = UIStoryboard(name:"Main", bundle: nil)
+                let vc = sb.instantiateViewController(withIdentifier: "chatviewController") as! ChatViewController
+                vc.from=self.puserid
+                vc.myself=myuserid;
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+
+        
+        })
+        let option2 = UIAlertAction(title: "文字评论", style: UIAlertActionStyle.destructive, handler: {(actionSheet: UIAlertAction!) in
+            let sb = UIStoryboard(name:"Main", bundle: nil)
+            let vc = sb.instantiateViewController(withIdentifier: "discuzzviewcontroller") as! DiscuzzViewController
+            //创建导航控制器
+            vc.guid=self.guid;
+            self.navigationController?.pushViewController(vc, animated: true)
+
+        })
+        
+        let CancelAction = UIAlertAction(title: "取消", style: .cancel, handler: {(action) -> Void in
+            print("Cancel Sex Select")
+        })
+        
+        actionSheet.addAction(option1)
+        actionSheet.addAction(option2)
+        actionSheet.addAction(CancelAction)
+        self.present(actionSheet, animated: true, completion: nil)
+        
+
+        
 
     }
 
@@ -196,78 +375,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         }
     }
     
-    func actionSheet(_ actionSheet: UIActionSheet, clickedButtonAt buttonIndex: Int) {
-                        print("点击了："+actionSheet.buttonTitle(at: buttonIndex)!)
-        let tag:String = actionSheet.buttonTitle(at: buttonIndex)!
-       if(tag == "在线聊天")
-       {
-            let defaults = UserDefaults.standard;
-            let userid = defaults.object(forKey: "userid") as! String;
-            if(self.puserid==userid)
-            {
-                self.successNotice("请选择与其它人聊天")
-            }else
-            {
-                //做了一次报名动作
-                self.savebmThread();
-                self.AddInfoHelpUserThread();
-                let defaults = UserDefaults.standard;
-                let myuserid = defaults.object(forKey: "userid") as! String;
-                let sb = UIStoryboard(name:"Main", bundle: nil)
-                let vc = sb.instantiateViewController(withIdentifier: "chatviewController") as! ChatViewController
-                vc.from=puserid
-                vc.myself=myuserid;
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
-        }else if(tag == "文字评论")
-        {
-            let sb = UIStoryboard(name:"Main", bundle: nil)
-            let vc = sb.instantiateViewController(withIdentifier: "discuzzviewcontroller") as! DiscuzzViewController
-            //创建导航控制器
-            vc.guid=self.guid;
-            self.navigationController?.pushViewController(vc, animated: true)
-
-
-        }else
-        {//举报
-            
-            if(self.inforeport_btn.titleLabel?.text! == "举报")
-            {
-                if(tag != "取消")
-                {
-                    let defaults = UserDefaults.standard;
-                    let senduseridstr = defaults.object(forKey: "userid") as! String;
-                    let  dics:Dictionary<String,String> = ["_tsuid" : self.puserid,"_uid" : senduseridstr,"_infoid" : self.infoid,"_guid" : self.guid,"_tsreason" : tag,"_action" : "add"]
-                    let url_str:String = "http://api.bbxiaoqu.com/addusertsinfo.php";
-                    Alamofire.request(url_str,method:HTTPMethod.post, parameters:dics)
-                        .responseString{ response in
-                            if(response.result.isSuccess)
-                            {
-                                self.inforeport_btn.setTitle("取消", for: UIControlState())
-                            }
-                    }
-                }
-            }else if(self.inforeport_btn.titleLabel?.text! == "取消")
-            {
-                let defaults = UserDefaults.standard;
-                let senduseridstr = defaults.object(forKey: "userid") as! String;
-                let  dics:Dictionary<String,String> = ["_tsuid" : self.puserid,"_uid" : senduseridstr,"_infoid" : self.infoid,"_guid" : self.guid,"_tsreason" : tag,"_action" : "remove"]
-                let url_str:String = "http://api.bbxiaoqu.com/addusertsinfo.php";
-                Alamofire.request(url_str,method:HTTPMethod.post, parameters:dics)
-                    .responseString{ response in
-                        if(response.result.isSuccess)
-                        {
-                            self.inforeport_btn.setTitle("举报", for: UIControlState())
-                        }
-                }
-                
-            }
-
-        }
-    
-        
-    }
-    func searchClick()
+      func searchClick()
     {
         let sb = UIStoryboard(name:"Main", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "souviewcontroller") as! SouViewController
@@ -314,6 +422,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         BMKLocationService.setLocationDesiredAccuracy(kCLLocationAccuracyBest)
         //指定最小距离更新(米)，默认：kCLDistanceFilterNone
         BMKLocationService.setLocationDistanceFilter(10)
+        
         
         //初始化BMKLocationService
         locService = BMKLocationService()
@@ -391,14 +500,13 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
                 self.activityIndicatorView.stopAnimating()
                 if(response.result.isSuccess)
                 {
-                    print(response.result.value)
                     
-                    if let JSON:NSArray = response.result.value as! NSArray {
+                    if let JSON:NSArray = response.result.value as? NSArray {
                         print("JSON1: \(JSON.count)")
                         if(JSON.count>0)
                         {
                             self.infoid = (JSON[0] as! NSDictionary).object(forKey: "id") as! String;
-                            let title:String = (JSON[0] as! NSDictionary).object(forKey: "title") as! String;
+                            //let title:String = (JSON[0] as! NSDictionary).object(forKey: "title") as! String;
                             let contentstr:String = (JSON[0] as! NSDictionary).object(forKey: "content") as! String;
                              
                                 
@@ -408,7 +516,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
                             let status = (JSON[0] as! NSDictionary).object(forKey: "status") as! String
 
                             
-                            let infocatagroy:String = (JSON[0] as! NSDictionary).object(forKey: "infocatagroy") as! String;
+                            //_:String = (JSON[0] as! NSDictionary).object(forKey: "infocatagroy") as! String;
                             self.headface = (JSON[0] as! NSDictionary).object(forKey: "headface") as! String
                             self.puserid = (JSON[0] as! NSDictionary).object(forKey: "senduser") as! String;
                             self.puser = (JSON[0] as! NSDictionary).object(forKey: "username") as! String;
@@ -473,8 +581,8 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
                                         self.gzbtn.titleLabel!.text="收藏"
                                         self.gzbtn.setImage(UIImage(named: "xz_aixin_icon"), for: UIControlState())
                                     }
-                                    var ishavets:Bool = sqlitehelpInstance1.isexitts(self.infoid, userid: userid)
-                                    if ishavezhan
+                                    let ishavets:Bool = sqlitehelpInstance1.isexitts(self.infoid, userid: userid)
+                                    if ishavets
                                     {
                                         self.inforeport_btn.titleLabel!.text="取消"
                                      }else
@@ -504,6 +612,8 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
                                 if(report=="1")
                                 {
                                     self.isjb=true
+                                    //self.inforeport_btn.titleLabel?.text="消息己被被举报"
+                                    //self.inforeport_btn.isEnabled=false
                                  }
                             })
                             
@@ -523,7 +633,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
                         }else{
                             self.successNotice("信息已移除")
                             print("信息已移除")
-                              self.navigationController?.popViewController(animated: true)
+                              self.navigationController!.popViewController(animated: true)
 
                         }
                         //
@@ -573,7 +683,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
                 let options:NSStringDrawingOptions = .usesLineFragmentOrigin
                 let boundingRect = contentstr.boundingRect(with: CGSize(width: 200, height: 0), options: options, attributes:[NSFontAttributeName:UIFont(name: "Heiti SC", size: 14.0)!], context: nil)
                 contenthight=boundingRect.height
-                content.frame = CGRect(x: 10, y: 0, width: UIScreen.main.applicationFrame.width-20, height: boundingRect.height)
+                content.frame = CGRect(x: 10, y: 0, width: UIScreen.main.bounds.width-20, height: boundingRect.height)
                 content.numberOfLines = 0;
                 content.lineBreakMode = NSLineBreakMode.byWordWrapping
 
@@ -593,12 +703,10 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
             imgView = UIView(frame: CGRect(x: 10, y: contenthight, width:w, height: CGFloat(w/4)))
             self.content_view.addSubview(imgView)
             let bw:CGFloat = UIScreen.main.bounds.width-20
-            var index=0
             if(self.picnum>4)
             {
                 self.picnum=4
             }
-            let count = 4;
             for j:Int in 0 ..< self.picnum
             {
                 let imageView:UIImageView = UIImageView();
@@ -679,14 +787,6 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
             let defaults = UserDefaults.standard;
             defaults.set(String(userLocation.location.coordinate.latitude), forKey: "lat");
             defaults.set(String(userLocation.location.coordinate.longitude), forKey: "lng");
-            
-            //            defaults.setNilValueForKey("province");//省直辖市
-            //            defaults.setNilValueForKey("city");//城市
-            //            defaults.setNilValueForKey("sublocality");//区县
-            //            defaults.setNilValueForKey("thoroughfare");//街道
-            //            defaults.setNilValueForKey("address");
-            
-            
             defaults.synchronize();
             
             
@@ -705,25 +805,16 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
             
             Alamofire.request( "http://api.bbxiaoqu.com/updatechannelid.php", method:HTTPMethod.post,parameters:["_userId" : _userid,"_channelId":_token])
                 .responseJSON { response in
-                    print(response.request)  // original URL request
-                    print(response.response) // URL response
-                    print(response.data)     // server data
-                    print(response.result)   // result of response serialization
-                    print(response.result.value)
-                    
-                    
-            }
-            
-            
-            
-            
+                    //print(response.request)  // original URL request
+                    //print(response.response) // URL response
+                    //print(response.data)     // server data
+                    //print(response.result)   // result of response serialization
+                    //print(response.result.value)
+                    print("response.result.value: \(response.result.value)")
+             }
             Alamofire.request("http://api.bbxiaoqu.com/updatelocation.php", method:HTTPMethod.post, parameters:["_userId" : _userid,"_lat":String(userLocation.location.coordinate.latitude),"_lng":String(userLocation.location.coordinate.longitude),"_os":"ios"])
                 .responseJSON { response in
-                    print(response.request)  // original URL request
-                    print(response.response) // URL response
-                    print(response.data)     // server data
-                    print(response.result)   // result of response serialization
-                    print(response.result.value)
+                      print("response.result.value: \(response.result.value)")
                     
             }
             }
@@ -853,27 +944,10 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     func backClick()
     {
         NSLog("back");
-         self.navigationController?.popViewController(animated: true)
+         self.navigationController!.popViewController(animated: true)
     }
 
     
-    func reportClick()
-    {
-        if(self.isjb)
-        {
-            self.successNotice("他人已举报")
-        }else
-        {
-            let alertView = UIAlertView()
-            alertView.title = "系统提示"
-            alertView.message = "您确定要举报吗？"
-            alertView.addButton(withTitle: "取消")
-            alertView.addButton(withTitle: "确定")
-            alertView.cancelButtonIndex=0
-            alertView.delegate=self;
-            alertView.show()
-        }
-    }
     
     
     /*
@@ -927,45 +1001,9 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     }
         
     
-    func alertView(_ alertView:UIAlertView, clickedButtonAtIndex buttonIndex: Int){
-        if(buttonIndex==alertView.cancelButtonIndex){
-            print("点击了取消")
-        }
-        else
-        {
-            NSLog("add")
-            let defaults = UserDefaults.standard;
-            let userid = defaults.object(forKey: "userid") as! String;
-            let date = Date()
-            let timeFormatter = DateFormatter()
-            timeFormatter.dateFormat = "yyy-MM-dd HH:mm:ss"
-            let strNowTime = timeFormatter.string(from: date) as String
-            
-            let  dic:Dictionary<String,String> = ["guid" : guid, "userid": userid, "addtime": strNowTime]
-            Alamofire.request( "http://api.bbxiaoqu.com/savereport.php", method:HTTPMethod.post,parameters: dic)
-                .responseJSON { response in
-                    if(response.result.isSuccess)
-                    {
-                        self.isjb=true;
-                         //self.reportbtn.hidden=false
-                        //self.reportbtn.setTitle("已举报", forState: UIControlState.Normal)
-                        //self.reportbtn.enabled=false
-                        
-                    }else
-                    {
-                        self.successNotice("网络请求错误")
-                        print("网络请求错误")
-                    }
-                    
-            }
-            
-        }
-    }
+   
     
-    func dismiss(_ timer:Timer){
-        alertView!.dismiss(withClickedButtonIndex: 0, animated:true)
-    }
-
+   
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
@@ -977,7 +1015,7 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
     func tableView(_ tableView: UITableView, heightForRowAt indexPath:IndexPath) -> CGFloat
     {
         //计算行高，返回，textview根据数据计算高度
-                   let fixedWidth:CGFloat = 260;
+            let fixedWidth:CGFloat = 260;
             let contextLab:UITextView=UITextView()
             contextLab.text=(self.items[indexPath.row] as itempl).content
             let newSize:CGSize = contextLab.sizeThatFits(CGSize(width: fixedWidth, height: 123));
@@ -1016,18 +1054,6 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
                 filter: AspectScaledToFillSizeWithRoundedCornersFilter(size: (cell?.plheadface?.frame.size)!, radius: 2.0),
                 imageTransition: .crossDissolve(0.2)
             )
-//            Alamofire.request(myhead).responseImage { response in
-//                debugPrint(response)
-//                
-//                print(response.request)
-//                print(response.response)
-//                debugPrint(response.result)
-//                
-//                if let image = response.result.value {
-//                    print("image downloaded: \(image)")
-//                    cell?.plheadface?.image=UIImage(data: image)
-//                }
-//            }
 
         }else
         {
@@ -1103,9 +1129,9 @@ class ContentViewController: UIViewController,UINavigationControllerDelegate,UIS
         let  keyBoardBounds = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
         
-        var keyBoardBoundsRect = self.view.convert(keyBoardBounds, to:nil)
+        _ = self.view.convert(keyBoardBounds, to:nil)
         
-        var keyBaoardViewFrame = sendView.frame
+        _ = sendView.frame
         let deltaY = keyBoardBounds.size.height
         
         let animations:(() -> Void) = {

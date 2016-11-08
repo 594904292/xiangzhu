@@ -26,7 +26,7 @@ class OneTableViewCellForGg: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         if !self.isEqual(nil) {
             let toph=CGFloat(15);
-            let topfgview:UIView=UIView.init(frame: CGRect(x: 0, y: 0, width: UIScreen.main.applicationFrame.width, height: toph))
+            let topfgview:UIView=UIView.init(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: toph))
             topfgview.backgroundColor=UIColor(colorLiteralRed: 239/255.0, green: 239/255.0, blue: 239/255.0, alpha: 1)
             
             self.contentView.addSubview(topfgview)
@@ -54,7 +54,7 @@ class OneTableViewCellForGg: UITableViewCell {
             timesgo.textColor=UIColor.lightGray
             self.contentView.addSubview(timesgo)
             
-            fgview=UIView.init(frame: CGRect(x: 10, y: toph+65, width: UIScreen.main.applicationFrame.width-20, height: 1))
+            fgview=UIView.init(frame: CGRect(x: 10, y: toph+65, width: UIScreen.main.bounds.width-20, height: 1))
             fgview.backgroundColor=UIColor(colorLiteralRed: 215/255.0, green: 212/255.0, blue: 212/255.0, alpha: 1)
             self.contentView.addSubview(fgview)
             
@@ -72,7 +72,7 @@ class OneTableViewCellForGg: UITableViewCell {
             let options:NSStringDrawingOptions = .usesLineFragmentOrigin
             let boundingRect = string.boundingRect(with: CGSize(width: 200, height: 0), options: options, attributes:[NSFontAttributeName:content.font], context: nil)
             //content.frame = CGRectMake(10, toph+33, UIScreen.mainScreen().applicationFrame.width-20, boundingRect.height)
-            content.frame = CGRect(x: 10, y: toph+33, width: UIScreen.main.applicationFrame.width-20, height: boundingRect.height)
+            content.frame = CGRect(x: 10, y: toph+33, width: UIScreen.main.bounds.width-20, height: boundingRect.height)
             content.numberOfLines = 10;
             //content.lineBreakMode = NSLineBreakMode.ByWordWrapping
             //content.lineBreakMode=NSLineBreakMode.ByTruncatingTail

@@ -54,7 +54,8 @@ class SimMessageItem
     {
         let font =  UIFont.boldSystemFont(ofSize: 12)
         
-        var width =  225, height = 10000.0
+        let width =  225;
+        let height = 10000.0
         
         let atts =  NSMutableDictionary()
         atts.setObject(font,forKey:NSFontAttributeName as NSCopying)

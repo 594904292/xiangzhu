@@ -80,7 +80,7 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
             currentpage=1
             queryhelpdata();
         }
-        print( item.title);
+        //print( item.title);
         
         
     }
@@ -123,12 +123,12 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController!.popViewController(animated: true)
         
     }
 
     @IBAction func gz_btn_action(_ sender: UIButton) {
-        var sqlitehelpInstance1=sqlitehelp.shareInstance()
+        //var sqlitehelpInstance1=sqlitehelp.shareInstance()
         let defaults = UserDefaults.standard;
         let myuserid = defaults.object(forKey: "userid") as! String;
         let date = Date()
@@ -175,7 +175,7 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
     }
     
     @IBAction func chat(_ sender: UIButton) {
-        var sqlitehelpInstance1=sqlitehelp.shareInstance()
+        //var sqlitehelpInstance1=sqlitehelp.shareInstance()
         
         let defaults = UserDefaults.standard;
         let myuserid = defaults.object(forKey: "userid") as! String;
@@ -203,7 +203,6 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
         let url_str:String = "http://api.bbxiaoqu.com/getuserinfo.php?userid=" + userid
         Alamofire.request(url_str,method:HTTPMethod.post, parameters:nil)
             .responseJSON { response in
-                print(response.result.value)
                 if let JSON:NSArray = response.result.value as! NSArray {
                     print("JSON1: \(JSON.count)")
                     if(JSON.count>0)
@@ -249,7 +248,6 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
         let url_str:String = (("http://api.bbxiaoqu.com/getisfriends.php?mid1=" + myuserid) + "&mid2=") + userid
         Alamofire.request(url_str,method:HTTPMethod.post, parameters:nil)
             .responseJSON { response in
-                print(response.result.value)
                 if let JSON:NSDictionary = response.result.value as! NSDictionary {
                     print("JSON1: \(JSON.count)")
                     if(JSON.count>0)
@@ -393,7 +391,7 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
                             let lng_1=(lng as NSString).doubleValue;
                             
                             let defaults = UserDefaults.standard;
-                            let userid = defaults.object(forKey: "userid") as! String;
+                            _ = defaults.object(forKey: "userid") as! String;
                             //                            let mylat = defaults.objectForKey("lat") as! String;
                             //                            let mylng = defaults.objectForKey("lng") as! String;
                             
@@ -402,16 +400,7 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
                             let lng_2=(lng as NSString).doubleValue;
                             var address:String="";
                             
-                            if(false)
-                            {
-                                let currentLocation:CLLocation = CLLocation(latitude:lat_1,longitude:lng_1);
-                                let targetLocation:CLLocation = CLLocation(latitude:lat_2,longitude:lng_2);
-                                
-                                
-                                let distance:CLLocationDistance=currentLocation.distance(from: targetLocation);
-                                address = ("\(distance)米");
-                            }else
-                            {
+                          
                                 let p1:BMKMapPoint = BMKMapPointForCoordinate(CLLocationCoordinate2D(latitude: lat_1, longitude: lng_1))
                                 let p2:BMKMapPoint = BMKMapPointForCoordinate(CLLocationCoordinate2D(latitude: lat_2, longitude: lng_2))
                                 //var a2:BMKMapPoint = CLLocationCoordinate2D(latitude: lat_2, longitude: lng_2)
@@ -425,7 +414,7 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
                                 {
                                     address = ("\(one)米");
                                 }
-                            }
+                            
                             
                             
                             
@@ -636,8 +625,6 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
                 cell.headface.layer.masksToBounds = true
             }
             let bw:CGFloat = UIScreen.main.bounds.width-20
-            var index=0
-            
             var photoArr:[String] = (items[indexPath.row] as itemMess).photo.characters.split{$0 == ","}.map{String($0)}
             
             
@@ -647,7 +634,7 @@ class UserInfoViewController: UIViewController ,UITabBarDelegate,UITableViewData
                 picnum=4
             }
             
-            let count = 4;
+            _ = 4;
             for j:Int in 0 ..< picnum
             {
                 let imageView:UIImageView = UIImageView();

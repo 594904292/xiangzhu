@@ -19,9 +19,6 @@ class SearchPassViewController: UIViewController {
     @IBOutlet weak var nextbtn: UIButton!
     var lastauthcode:String = "9811";
     
-    
-    
-    
     @IBAction func controltouchdown(_ sender: AnyObject) {
         telphone.resignFirstResponder()
         authcode.resignFirstResponder()
@@ -51,11 +48,6 @@ class SearchPassViewController: UIViewController {
         let  dic:Dictionary<String,String> = ["_telphone" : tel]
         Alamofire.request("http://api.bbxiaoqu.com/getauthcode.php?show=true",method:HTTPMethod.post, parameters: dic)
             .responseJSON { response in
-                print(response.request)  // original URL request
-                print(response.response) // URL response
-                print(response.data)     // server data
-                print(response.result)   // result of response serialization
-                print(response.result.value)
                 if let JSON = response.result.value {
                     print("JSON: \(JSON)")
                     //self.authcode.text=String(describing: JSON as! NSNumber);
@@ -82,11 +74,6 @@ class SearchPassViewController: UIViewController {
         let  dic:Dictionary<String,String> = ["_telphone" : tel]
         Alamofire.request("http://api.bbxiaoqu.com/getauthcode.php?show=true",method:HTTPMethod.post, parameters: dic)
             .responseJSON { response in
-                print(response.request)  // original URL request
-                print(response.response) // URL response
-                print(response.data)     // server data
-                print(response.result)   // result of response serialization
-                print(response.result.value)
                 if let JSON = response.result.value {
                     print("JSON: \(JSON)")
                     //self.authcode.text=String(describing: JSON as! NSNumber);

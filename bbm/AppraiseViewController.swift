@@ -53,7 +53,7 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
         let date = Date()
         let timeFormatter = DateFormatter()
         timeFormatter.dateFormat = "yyy-MM-dd HH:mm:ss"
-        let strNowTime = timeFormatter.string(from: date) as String
+        _ = timeFormatter.string(from: date) as String
         
         let defaults = UserDefaults.standard;
         let myuserid = defaults.object(forKey: "userid") as! String;
@@ -73,7 +73,7 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
             .responseString{ response in
                 if(response.result.isSuccess)
                 {
-                    if let ret = response.result.value  {
+                    if response.result.value != nil  {
                         //if String(ret)=="1"
                         //{
                         self.successNotice("发送成功")
@@ -199,7 +199,7 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
     
     
     
-    func textViewShouldBeginEditing(_ textView: UITextView!) -> Bool {
+    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         if (textView.text=="请输入你要对帮助的人说些什么") {
           textView.text = "";
             content_tv.textColor=UIColor(colorLiteralRed: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 1)
@@ -208,14 +208,14 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
         return true;
     }
     
-    func textViewShouldEndEditing(_ textView: UITextView!) -> Bool {
+    func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
         return true;
     }
     
-    func textViewDidBeginEditing(_ textView: UITextView!) {
+    func textViewDidBeginEditing(_ textView: UITextView) {
     }
     
-    func textViewDidEndEditing(_ textView: UITextView!) {
+    func textViewDidEndEditing(_ textView: UITextView) {
         
         if (textView.text.characters.count<1) {
             textView.text = "请输入你要对帮助的人说些什么";
@@ -224,7 +224,7 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
         }
     }
     
-    func textView(_ textView: UITextView!, shouldChangeTextIn range: NSRange, replacementText text: String!) -> Bool {
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if(text=="\n")
         {
             self.view.endEditing(true)
@@ -233,17 +233,17 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
         return true;
     }
     
-    func textViewDidChange(_ textView: UITextView!) {
+    func textViewDidChange(_ textView: UITextView) {
     }
     
-    func textViewDidChangeSelection(_ textView: UITextView!) {
+    func textViewDidChangeSelection(_ textView: UITextView) {
     }
     
-    func textView(_ textView: UITextView!, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {
         return true;
     }
     
-    func textView(_ textView: UITextView!, shouldInteractWith textAttachment: NSTextAttachment!, in characterRange: NSRange) -> Bool {
+    func textView(_ textView: UITextView, shouldInteractWith textAttachment: NSTextAttachment, in characterRange: NSRange) -> Bool {
         return true;
     }
 
@@ -372,8 +372,7 @@ class AppraiseViewController: UIViewController,XzaTagLabelDelegate,XzTagLabelDel
     }
     func backClick()
     {
-        NSLog("back");
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController!.popViewController(animated: true)
     }
     
     func searchClick()

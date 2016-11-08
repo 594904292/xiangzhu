@@ -17,16 +17,13 @@ class AboutSugguestViewController: UIViewController,UINavigationControllerDelega
     }
     
     
-    var alertView:UIAlertView?
     override func viewDidLoad() {
         super.viewDidLoad()
-       
+
         // Do any additional setup after loading the view.
         self.navigationItem.title="关于建议"
         self.navigationItem.leftBarButtonItem=UIBarButtonItem(title: "返回", style: UIBarButtonItemStyle.done, target: self, action: #selector(AboutSugguestViewController.backClick))
-        
-        
-        
+
         let contentlayer:CALayer = content.layer
         contentlayer.borderColor=UIColor.lightGray.cgColor
         contentlayer.opacity=0.3
@@ -34,7 +31,7 @@ class AboutSugguestViewController: UIViewController,UINavigationControllerDelega
         
         let infoDictionary = Bundle.main.infoDictionary
         
-        let appDisplayName: AnyObject? = infoDictionary![ "CFBundleDisplayName"] as AnyObject?
+        //let appDisplayName: AnyObject? = infoDictionary![ "CFBundleDisplayName"] as AnyObject?
         
         let majorVersion : String = infoDictionary! [ "CFBundleShortVersionString"] as! String
         
@@ -50,8 +47,7 @@ class AboutSugguestViewController: UIViewController,UINavigationControllerDelega
     
     func backClick()
     {
-        NSLog("back");
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController!.popViewController(animated: true)
     }
 
     
@@ -60,36 +56,16 @@ class AboutSugguestViewController: UIViewController,UINavigationControllerDelega
     @IBAction func submit(_ sender: UIButton) {
         if(content.text?.characters.count==0)
         {
-            self.alertView = UIAlertView()
-            self.alertView!.title = "提示"
-            self.alertView!.message = "建议为空"
-            self.alertView!.addButton(withTitle: "关闭")
-            Timer.scheduledTimer(timeInterval: 1, target:self, selector:#selector(AboutSugguestViewController.dismiss(_:)), userInfo:self.alertView!, repeats:false)
-            self.alertView!.show()
+            let alertMessage  = UIAlertController(title: "提示", message: "建议不能为空", preferredStyle: .alert)
+            alertMessage.addAction(UIAlertAction(title: "关闭", style: .default, handler: nil))
+            self.present(alertMessage, animated: true, completion: nil)
             return;
         }
-        let alertView = UIAlertView()
-        alertView.title = "系统提示"
-        alertView.message = "您确定提交建议吗？"
-        alertView.addButton(withTitle: "取消")
-        alertView.addButton(withTitle: "确定")
-        alertView.cancelButtonIndex=0
-        alertView.delegate=self;
-        alertView.show()
         
         
-       
-    }
-    func dismiss(_ timer:Timer){
-        alertView!.dismiss(withClickedButtonIndex: 0, animated:true)
-    }
-    
-    func alertView(_ alertView:UIAlertView, clickedButtonAtIndex buttonIndex: Int){
-        if(buttonIndex==alertView.cancelButtonIndex){
-            print("点击了取消")
-        }
-        else
-        {
+        let alertMessage  = UIAlertController(title: "系统提示", message: "您确定提交建议吗？", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "取消", style: UIAlertActionStyle.cancel, handler: nil)
+        let callOkActionHandler = { (action:UIAlertAction!) -> Void in
             NSLog("add")
             let defaults = UserDefaults.standard;
             let userid = defaults.object(forKey: "userid") as! String;
@@ -97,23 +73,21 @@ class AboutSugguestViewController: UIViewController,UINavigationControllerDelega
             let timeFormatter = DateFormatter()
             timeFormatter.dateFormat = "yyy-MM-dd HH:mm:ss"
             let strNowTime = timeFormatter.string(from: date) as String
-            let mess:String = content.text!
+            let mess:String = self.content.text!
             let  dic:Dictionary<String,String> = ["content" : mess, "userid": userid, "addtime": strNowTime]
             Alamofire.request( "http://api.bbxiaoqu.com/savesuggest.php", method:.post,parameters: dic)
                 .responseJSON { response in
-                    print(response.request)  // original URL request
-                    print(response.response) // URL response
-                    print(response.data)     // server data
-                    print(response.result)   // result of response serialization
-                    print(response.result.value)
-                    //                if let JSON = response.result.value {
-                    //                    print("JSON: \(JSON)")
-                    //                }
                     self.content.text = "";
             }
-
         }
+        let okAction = UIAlertAction(title: "确认", style: UIAlertActionStyle.default, handler: callOkActionHandler)
+        alertMessage.addAction(cancelAction)
+        alertMessage.addAction(okAction)
+        self.present(alertMessage, animated: true, completion: nil)
+       
     }
+    
+    
     /*
     // MARK: - Navigation
 

@@ -138,11 +138,7 @@ class RegisterViewController: UIViewController,UINavigationControllerDelegate{
         let  dic:Dictionary<String,String> = ["_telphone" : tel]
         Alamofire.request("http://api.bbxiaoqu.com/getauthcode.php?show=true", method:HTTPMethod.post,parameters: dic)
             .responseJSON { response in
-                print(response.request)  // original URL request
-                print(response.response) // URL response
-                print(response.data)     // server data
                 print(response.result)   // result of response serialization
-                print(response.result.value)
                 if let JSON = response.result.value {
                     print("JSON: \(JSON)")
                     //self.authoncode.text=String(describing: JSON as! NSNumber);
@@ -183,11 +179,7 @@ class RegisterViewController: UIViewController,UINavigationControllerDelegate{
         let  dic:Dictionary<String,String> = ["_userid" : tel,"_telphone" : tel,"_password" : password,"_authoncode" : authcode]
         Alamofire.request("http://api.bbxiaoqu.com/save.php", method:HTTPMethod.post,parameters: dic)
             .responseJSON { response in
-                print(response.request)  // original URL request
-                print(response.response) // URL response
-                print(response.data)     // server data
                 print(response.result)   // result of response serialization
-                print(response.result.value)
                 if let ret = response.result.value  {
                     // print("JSON: \(JSON)")
                    if String(describing: ret)=="1"

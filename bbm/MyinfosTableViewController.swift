@@ -78,7 +78,7 @@ class MyinfosTableViewController: UITableViewController {
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController!.popViewController(animated: true)
         
     }
     

@@ -175,7 +175,7 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
             let cellId = "HeaderCell"
             
             let hcell =  TableHeaderViewCell(reuseIdentifier:cellId)
-            var secno = indexPath.section
+            _ = indexPath.section
             let section : NSArray  =  self.bubbleSection[indexPath.section] as! NSArray
             let pos:Int=indexPath.row
             let data:AnyObject = section[pos] as AnyObject

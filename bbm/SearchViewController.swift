@@ -44,7 +44,7 @@ class SearchViewController: UIViewController,UINavigationControllerDelegate, UIT
         self.navigationItem.rightBarButtonItem=item4
     
         //创建表视图
-        self.tableView = UITableView(frame: UIScreen.main.applicationFrame,
+        self.tableView = UITableView(frame: UIScreen.main.bounds,
                                      style:UITableViewStyle.plain)
         self.tableView!.delegate = self
         self.tableView!.dataSource = self
@@ -142,7 +142,7 @@ class SearchViewController: UIViewController,UINavigationControllerDelegate, UIT
     func updateSearchResults(for searchController: UISearchController)
     {
         self.searchArray.removeAll(keepingCapacity: false)
-        print(searchController.searchBar.text)
+        //print(searchController.searchBar.text as String)
         let searchPredicate = NSPredicate(format: "SELF CONTAINS[c] %@",
                                           searchController.searchBar.text!)
         let array = (self.schoolArray as NSArray)

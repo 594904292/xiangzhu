@@ -128,7 +128,7 @@ class PicViewController: UIViewController,UIScrollViewDelegate,UINavigationContr
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController!.popViewController(animated: true)
         
     }
 }

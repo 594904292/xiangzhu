@@ -11,7 +11,10 @@ import UIKit
 ///验证码倒计时
 class RFCodeCountdownBtn:UIButton{
     ///验证码倒计时的起始秒数
-    var maxTimer = 10
+    var maxTimer = 60
+    
+    
+    
     
     var countDown = false{
         didSet{

@@ -38,7 +38,7 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
     
     override func viewDidLayoutSubviews() {
         let w:CGFloat = UIScreen.main.bounds.width
-        var h1:CGFloat = self.view.frame.height/10
+        //var h1:CGFloat = self.view.frame.height/10
         let namestr:String=myusername.text!
         let options:NSStringDrawingOptions = .usesLineFragmentOrigin
         let boundingRect = namestr.boundingRect(with: CGSize(width: w, height: 0), options: options, attributes:[NSFontAttributeName:myusername.font], context: nil)
@@ -137,7 +137,7 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController!.popViewController(animated: true)
         
     }
     func loadrate()
@@ -152,7 +152,7 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
             {
                 if let data = response.result.value as? NSDictionary{
                      print("data: \(data)")
-                    var userid:String = data.value(forKey: "userid") as! String;
+                    //var userid:String = data.value(forKey: "userid") as! String;
                     let username:String = data.value(forKey: "username") as! String;
                     self.myusername.text = username;
                     

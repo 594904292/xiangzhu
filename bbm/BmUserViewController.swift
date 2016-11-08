@@ -46,7 +46,7 @@ class BmUserViewController: UIViewController,UINavigationControllerDelegate,UITa
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController!.popViewController(animated: true)
     }
     
     func searchClick()
@@ -153,7 +153,7 @@ class BmUserViewController: UIViewController,UINavigationControllerDelegate,UITa
         let string:String = abm.username
         
         let options:NSStringDrawingOptions = .usesLineFragmentOrigin
-        let boundingRect = string.boundingRect(with: CGSize(width: 200, height: 0), options: options, attributes:[NSFontAttributeName:UIFont(name: "Heiti SC", size: 18.0)!], context: nil)
+        _ = string.boundingRect(with: CGSize(width: 200, height: 0), options: options, attributes:[NSFontAttributeName:UIFont(name: "Heiti SC", size: 18.0)!], context: nil)
 
         
         let sex:String=(items[indexPath.row] as ItemBm).sex
@@ -294,8 +294,6 @@ class BmUserViewController: UIViewController,UINavigationControllerDelegate,UITa
                 tapGestureRecognizer.cancelsTouchesInView = false
                 self.view.addGestureRecognizer(tapGestureRecognizer)
                 
-
-                
                 NotificationCenter.default.addObserver(self, selector:#selector(BmUserViewController.keyBoardWillShow(_:)), name:NSNotification.Name.UIKeyboardWillShow, object: nil)
                 NotificationCenter.default.addObserver(self, selector:#selector(BmUserViewController.keyBoardWillHide(_:)), name:NSNotification.Name.UIKeyboardWillHide, object: nil)
     
@@ -316,7 +314,6 @@ class BmUserViewController: UIViewController,UINavigationControllerDelegate,UITa
             self.successNotice("评价不能为空")
             return;
         }
-        var sqlitehelpInstance1=sqlitehelp.shareInstance()
         
         let defaults = UserDefaults.standard;
         let userid = defaults.object(forKey: "userid") as! String;
@@ -363,8 +360,8 @@ class BmUserViewController: UIViewController,UINavigationControllerDelegate,UITa
         let userInfo  = note.userInfo as! NSDictionary
         let  keyBoardBounds = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-        var keyBoardBoundsRect = self.view.convert(keyBoardBounds, to:nil)
-        var keyBaoardViewFrame = sendView.frame
+        _ = self.view.convert(keyBoardBounds, to:nil)
+        _ = sendView.frame
         let deltaY = keyBoardBounds.size.height
         let animations:(() -> Void) = {
                         self.sendView.transform = CGAffineTransform(translationX: 0,y: -deltaY)

@@ -6,7 +6,6 @@ import Alamofire
 
 
 class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate,UINavigationControllerDelegate,XxDL {
-    var alertView:UIAlertView?
     var Chats:NSMutableArray!
     var tableView:TableView!
     var from:String = "";
@@ -52,8 +51,6 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate,U
         
         loaduserinfo(from)
         loaduserinfo(myself)
-        let screenw = UIScreen.main.applicationFrame.size.width
-        let framewidth =  self.view.frame.size.width
         setupChatTable()
         setupSendPanel()
         getData()
@@ -64,7 +61,9 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate,U
     
     func openxmpp() {
         zdl().xxdl = self
-        zdl().connect()
+        let isconnect:Bool = zdl().connect()
+        NSLog("isconnect:\(isconnect)");
+
     }
     
     //获取总代理
@@ -102,7 +101,7 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate,U
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController!.popViewController(animated: true)
     }
     
     func searchClick()
@@ -170,8 +169,8 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate,U
                 let touserid = item["touserid"] as! String
                 let sendnickname = sqlitehelp.shareInstance().loadusername(senduserid)
                 let sendusericon = sqlitehelp.shareInstance().loadheadface(senduserid)
-                let tonickname = sqlitehelp.shareInstance().loadusername(touserid)
-                let tousericon = sqlitehelp.shareInstance().loadheadface(touserid)
+                _ = sqlitehelp.shareInstance().loadusername(touserid)
+                _ = sqlitehelp.shareInstance().loadheadface(touserid)
                 
                 let fmt:DateFormatter = DateFormatter();
                 fmt.dateFormat="yyyy-MM-dd HH:mm:ss"
@@ -328,12 +327,19 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate,U
                         if String(ret)=="1"
                             
                         {
-                            self.alertView = UIAlertView()
-                            self.alertView!.title = "提示"
-                            self.alertView!.message = "发送成功"
-                            self.alertView!.addButton(withTitle: "关闭")
-                            Timer.scheduledTimer(timeInterval: 1, target:self, selector:"dismiss:", userInfo:self.alertView!, repeats:false)
-                            self.alertView!.show()
+                            
+//                            var alertView:UIAlertController = UIAlertController(title: "提示", message: "发送成功", preferredStyle: .alert)
+//                            alertView.addAction(UIAlertAction(title: "关闭", style: .default, handler: nil))
+//                            self.present(alertView, animated: true, completion: nil)
+//                            return;
+                            
+                            let alertMessage = UIAlertController(title: "提示", message: "发送成功", preferredStyle: .alert)
+                            alertMessage.addAction(UIAlertAction(title: "关闭", style: .default, handler: nil))
+                            self.present(alertMessage, animated: true, completion: nil)
+                            return;
+
+
+                          
                         }
                     }
                 }else
@@ -391,8 +397,8 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate,U
         let userInfo  = note.userInfo as! NSDictionary
         let  keyBoardBounds = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-        var keyBoardBoundsRect = self.view.convert(keyBoardBounds, to:nil)
-        var keyBaoardViewFrame = sendView.frame
+        _ = self.view.convert(keyBoardBounds, to:nil)
+        _ = sendView.frame
         let deltaY = keyBoardBounds.size.height
         let animations:(() -> Void) = {
             self.sendView.transform = CGAffineTransform(translationX: 0,y: -deltaY)

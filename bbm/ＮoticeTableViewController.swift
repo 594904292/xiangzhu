@@ -17,7 +17,7 @@ var items:[ItemNotice]=[]
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
         self.navigationItem.title="最新消息"
-        var returnimg=UIImage(named: "xz_nav_return_icon")
+        let returnimg=UIImage(named: "xz_nav_return_icon")
         
         let item3=UIBarButtonItem(image: returnimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(NoticeTableViewController.backClick))
         
@@ -26,9 +26,9 @@ var items:[ItemNotice]=[]
         self.navigationItem.leftBarButtonItem=item3
         
         
-        var searchimg=UIImage(named: "xz_nav_icon_search")
+        let searchimg=UIImage(named: "xz_nav_icon_search")
         
-        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.plain, target: self,  action: "searchClick")
+        let item4=UIBarButtonItem(image: searchimg, style: UIBarButtonItemStyle.plain, target: self,  action: #selector(NoticeTableViewController.searchClick))
         
         item4.tintColor=UIColor.white
         
@@ -45,13 +45,13 @@ var items:[ItemNotice]=[]
 func backClick()
 {
     NSLog("back");
-    self.navigationController?.popViewController(animated: true)
+    self.navigationController!.popViewController(animated: true)
 }
 
 func searchClick()
 {
-    var sb = UIStoryboard(name:"Main", bundle: nil)
-    var vc = sb.instantiateViewController(withIdentifier: "souviewcontroller") as! SouViewController
+    let sb = UIStoryboard(name:"Main", bundle: nil)
+    let vc = sb.instantiateViewController(withIdentifier: "souviewcontroller") as! SouViewController
     self.navigationController?.pushViewController(vc, animated: true)
     //var vc = SearchViewController()
     //self.navigationController?.pushViewController(vc, animated: true)
@@ -63,7 +63,7 @@ func searchClick()
     {
         let defaults = UserDefaults.standard;
         let userid = defaults.object(forKey: "userid") as! NSString;
-        var url:String="http://api.bbxiaoqu.com/getnotices.php?userid=" + (userid as String);
+        let url:String="http://api.bbxiaoqu.com/getnotices.php?userid=" + (userid as String);
         print("url: \(url)")
         Alamofire.request(url)
             .responseJSON { response in
@@ -74,14 +74,14 @@ func searchClick()
                             let data:NSDictionary = tempdata as! NSDictionary;
 
                             print("data: \(data)")
-                            var catagory:String = data.object(forKey: "catagory") as! String;
-                            var content:String = data.object(forKey: "content") as! String;
-                            var notictime:String = data.object(forKey: "notictime") as! String;
+                            let catagory:String = data.object(forKey: "catagory") as! String;
+                            let content:String = data.object(forKey: "content") as! String;
+                            let notictime:String = data.object(forKey: "notictime") as! String;
                             
-                            var senduser:String = data.object(forKey: "senduser") as! String;
-                            var username:String = data.object(forKey: "username") as! String;
-                            var relation:String = data.object(forKey: "relation") as! String;
-                            var readed:String = data.object(forKey: "readed") as! String;
+                            let senduser:String = data.object(forKey: "senduser") as! String;
+                            let username:String = data.object(forKey: "username") as! String;
+                            let relation:String = data.object(forKey: "relation") as! String;
+                            let readed:String = data.object(forKey: "readed") as! String;
                            
                            
                              let item_obj:ItemNotice = ItemNotice(catagory: catagory, content: content, time: notictime, senduser: senduser, username: username, relation: relation, readed: readed)

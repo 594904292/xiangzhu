@@ -16,7 +16,7 @@ class ResetPassViewController: UIViewController {
     
     @IBOutlet weak var pass2: UITextField!
     
-     var alertView:UIAlertView?
+     var alertView:UIAlertController?
     
     
     
@@ -33,48 +33,36 @@ class ResetPassViewController: UIViewController {
         if(pass1.text != pass2.text)
         {
             
-            self.alertView = UIAlertView()
-            self.alertView!.title = "提示"
-            self.alertView!.message = "电话不能为空"
-            self.alertView!.addButton(withTitle: "关闭")
-            Timer.scheduledTimer(timeInterval: 1, target:self, selector:#selector(ResetPassViewController.dismiss(_:)), userInfo:self.alertView!, repeats:false)
-            self.alertView!.show()
+            self.alertView = UIAlertController(title: "提示", message: "电话不能为空", preferredStyle: .alert)
+            self.alertView?.addAction(UIAlertAction(title: "关闭", style: .default, handler: nil))
+            self.present(self.alertView!, animated: true, completion: nil)
             return;
 
+           
         }
         
         let  dic:Dictionary<String,String> = ["_telphone" : telphone,"_password" : pass1.text!]
         Alamofire.request( "http://api.bbxiaoqu.com/resetpass.php",method:HTTPMethod.post, parameters: dic)
             .responseJSON { response in
-                print(response.request)  // original URL request
-                print(response.response) // URL response
-                print(response.data)     // server data
+//                print(response.request)  // original URL request
+//                print(response.response) // URL response
+//                print(response.data)     // server data
                 print(response.result)   // result of response serialization
-                print(response.result.value)
+                //print(response.result.value)
                 if let ret = response.result.value  {
                     // print("JSON: \(JSON)")
                     if String(describing: ret)=="1"
                     {
-                        self.alertView = UIAlertView()
-                        self.alertView!.title = "提示"
-                        self.alertView!.message = "重设成功"
-                        self.alertView!.addButton(withTitle: "关闭")
-                        Timer.scheduledTimer(timeInterval: 1, target:self, selector:#selector(ResetPassViewController.dismiss(_:)), userInfo:self.alertView!, repeats:false)
-                        self.alertView!.show()
-                        
+                        self.noticeSuccess("重设成功")
                         let sb = UIStoryboard(name:"Main", bundle: nil)
                         let vc = sb.instantiateViewController(withIdentifier: "loginController") as! LoginViewController
                         self.present(vc, animated: true, completion: nil)
-
-                        
                     } else
                     {
-                        self.alertView = UIAlertView()
-                        self.alertView!.title = "提示"
-                        self.alertView!.message = "重设失败"
-                        self.alertView!.addButton(withTitle: "关闭")
-                        Timer.scheduledTimer(timeInterval: 1, target:self, selector:#selector(ResetPassViewController.dismiss(_:)), userInfo:self.alertView!, repeats:false)
-                        self.alertView!.show()
+                        self.alertView = UIAlertController(title: "提示", message: "重设失败", preferredStyle: .alert)
+                        self.alertView?.addAction(UIAlertAction(title: "关闭", style: .default, handler: nil))
+                        self.present(self.alertView!, animated: true, completion: nil)
+                        return;
                     }
                 }
         }
@@ -82,9 +70,7 @@ class ResetPassViewController: UIViewController {
     }
     
     
-    func dismiss(_ timer:Timer){
-        alertView!.dismiss(withClickedButtonIndex: 0, animated:true)
-    }
+
     
     
     override func viewDidLoad() {

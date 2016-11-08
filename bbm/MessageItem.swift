@@ -39,7 +39,7 @@ class MessageItem
     {
         let font =  UIFont.boldSystemFont(ofSize: 14)
         
-        var width =  225, height = 10000.0
+        let width =  225, height = 10000.0
         
         //var atts =  NSMutableDictionary()
         //atts.setObject(font,forKey:NSFontAttributeName)

@@ -81,10 +81,8 @@ class SugguestAboutViewController: UIViewController {
     }
 
     func AddfaqClick()
-    {
-        
+    {        
         faq.isUserInteractionEnabled = true
-        
         let singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(SugguestAboutViewController.gofaq))
         faq .addGestureRecognizer(singleTap)
         
@@ -95,14 +93,12 @@ class SugguestAboutViewController: UIViewController {
         let sb = UIStoryboard(name:"Main", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "faqviewcontroller") as!FaqViewController
         self.navigationController?.pushViewController(vc, animated: true)
-        
     }
-
     
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController!.popViewController(animated: true)
     }
     
     func searchClick()
@@ -110,10 +106,7 @@ class SugguestAboutViewController: UIViewController {
         let sb = UIStoryboard(name:"Main", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "souviewcontroller") as! SouViewController
         self.navigationController?.pushViewController(vc, animated: true)
-        //var vc = SearchViewController()
-        //self.navigationController?.pushViewController(vc, animated: true)
     }
-
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

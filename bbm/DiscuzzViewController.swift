@@ -44,21 +44,21 @@ class DiscuzzViewController: UIViewController,UINavigationControllerDelegate,UIT
     }
     
     
-    func textViewShouldBeginEditing(_ textView: UITextView!) -> Bool {
+    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         return true;
     }
     
-    func textViewShouldEndEditing(_ textView: UITextView!) -> Bool {
+    func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
         return true;
     }
     
-    func textViewDidBeginEditing(_ textView: UITextView!) {
+    func textViewDidBeginEditing(_ textView: UITextView) {
     }
     
-    func textViewDidEndEditing(_ textView: UITextView!) {
+    func textViewDidEndEditing(_ textView: UITextView) {
     }
     
-    func textView(_ textView: UITextView!, shouldChangeTextIn range: NSRange, replacementText text: String!) -> Bool {
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if(text=="\n")
         {
             self.view.endEditing(true)
@@ -67,17 +67,17 @@ class DiscuzzViewController: UIViewController,UINavigationControllerDelegate,UIT
         return true;
     }
     
-    func textViewDidChange(_ textView: UITextView!) {
+    func textViewDidChange(_ textView: UITextView) {
     }
     
-    func textViewDidChangeSelection(_ textView: UITextView!) {
+    func textViewDidChangeSelection(_ textView: UITextView) {
     }
     
-    func textView(_ textView: UITextView!, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {
         return true;
     }
     
-    func textView(_ textView: UITextView!, shouldInteractWith textAttachment: NSTextAttachment!, in characterRange: NSRange) -> Bool {
+    func textView(_ textView: UITextView, shouldInteractWith textAttachment: NSTextAttachment, in characterRange: NSRange) -> Bool {
         return true;
     }
     
@@ -113,7 +113,7 @@ class DiscuzzViewController: UIViewController,UINavigationControllerDelegate,UIT
             .responseString{ response in
                 if(response.result.isSuccess)
                 {
-                    if let ret = response.result.value  {
+                    if response.result.value != nil  {
                         //if String(ret)=="1"
                         //{
                             self.successNotice("提交成功")
@@ -179,7 +179,7 @@ class DiscuzzViewController: UIViewController,UINavigationControllerDelegate,UIT
     func backClick()
     {
         NSLog("back");
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController!.popViewController(animated: true)
     }
     
     func searchClick()
@@ -213,7 +213,6 @@ class DiscuzzViewController: UIViewController,UINavigationControllerDelegate,UIT
             .responseJSON {response in
                 if(response.result.isSuccess)
                 {
-                    print(response.result.value)
                     if let JSON = response.result.value {
                         
                         let array:NSArray = JSON as! NSArray;
@@ -285,11 +284,7 @@ class DiscuzzViewController: UIViewController,UINavigationControllerDelegate,UIT
         let url_str:String = "http://api.bbxiaoqu.com/addinfohelpuser_v1.php";
         Alamofire.request(url_str,method:HTTPMethod.post, parameters:dics)
             .responseString{ response in
-                print(response.request)  // original URL request
-                print(response.response) // URL response
-                print(response.data)     // server data
                 print(response.result)   // result of response serialization
-                print(response.result.value)
                 if(response.result.isSuccess)
                 {
                     self.activityIndicatorView.stopAnimating()
