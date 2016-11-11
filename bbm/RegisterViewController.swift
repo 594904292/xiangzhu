@@ -180,8 +180,9 @@ class RegisterViewController: UIViewController,UINavigationControllerDelegate{
         Alamofire.request("http://api.bbxiaoqu.com/save.php", method:HTTPMethod.post,parameters: dic)
             .responseJSON { response in
                 print(response.result)   // result of response serialization
+                print(response.result.value)
                 if let ret = response.result.value  {
-                    // print("JSON: \(JSON)")
+                   
                    if String(describing: ret)=="1"
                    {
                         self.alertView = UIAlertController(title: "注册提示", message: "保存成功", preferredStyle: .alert)
@@ -204,7 +205,7 @@ class RegisterViewController: UIViewController,UINavigationControllerDelegate{
                         return;
                    }else if String(describing: ret)=="4"
                    {
-                        self.alertView = UIAlertController(title: "注册提示", message: "保存成功", preferredStyle: .alert)
+                        self.alertView = UIAlertController(title: "注册提示", message: "验证码错误", preferredStyle: .alert)
                         self.alertView?.addAction(UIAlertAction(title: "关闭", style: .default, handler: nil))
                         self.present(self.alertView!, animated: true, completion: nil)
                         return;

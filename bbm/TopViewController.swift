@@ -138,8 +138,8 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
     {
         NSLog("back");
         self.navigationController!.popViewController(animated: true)
-        
     }
+    
     func loadrate()
     {
         let defaults = UserDefaults.standard;
@@ -152,21 +152,18 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
             {
                 if let data = response.result.value as? NSDictionary{
                      print("data: \(data)")
-                    //var userid:String = data.value(forKey: "userid") as! String;
                     let username:String = data.value(forKey: "username") as! String;
-                    self.myusername.text = username;
-                    
+                    if(username.characters.count>0)
+                    {
+                        self.myusername.text = username;
+                    }else
+                    {
+                        self.myusername.text = Util.showend4(userid);
+                    }
                     
                     let head = "http://api.bbxiaoqu.com/uploads/" + (data.value(forKey: "headface") as! String)
                     self.myheadface.af_setImage(withURL: URL(string:head)!)
-                    //Alamofire.request(.GET, head).response { (_, _, data, _) -> Void in
-                     //   if let d = data as? Data!
-                     //   {
-                     //       self.myheadface.image=UIImage(data: d)
-                     //   }
-                    //}
-
-                    
+                  
                     let sex:String = data.value(forKey: "sex") as! String;
 
                    if sex=="0"
@@ -177,9 +174,9 @@ class TopViewController: UIViewController,UITableViewDataSource,UITableViewDeleg
                         self.mysex.image=UIImage(named: "xz_nv_icon");
                     }
                     
-                    let pos:NSNumber = data.value(forKey: "pos") as! NSNumber;
-                    self.order.text = pos.stringValue
-                    self.txt_order_desc.text=("你排名第" + pos.stringValue) + "位"
+                    let pos:String = data.value(forKey: "pos") as! String;
+                    self.order.text = pos
+                    self.txt_order_desc.text=("你排名第" + pos) + "位"
                 }
                 
             }else

@@ -181,22 +181,44 @@ class TabOneViewController: UIViewController {
                     {
                          let data:NSDictionary = JSON[0] as! NSDictionary;
                         
-                        var emergency:String;
-                        if(data.object(forKey: "emergencycontact")==nil)
-                        {
-                            emergency="";
-                        }else
-                        {
-                            emergency = data.object(forKey: "emergencycontact") as! String;
-                        }
-                        var emergencytelphone:String;
-                        if(data.object(forKey: "emergencycontacttelphone")==nil)
-                        {
-                            emergencytelphone="";
-                        }else
-                        {
-                            emergencytelphone = data.object(forKey: "emergencycontacttelphone") as! String;
-                        }
+                        //let aaa = data.object(forKey: "userid")
+                        
+                        let userid:String = data.value(forKey: "userid") as! String
+                         let pass:String = data.value(forKey: "pass") as! String
+                        
+                        
+                        ///let aaaemergency = data.value(forUndefinedKey: "emergencycontact")
+                        //let bbbemergency = data.object(forKey: "emergencycontact")
+                        
+                        let emergency:String = data.value(forKey: "emergencycontact") as! String
+                        
+                        let emergencytelphone:String = data.value(forKey: "emergencycontacttelphone") as! String
+                        
+
+                        
+                        
+//                        var emergency:String;
+//                        if data["emergencycontact"] == nil
+//                        {
+//                            emergency="";
+//                        }else
+//                        {
+//                            
+//                            //print(emergency)
+//                            emergency = data.object(forKey: "emergencycontact") as! String;
+//                            //emergency = data["emergencycontact"] as! String;
+//                            
+//                        }
+//                        var emergencytelphone:String;
+//                        //if(data.object(forKey: "emergencycontacttelphone")==nil)
+//                        if data["emergencycontacttelphone"] == nil
+//                        {
+//                            emergencytelphone="";
+//                        }else
+//                        {
+//                            emergencytelphone = data.object(forKey: "emergencycontacttelphone") as! String;
+//                            //emergencytelphone = data["emergencycontacttelphone"]
+//                        }
                         if(emergency.characters.count>0)
                         {
                             self.tel3_label.text=emergency

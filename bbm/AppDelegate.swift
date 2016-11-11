@@ -8,9 +8,10 @@
 
 import UIKit
 import Alamofire
+import UserNotifications
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
-
+class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate,UNUserNotificationCenterDelegate{
+//UNUserNotificationCenterDelegate
     var window: UIWindow?
     var mapManager: BMKMapManager?
     //var xmppStream:XMPPStream?
@@ -273,33 +274,91 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
         print("\(NSHomeDirectory())")
         
         let str:NSString = UIDevice.current.systemVersion as NSString
+        
         let version:Float = str.floatValue
-        if version >= 8.0 {
-            //UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: UIUserNotificationType.Sound |..UIUserNotificationType.Alert | UIUserNotificationType.Badge, categories: nil))
-            
-            //public convenience init(forTypes types: UIUserNotificationType, categories: Set<UIUserNotificationCategory>?)
+         if version >= 10.0 {
+            if #available(iOS 10.0, *) {
+                let notifiCenter = UNUserNotificationCenter.current()
+                
+                notifiCenter.delegate = self
+                let types = UNAuthorizationOptions(arrayLiteral: [.alert, .badge, .sound])
+                notifiCenter.requestAuthorization(options: types) { (flag, error) in
+                    if flag {
+                        print("iOS request notification success")
+                    }else{
+                        print(" iOS 10 request notification fail")
+                    }
+                }
+                UIApplication.shared.registerForRemoteNotifications()
+
+            } else {
+                // Fallback on earlier versions
+            }
+        }else if version >= 8.0 {
            
-            UIApplication.shared.registerUserNotificationSettings(UIUserNotificationSettings(types: [.badge, .sound, .alert], categories: nil))
+            
+            let setting = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
+            UIApplication.shared.registerUserNotificationSettings(setting)
+            UIApplication.shared.registerForRemoteNotifications()
 
             
             
-            UIApplication.shared.registerForRemoteNotifications()
+            
         } else {
             //UIApplication.sharedApplication().registerForRemoteNotificationTypes( UIRemoteNotificationType.Badge | UIRemoteNotificationType.Sound |UIRemoteNotificationType.Alert)
         }
+
+
+       
         
         return true
     }
 
+    
+    
+    private func registerAppNotificationSettings(launchOptions: [NSObject: AnyObject]?) {
+//        if #available(iOS 10.0, *) {
+////            let notifiCenter = UNUserNotificationCenter.current()
+////            notifiCenter.delegate = self
+////            let types = UNAuthorizationOptions(arrayLiteral: [.alert, .badge, .sound])
+////            notifiCenter.requestAuthorization(options: types) { (flag, error) in
+////                if flag {
+////                    print("iOS request notification success")
+////                }else{
+////                    print(" iOS 10 request notification fail")
+////                }
+////            }
+//         } else { //iOS8,iOS9注册通知
+//            let setting = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
+//            UIApplication.shared.registerUserNotificationSettings(setting)
+//        }
+//        
+//        UIApplication.shared.registerForRemoteNotifications()
+    }
+    
+    
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        let token:String = deviceToken.description.trimmingCharacters(in: CharacterSet(charactersIn: "<>"))
-        print("token==\(token)")
+        var token:String="";
+        let systemVersion:NSString = UIDevice.current.systemVersion as NSString
+        let version:Float = systemVersion.floatValue
+        if version >= 10.0 {
+            token = deviceToken.hexString
+            
+            print("token: \(token)")
+        }else if version >= 8.0
+        {
+            token = deviceToken.description.trimmingCharacters(in: CharacterSet(charactersIn: "<>"))
+            print("token==\(token)")
         
+        }else
+        {
+        
+        }
         let defaults = UserDefaults.standard;
         defaults.set(token, forKey: "token");
         defaults.synchronize();
@@ -333,8 +392,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
     }
     
     
+    
+    //iOS10新增：处理前台收到通知的代理方法
+    @available(iOS 10.0, *)
+    
+    func userNotificationCenter(center: UNUserNotificationCenter, willPresentNotification notification: UNNotification, withCompletionHandler completionHandler: (UNNotificationPresentationOptions) -> Void){
+        let userInfo = notification.request.content.userInfo
+        print("userInfo10:\(userInfo)")
+        completionHandler([.sound,.alert])
+        self.apnsdelegate?.NewMessage("newmess")
+        
+    }
+    
+    //iOS10新增：处理后台点击通知的代理方法
+    @available(iOS 10.0, *)
+    func userNotificationCenter(center: UNUserNotificationCenter, didReceiveNotificationResponse response: UNNotificationResponse, withCompletionHandler completionHandler: () -> Void){
+        let userInfo = response.notification.request.content.userInfo
+        print("userInfo10:\(userInfo)")
+        completionHandler()
+    }
+    
+    
     //代理成员变量
     var apnsdelegate:ApnsDelegate?
+    //iOS8和iOS9只需要执行以下方法就好了
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
         print("userInfo==\(userInfo)")
         //调用代理函数，改变Label值
@@ -345,6 +426,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate,XMPPStreamDelegate{
 
 }
 
+extension Data {
+    var hexString: String {
+        return withUnsafeBytes {(bytes: UnsafePointer<UInt8>) -> String in
+            let buffer = UnsafeBufferPointer(start: bytes, count: count)
+            return buffer.map {String(format: "%02hhx", $0)}.reduce("", { $0 + $1 })
+        }
+    }
+}
 
 
 protocol ApnsDelegate:NSObjectProtocol{

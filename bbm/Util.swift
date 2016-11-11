@@ -22,6 +22,17 @@ class Util{
     }
     
     
+    class func showend4(_ telphone:String)->String
+    {
+        
+        
+        let ns2=(telphone as NSString).substring(from: 7)
+        return ns2
+        //self.telphone.text=ns3;
+    }
+
+    
+    
     class func loadheadface(_ singleimageView:UIImageView,url:String)
     {
          singleimageView.af_setImage(withURL: URL(string:url)!);

@@ -86,6 +86,7 @@ class RecentViewController: UIViewController,UINavigationControllerDelegate,UITa
     {
         NSLog("back");
         self.navigationController!.popViewController(animated: true)
+      
     }
     
     override func didReceiveMemoryWarning() {

@@ -542,7 +542,12 @@ class ListViewController: UIViewController,UITableViewDataSource, UITableViewDel
         let userid = defaults.object(forKey: "userid") as! String;
         let lat = defaults.object(forKey: "lat") as! String;
         let lng = defaults.object(forKey: "lng") as! String;
-        let visiblerange = defaults.object(forKey: "rang") as! String;
+        
+        var visiblerange = "4";
+        if(defaults.objectIsForced(forKey: "rang"))
+        {
+            visiblerange = defaults.object(forKey: "rang") as! String;
+        }
         let community_id = defaults.object(forKey: "community_id") as! String;
         self.start=self.items.count;
         if(Category==0)

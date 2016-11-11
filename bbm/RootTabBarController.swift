@@ -16,8 +16,6 @@
 
 import UIKit
 import Alamofire
-
-
 class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BMKLocationServiceDelegate,BMKGeoCodeSearchDelegate ,XxMainDL{
     
     var titles=["首页","会话","襄助榜","我的"]
@@ -35,7 +33,6 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
         self.navigationItem.title="襄助"
         self.creatSubViewControllers()
         self.tabBar.tintColor=UIColor.red
-        
         let navBar=UINavigationBar.appearance()
         navBar.barTintColor=UIColor(red: 204/255, green: 0, blue: 0, alpha: 1)
         var arrs=[String:AnyObject]();
@@ -152,13 +149,14 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
     func backClick()
     {
         NSLog("back");
-        //self.navigationController?.popViewControllerAnimated(true)
-        let sb = UIStoryboard(name:"Main", bundle: nil)
-        let vc = sb.instantiateViewController(withIdentifier: "loginController") as! LoginViewController
-        
-        self.present(vc, animated: true, completion: nil)
-        
+        self.selectedIndex = 0;
+        NSLog("%i is the tabbar item",self.selectedIndex);
+//        let root  = RootTabBarController()
+//        let nvc=UINavigationController(rootViewController:root);
+//        //设置根视图
+//        self.view.window!.rootViewController=nvc;
     }
+    
     func jumpchatlist()
     {
         
@@ -170,12 +168,9 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
 
 
     override func didReceiveMemoryWarning() {
-        
         super.didReceiveMemoryWarning()
-        
-        // Dispose of any resources that can be recreated.
-        
-    }
+         // Dispose of any resources that can be recreated.
+     }
     
     
     
@@ -237,7 +232,6 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
     func creatSubViewControllers(){
         let sb = UIStoryboard(name:"Main", bundle: nil)
         let TabOne = sb.instantiateViewController(withIdentifier: "mainController") as! TabOneViewController
-        //var TabTwo = sb.instantiateViewControllerWithIdentifier("recentviewcontroller") as! RecentTableViewController
         let TabTwo = sb.instantiateViewController(withIdentifier: "newrecentviewcontroller") as! RecentViewController
         let TabThree = sb.instantiateViewController(withIdentifier: "topviewController") as! TopViewController
          let TabFour = sb.instantiateViewController(withIdentifier: "mybaseinfoviewcontroller") as! MybaseInfoViewController
@@ -262,40 +256,21 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
         if(userLocation.location != nil)
             
         {
-            
             print("经度: \(userLocation.location.coordinate.latitude)")
-            
             print("纬度: \(userLocation.location.coordinate.longitude)")
-            
-            
             let defaults = UserDefaults.standard;
-            
             defaults.set(String(userLocation.location.coordinate.latitude), forKey: "lat");
-            
             defaults.set(String(userLocation.location.coordinate.longitude), forKey: "lng");
-            
             defaults.synchronize();
-            
-            
-            
-            
             
             let pt:CLLocationCoordinate2D=CLLocationCoordinate2D(latitude: userLocation.location.coordinate.latitude, longitude: userLocation.location.coordinate.longitude)
             
-            
-            
             let option:BMKReverseGeoCodeOption=BMKReverseGeoCodeOption();
-            
             option.reverseGeoPoint=pt;
-            
             _search.reverseGeoCode(option)
-            
             locService.stopUserLocationService()
-            
             let _userid = defaults.object(forKey: "userid") as! NSString;
-            
             if(defaults.object(forKey: "token") != nil)
-                
             {
                 
                 let _token = defaults.object(forKey: "token") as! NSString;
@@ -395,11 +370,6 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
         
         Alamofire.request( "http://api.bbxiaoqu.com/getuservisiblerange.php", method:HTTPMethod.post,parameters:["country" : "中国","province":province,"city":city,"district":district,"street":streetName])
             .responseJSON { response in
-                print(response.request)  // original URL request
-                print(response.response) // URL response
-                print(response.data)     // server data
-                print(response.result)   // result of response serialization
-                print(response.result.value)
                 if(response.result.isSuccess)
                 {
                     if let tempdata = response.result.value {
@@ -418,7 +388,18 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
 
 
                         }
+                    }else
+                    {
+                        let defaults = UserDefaults.standard;
+                        defaults.set("4", forKey: "rang");//省直辖市
+                        defaults.synchronize();
                     }
+                }else
+                {
+                    let defaults = UserDefaults.standard;
+                    defaults.set("4", forKey: "rang");//省直辖市
+                    defaults.synchronize();
+
                 }
                 
         }
@@ -444,32 +425,15 @@ class RootTabBarController: UITabBarController,UINavigationControllerDelegate,BM
                     if let tempdata = response.result.value {
                         
                         let JSON:NSDictionary = tempdata as! NSDictionary;
-
-                        
                         print("JSON1: \((JSON as AnyObject).count)")
-                        
                         if((JSON as NSDictionary).count>0)
-                            
                         {
-                            
                             let community:String = (JSON as NSDictionary).object(forKey: "community") as! String;
-                            
                             let community_id:String = (JSON as NSDictionary).object(forKey: "community_id") as! String;
-                            
-                            
-                            
                             let defaults = UserDefaults.standard;
-                            
                             defaults.set(community, forKey: "community");//省直辖市
-                            
                             defaults.set(community_id, forKey: "community_id");//省直辖市
-                            
                             defaults.synchronize();
-                            
-                            
-                            
-                            
-                            
                         }
                         
                     }

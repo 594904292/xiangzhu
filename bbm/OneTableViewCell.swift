@@ -39,34 +39,31 @@ class OneTableViewCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         if !self.isEqual(nil) {
-            let toph=CGFloat(15);
+            let toph=CGFloat(15);//顶部
             
             let topfgview:UIView=UIView.init(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: toph))
             topfgview.backgroundColor=UIColor(colorLiteralRed: 239/255.0, green: 239/255.0, blue: 239/255.0, alpha: 1)
-
-            
             self.contentView.addSubview(topfgview)
 
             
-            headface = UIImageView.init(frame: CGRect(x: 10, y: toph+5, width: 45, height: 45))
+            headface = UIImageView.init(frame: CGRect(x: 10, y: toph+5, width: 45, height: 45))//5+头像45
             headface.image=UIImage(named: "xz_xiang_icon")
             self.contentView.addSubview(headface)
            
 
             
             username = UILabel.init(frame: CGRect(x: 65, y: toph+5, width: 200, height: 30))
-            self.contentView.addSubview(username)
+            self.contentView.addSubview(username)//20
             
             seximg = UIImageView.init(frame: CGRect(x: 100, y: toph+5, width: 10, height: 15))
-            seximg.image=UIImage(named: "xz_nan_icon")
+            seximg.image=UIImage(named: "xz_nan_icon")//20
             self.contentView.addSubview(seximg)
             
             
             
             
-            //var w=self.superview?.frame.size.width
-            let a=UIScreen.main.bounds.width
-            let aa  = a-70
+            let sw=UIScreen.main.bounds.width
+            let aa  = sw-70
             statusimg = UIImageView.init(frame: CGRect(x: aa, y: toph+5, width: 70, height: 70))
             statusimg.image=UIImage(named: "xz_qiuzhu_icon")
             self.contentView.addSubview(statusimg)
@@ -101,18 +98,15 @@ class OneTableViewCell: UITableViewCell {
             
             fgview=UIView.init(frame: CGRect(x: 10, y: toph+65, width: UIScreen.main.bounds.width-20, height: 1))
             fgview.backgroundColor=UIColor(colorLiteralRed: 215/255.0, green: 212/255.0, blue: 212/255.0, alpha: 1)
-            self.contentView.addSubview(fgview)
+            self.contentView.addSubview(fgview)//Y:80
             
 
             
             
             
             content = UILabel.init()
-            //content.backgroundColor = UIColor.grayColor()
             content.text = "1234567890edfdgddffgfgfggfggddfbyfru6y6r7iuymgnjnrtfugyu57t6injyunjokn89uilmghbjl,hknjlllllllllllllllllllllllllllllllllllllmimomomkjnijunbuygbtyfrtdrxcresxweaswa"
-            
             content.font = UIFont.systemFont(ofSize: 14)
-            //content.textColor = UIColor.redColor()
             let string:NSString = content.text! as NSString
             let options:NSStringDrawingOptions = .usesLineFragmentOrigin
             let boundingRect = string.boundingRect(with: CGSize(width: 200, height: 0), options: options, attributes:[NSFontAttributeName:content.font], context: nil)
@@ -120,14 +114,11 @@ class OneTableViewCell: UITableViewCell {
             content.numberOfLines = 2;
             //content.lineBreakMode = NSLineBreakMode.ByWordWrapping
             content.lineBreakMode=NSLineBreakMode.byTruncatingTail
-
+           self.contentView.addSubview(content)
             
-            
-            self.contentView.addSubview(content)
-            
-            let img_posy = CGFloat(toph+105);
+            //let img_posy = CGFloat(toph+105);
+            let img_posy = CGFloat(toph+66+28);
             imgview=UIView.init(frame: CGRect(x: 10, y: img_posy, width: UIScreen.main.bounds.width-20, height: UIScreen.main.bounds.width/4))
-            //imgview.backgroundColor=UIColor.greenColor()
             self.contentView.addSubview(imgview)
 
             

@@ -322,9 +322,12 @@ class LoginViewController: UIViewController,XMLParserDelegate {
         }
         Alamofire.request("http://api.bbxiaoqu.com/login.php", method:HTTPMethod.post,parameters:["_userid" : username])
             .responseJSON { response in
+                
+                 print("JSON1: \(response.result.value)")
                 if(response.result.isSuccess)
                 {
-                    if let JSON:NSDictionary = response.result.value as? NSDictionary {
+                    if let JSON:NSDictionary = response.result.value as? NSDictionary
+                    {
                     print("JSON1: \(JSON.count)")
                    if(JSON.count==0)
                     {
@@ -353,7 +356,14 @@ class LoginViewController: UIViewController,XMLParserDelegate {
                             let defaults = UserDefaults.standard;
                             
                             defaults.set(userid, forKey: "userid");
-
+                            if username.characters.count>0
+                            {
+                                defaults.set(username, forKey: "username");
+                            }else
+                            {
+                                defaults.set(userid, forKey: "username");
+                            }
+  
                             defaults.set(pass, forKey: "pass");
 
                             
@@ -385,7 +395,13 @@ class LoginViewController: UIViewController,XMLParserDelegate {
                         }
                     
                     }
-                }
+                    }else
+                    {
+                        self.alertView = UIAlertController(title: "登陆提示", message: "用户名不存在", preferredStyle: .alert)
+                        self.alertView?.addAction(UIAlertAction(title: "关闭", style: .default, handler: nil))
+                        self.present(self.alertView!, animated: true, completion: nil)
+                        
+                    }
                 }else
                 {
                     self.successNotice("网络请求错误")
